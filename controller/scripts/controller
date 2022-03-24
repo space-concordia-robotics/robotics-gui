@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+from PyQt5 import QtWidgets
+from controller_ui_file import Ui_MainWindow
+# import rospy
+import keyboard
+
+
+class Controller(Ui_MainWindow):
+    def __init__(self):
+        super().__init__()
+        self.throttle = 0.50
+        self.commands = {
+            'ctrl-alt-p': "ping odroid",
+            'p': "ping rover mcu",
+            'q': "emergency stop all motors",
+            'l': "view key commands"
+        }
+
+    def list_commands(self):
+        for command in self.commands:
+            self.text_browser.append(f"'{command}': '{self.commands[command]}'")
+
+    def change_throttle(self, change):
+        """Changes the current throttle value either increasing or decreasing and outputs the new
+        value to the throttle label"""
+
+        if change == "+":
+            if not self.throttle >= 1:
+                # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
+                self.throttle = (self.throttle * 10 + 0.50) / 10
+        elif change == "-":
+            if not self.throttle <= 0:
+                self.throttle = (self.throttle * 10 - 0.50) / 10
+        self.throttle_value.setText(str(self.throttle))
+
+    def capture_keyboard_clicks(self):
+        """This method is dedicated to grouping and capturing keyboard clicks to manage their responses,
+         it is called once in the class constructor"""
+
+        # if not self.check_input_line_focus():
+            # self.check_input_line_focus()
+        keyboard.on_press_key("u", lambda _: self.change_throttle("+"))
+        keyboard.on_press_key("i", lambda _: self.change_throttle("-"))
+
+        keyboard.on_press_key("l", lambda _: self.list_commands())
+
+
+if __name__ == '__main__':
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Controller()
+    ui.setupUi(MainWindow)
+
+    ui.capture_keyboard_clicks()
+    ui.list_commands_button.clicked.connect(ui.list_commands)
+    MainWindow.show()
+
+    sys.exit(app.exec_())

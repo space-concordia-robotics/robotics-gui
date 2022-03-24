@@ -1,0 +1,12 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/mohamadali/coding/ros/controller/devel/lib/python2.7/dist-packages",
+        "/home/mohamadali/Programming/robotics-prototype/robot/rospackages/devel/lib/python2.7/dist-packages",
+        "/opt/ros/melodic/lib/python2.7/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/mohamadali/coding/ros/controller/devel/lib/python2.7/dist-packages",
+        "/home/mohamadali/Programming/robotics-prototype/robot/rospackages/devel/lib/python2.7/dist-packages",
+        "/opt/ros/melodic/lib/python2.7/dist-packages"
+    ]
+}
