@@ -1,0 +1,134 @@
+#!/usr/bin/env python
+
+from controller_ui_file import Ui_MainWindow
+from std_msgs.msg import String
+from pynput import keyboard
+from PyQt5 import QtWidgets
+import threading
+import rospy
+
+
+def on_press(key):
+    if key == "<ctrl>+p":
+        ui.ping_rover_mcu()
+    elif key == "q":
+        ui.emergency_stop()
+    elif key == "l":
+        ui.list_commands()
+    elif key == "<alt>+p":
+        ui.ping_odroid()
+
+
+class Key_capture_thread(threading.Thread):
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+
+    def run(self):
+        hotkeys = {
+            "l": lambda: on_press("l"),
+            "q": lambda: on_press("q"),
+            "u": lambda: ui.change_throttle("+"),
+            "i": lambda: ui.change_throttle("-"),
+            "<ctrl>+p": lambda: on_press("<ctrl>+p"),
+            "<alt>+p": lambda: on_press("<alt>+p"),
+        }
+
+        with keyboard.GlobalHotKeys(hotkeys) as listener:
+            listener.join()
+
+
+class Ros_thread(threading.Thread):
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+
+    def run(self):
+        subscriber = rospy.Subscriber("message", String, ui.handle_ros_data)
+
+
+
+class Controller(Ui_MainWindow):
+    def __init__(self):
+        super().__init__()  
+        self.throttle = 0.50
+        self.commands = {
+            'ctrl-alt-p': "ping odroid",
+            'p': "ping rover mcu",
+            'q': "emergency stop all motors",
+            'l': "view key commands",
+        }
+
+    def ping_rover_mcu(self):
+        print("ping rover in mcu")
+    
+    def ping_odroid(self):
+        print("ping odroid")
+    
+    def emergency_stop(self):
+        print("emergency stop")
+
+    def list_commands(self):
+        """This method appends this program's keyboard shortcuts to the UI's text browser """
+
+        for command in self.commands:
+            self.text_browser.append(f"'{command}': '{self.commands[command]}'")
+        self.text_browser.append("\n")
+
+
+    def change_throttle(self, change):
+        """Changes the current throttle value either increasing or decreasing and outputs the new
+        value to the throttle label"""
+
+        if change == "+":
+            if not self.throttle >= 1:
+                # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
+                self.throttle = (self.throttle * 10 + 0.50) / 10
+        elif change == "-":
+            if not self.throttle <= 0:
+                self.throttle = (self.throttle * 10 - 0.50) / 10
+        self.throttle_value.setText(str(self.throttle))
+
+    def handle_ros_data(self):
+        """Receive and display data from the rover"""
+
+        pass
+
+    def capture_keyboard_clicks(self):
+        """This method is dedicated to grouping and capturing keyboard clicks to manage their responses,
+         it is called once in the class constructor"""
+
+        global keyboard_thread
+        keyboard_thread = Key_capture_thread(1, "Key-Capture")
+        keyboard_thread.start()
+
+
+    def run_ros_components(self):
+        """Englobes all ROS methods into one method of the UI to simplify running"""
+       
+        ros_thread = Ros_thread(2, "ros-thread")
+        ros_thread.start()
+
+
+
+
+if __name__ == '__main__':
+    import sys
+
+    rospy.init_node("subscriber", anonymous=True)
+    
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Controller()
+
+    ui.setupUi(MainWindow)
+    ui.capture_keyboard_clicks()
+    ui.run_ros_components()
+    ui.list_commands_button.clicked.connect(ui.list_commands)
+    ui.stop_button.clicked.connect(ui.emergency_stop)
+    
+    MainWindow.show()
+
+    sys.exit(app.exec_())
