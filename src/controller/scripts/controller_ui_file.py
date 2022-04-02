@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/controller/resource/PluginUi.ui'
+# Form implementation generated from reading ui file '../resource/PluginUi.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -17,8 +16,8 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1800, 900)
         MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n"
-                                 "/*border-color: rgb(238, 238, 236);*/\n"
-                                 "color: rgb(238, 238, 236);")
+"/*border-color: rgb(238, 238, 236);*/\n"
+"color: rgb(238, 238, 236);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.list_commands_button = QtWidgets.QPushButton(self.centralwidget)
@@ -48,40 +47,40 @@ class Ui_MainWindow(object):
         self.wheel_motor_table.setObjectName("wheel_motor_table")
         self.table_head = QtWidgets.QHBoxLayout()
         self.table_head.setObjectName("table_head")
-        self.r_front_label_4 = QtWidgets.QLabel(self.layoutWidget)
-        self.r_front_label_4.setAlignment(QtCore.Qt.AlignCenter)
-        self.r_front_label_4.setObjectName("r_front_label_4")
-        self.table_head.addWidget(self.r_front_label_4)
+        self.motor_title = QtWidgets.QLabel(self.layoutWidget)
+        self.motor_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.motor_title.setObjectName("motor_title")
+        self.table_head.addWidget(self.motor_title)
         self.line_17 = QtWidgets.QFrame(self.layoutWidget)
         self.line_17.setStyleSheet("background-color: rgb(238, 238, 236);")
         self.line_17.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_17.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_17.setObjectName("line_17")
         self.table_head.addWidget(self.line_17)
-        self.r_front_label_3 = QtWidgets.QLabel(self.layoutWidget)
-        self.r_front_label_3.setAlignment(QtCore.Qt.AlignCenter)
-        self.r_front_label_3.setObjectName("r_front_label_3")
-        self.table_head.addWidget(self.r_front_label_3)
+        self.status_title = QtWidgets.QLabel(self.layoutWidget)
+        self.status_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.status_title.setObjectName("status_title")
+        self.table_head.addWidget(self.status_title)
         self.line_23 = QtWidgets.QFrame(self.layoutWidget)
         self.line_23.setStyleSheet("background-color: rgb(238, 238, 236);")
         self.line_23.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_23.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_23.setObjectName("line_23")
         self.table_head.addWidget(self.line_23)
-        self.r_front_label_2 = QtWidgets.QLabel(self.layoutWidget)
-        self.r_front_label_2.setAlignment(QtCore.Qt.AlignCenter)
-        self.r_front_label_2.setObjectName("r_front_label_2")
-        self.table_head.addWidget(self.r_front_label_2)
+        self.speed_title = QtWidgets.QLabel(self.layoutWidget)
+        self.speed_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.speed_title.setObjectName("speed_title")
+        self.table_head.addWidget(self.speed_title)
         self.line_22 = QtWidgets.QFrame(self.layoutWidget)
         self.line_22.setStyleSheet("background-color: rgb(238, 238, 236);")
         self.line_22.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_22.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_22.setObjectName("line_22")
         self.table_head.addWidget(self.line_22)
-        self.r_front_label_5 = QtWidgets.QLabel(self.layoutWidget)
-        self.r_front_label_5.setAlignment(QtCore.Qt.AlignCenter)
-        self.r_front_label_5.setObjectName("r_front_label_5")
-        self.table_head.addWidget(self.r_front_label_5)
+        self.current_title = QtWidgets.QLabel(self.layoutWidget)
+        self.current_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.current_title.setObjectName("current_title")
+        self.table_head.addWidget(self.current_title)
         self.wheel_motor_table.addLayout(self.table_head)
         self.line_6 = QtWidgets.QFrame(self.layoutWidget)
         self.line_6.setStyleSheet("background-color: rgb(238, 238, 236);")
@@ -363,14 +362,14 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.text_browser = QtWidgets.QTextBrowser(self.layoutWidget1)
         self.text_browser.setStyleSheet("background-color: rgb(238, 238, 236);\n"
-                                        "color: rgb(0, 0, 0);")
+"color: rgb(0, 0, 0);")
         self.text_browser.setObjectName("text_browser")
         self.verticalLayout.addWidget(self.text_browser)
         self.log_input = QtWidgets.QHBoxLayout()
         self.log_input.setObjectName("log_input")
         self.line_edit = QtWidgets.QLineEdit(self.layoutWidget1)
         self.line_edit.setStyleSheet("background-color: rgb(238, 238, 236);\n"
-                                     "color: rgb(0, 0, 0);")
+"color: rgb(0, 0, 0);")
         self.line_edit.setText("")
         self.line_edit.setObjectName("line_edit")
         self.log_input.addWidget(self.line_edit)
@@ -415,8 +414,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(13)
         self.throttle_value.setFont(font)
-        self.throttle_value.setAlignment(
-            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
+        self.throttle_value.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.throttle_value.setObjectName("throttle_value")
         self.throttle_container.addWidget(self.throttle_value)
         self.layoutWidget3 = QtWidgets.QWidget(self.controls_frame)
@@ -453,18 +451,17 @@ class Ui_MainWindow(object):
         self.controller_right.setCheckable(False)
         self.controller_right.setChecked(False)
         self.controller_right.setObjectName("controller_right")
-        self.logo_label = QtWidgets.QLabel(self.centralwidget)
-        self.logo_label.setGeometry(QtCore.QRect(40, 30, 71, 51))
-        self.logo_label.setText("")
-        self.logo_label.setPixmap(QtGui.QPixmap(
-            "../resource/sclogo_header.png"))
-        self.logo_label.setObjectName("logo_label")
         self.stream_screen = QtWidgets.QLabel(self.centralwidget)
         self.stream_screen.setGeometry(QtCore.QRect(1210, 120, 561, 481))
         self.stream_screen.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-                                         "color: rgb(0, 0, 0);")
+"color: rgb(0, 0, 0);")
         self.stream_screen.setAlignment(QtCore.Qt.AlignCenter)
         self.stream_screen.setObjectName("stream_screen")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(40, 20, 91, 51))
+        self.label.setText("")
+        self.label.setPixmap(QtGui.QPixmap("../resource/../../ros/controller/src/controller/resource/sclogo_header.png"))
+        self.label.setObjectName("label")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1800, 22))
@@ -477,19 +474,13 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.list_commands_button.setText(
-            _translate("MainWindow", "List Commands (L) "))
+        self.list_commands_button.setText(_translate("MainWindow", "List Commands (L) "))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
-        self.wheel_motor_table_label.setText(
-            _translate("MainWindow", "Wheel Motor Table"))
-        self.r_front_label_4.setText(_translate(
-            "MainWindow", "<html><head/><body><p align=\"center\">Motor</p><p align=\"center\">(Number)</p></body></html>"))
-        self.r_front_label_3.setText(_translate(
-            "MainWindow", "<html><head/><body><p align=\"center\">Status</p><p align=\"center\">(Alive / Dead)</p></body></html>"))
-        self.r_front_label_2.setText(_translate(
-            "MainWindow", "<html><head/><body><p align=\"center\">Speed</p><p align=\"center\">(RPM)</p></body></html>"))
-        self.r_front_label_5.setText(_translate(
-            "MainWindow", "<html><head/><body><p align=\"center\">Current</p><p align=\"center\">(A)</p></body></html>"))
+        self.wheel_motor_table_label.setText(_translate("MainWindow", "Wheel Motor Table"))
+        self.motor_title.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Motor</p><p align=\"center\">(Number)</p></body></html>"))
+        self.status_title.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Status</p><p align=\"center\">(Alive / Dead)</p></body></html>"))
+        self.speed_title.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Speed</p><p align=\"center\">(RPM)</p></body></html>"))
+        self.current_title.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Current</p><p align=\"center\">(A)</p></body></html>"))
         self.r_front_label.setText(_translate("MainWindow", "R Front"))
         self.r_front_status.setText(_translate("MainWindow", "N/A"))
         self.r_front_speed.setText(_translate("MainWindow", "-"))
@@ -516,23 +507,19 @@ class Ui_MainWindow(object):
         self.l_back_current.setText(_translate("MainWindow", "N/A"))
         self.log_console_label.setText(_translate("MainWindow", "Log Console"))
         self.text_browser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-                                             "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-                                             "p, li { white-space: pre-wrap; }\n"
-                                             "</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
-                                             "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
-        self.send_command_button.setText(
-            _translate("MainWindow", "Send Command"))
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.send_command_button.setText(_translate("MainWindow", "Send Command"))
         self.controller_left.setText(_translate("MainWindow", "Left"))
         self.controller_down.setText(_translate("MainWindow", "Down"))
         self.controller_up.setText(_translate("MainWindow", "Up"))
-        self.throttle_label.setText(_translate(
-            "MainWindow", "Throttle (U: Increase, I: Decrease)"))
+        self.throttle_label.setText(_translate("MainWindow", "Throttle (U: Increase, I: Decrease)"))
         self.throttle_value.setText(_translate("MainWindow", "0.5"))
-        self.motor_controls_label.setText(
-            _translate("MainWindow", "Motor Controls"))
+        self.motor_controls_label.setText(_translate("MainWindow", "Motor Controls"))
         self.activate_rover.setText(_translate("MainWindow", "Activate Rover"))
         self.closedLoop.setText(_translate("MainWindow", "Closed Loop"))
-        self.commandListener.setText(
-            _translate("MainWindow", "Command Listener"))
+        self.commandListener.setText(_translate("MainWindow", "Command Listener"))
         self.controller_right.setText(_translate("MainWindow", "Right"))
         self.stream_screen.setText(_translate("MainWindow", "Stream"))

@@ -97,7 +97,7 @@ color: rgb(238, 238, 236);</string>
       <item>
        <layout class="QHBoxLayout" name="table_head">
         <item>
-         <widget class="QLabel" name="r_front_label_4">
+         <widget class="QLabel" name="motor_title">
           <property name="text">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Motor&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;(Number)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
@@ -117,7 +117,7 @@ color: rgb(238, 238, 236);</string>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="r_front_label_3">
+         <widget class="QLabel" name="status_title">
           <property name="text">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Status&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;(Alive / Dead)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
@@ -137,7 +137,7 @@ color: rgb(238, 238, 236);</string>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="r_front_label_2">
+         <widget class="QLabel" name="speed_title">
           <property name="text">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Speed&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;(RPM)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
@@ -157,7 +157,7 @@ color: rgb(238, 238, 236);</string>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="r_front_label_5">
+         <widget class="QLabel" name="current_title">
           <property name="text">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Current&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;(A)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
@@ -718,7 +718,7 @@ color: rgb(238, 238, 236);</string>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QTextBrowser" name="textBrowser">
+         <widget class="QTextBrowser" name="text_browser">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(238, 238, 236);
 color: rgb(0, 0, 0);</string>
@@ -727,8 +727,8 @@ color: rgb(0, 0, 0);</string>
            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
@@ -736,9 +736,6 @@ p, li { white-space: pre-wrap; }
          <layout class="QHBoxLayout" name="log_input">
           <item>
            <widget class="QLineEdit" name="line_edit">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(238, 238, 236);
 color: rgb(0, 0, 0);</string>
@@ -840,7 +837,7 @@ color: rgb(0, 0, 0);</string>
        <x>20</x>
        <y>310</y>
        <width>411</width>
-       <height>23</height>
+       <height>22</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="throttle_container">
@@ -953,22 +950,6 @@ color: rgb(0, 0, 0);</string>
      </property>
     </widget>
    </widget>
-   <widget class="QLabel" name="logo_label">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>30</y>
-      <width>71</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>sclogo_header.png</pixmap>
-    </property>
-   </widget>
    <widget class="QLabel" name="stream_screen">
     <property name="geometry">
      <rect>
@@ -989,6 +970,22 @@ color: rgb(0, 0, 0);</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>20</y>
+      <width>91</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../../ros/controller/src/controller/resource/sclogo_header.png</pixmap>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -996,7 +993,7 @@ color: rgb(0, 0, 0);</string>
      <x>0</x>
      <y>0</y>
      <width>1800</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
