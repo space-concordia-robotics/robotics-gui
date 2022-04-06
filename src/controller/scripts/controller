@@ -49,20 +49,23 @@ class Ros_thread(threading.Thread):
         self.name = name
 
     def run(self):
-        currents = rospy.Subscriber("wheel_motor_currents", Currents, ui.handle_ros_data)
-        battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps, ui.handle_ros_data)
-        battery_voltage = rospy.Subscriber("battery_voltage", Voltage, ui.handle_ros_data)
+        currents = rospy.Subscriber("wheel_motor_currents", Currents, ui.display_currents)
+        battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps, ui.display_temps)
+        battery_voltage = rospy.Subscriber("battery_voltage", Voltage, ui.display_voltage)
 
 
 
 
 class Controller(Ui_MainWindow):
     def __init__(self):
-        super().__init__()  
+        super().__init__()
         self.throttle = 0.50
+        self.temps = []
+        self.currents = ()
+        self.voltage = 0
         self.commands = {
-            'ctrl-alt-p': "ping odroid",
-            'p': "ping rover mcu",
+            'ctrl-p': "ping rover mcu",
+            'alt-p': "ping odroid",
             'q': "emergency stop all motors",
             'l': "view key commands",
         }
@@ -97,23 +100,36 @@ class Controller(Ui_MainWindow):
                 self.throttle = (self.throttle * 10 - 0.50) / 10
         self.throttle_value.setText(str(self.throttle))
 
-    def handle_ros_data(self, data):
-        """Receive and display data from the rover"""
+    def display_temps(self, data):
+        degree = u'\N{DEGREE SIGN}'
+        self.temps = str(data).split()[1::2]
+        self.temp1_label.setText(f"{self.temps[0]} {degree}C")
+        self.temp2_label.setText(f"{self.temps[1]} {degree}C")
+        self.temp3_label.setText(f"{self.temps[2]} {degree}C")
 
-        print(data)
 
-    def capture_keyboard_clicks(self):
-        """This method is dedicated to grouping and capturing keyboard clicks to manage their responses,
-         it is called once in the class constructor"""
+    def display_currents(self, data):
+        self.currents = data.effort
 
-        global keyboard_thread
-        keyboard_thread = Key_capture_thread(1, "Key-Capture")
+        self.r_front_current.setText(f"{self.currents[0]}")
+        self.r_mid_current.setText(f"{self.currents[1]}")
+        self.r_back_current.setText(f"{self.currents[2]}")
+        self.l_front_current.setText(f"{self.currents[3]}")
+        self.l_mid_current.setText(f"{self.currents[4]}")
+        self.l_back_current.setText(f"{self.currents[5]}")
+
+
+    def display_voltage(self, data):
+        self.voltage = data.data
+        self.voltage_label.setText(f"{self.voltage} V")
+
+
+
+    def run_threads(self):
+        "Runs the program's two threads, key capture and ros"
+
+        keyboard_thread = Key_capture_thread(1, "key-capture-thread")
         keyboard_thread.start()
-
-
-    def run_ros_components(self):
-        """Englobes all ROS methods into one method of the UI to simplify running"""
-       
         ros_thread = Ros_thread(2, "ros-thread")
         ros_thread.start()
 
@@ -123,15 +139,17 @@ class Controller(Ui_MainWindow):
 if __name__ == '__main__':
     import sys
 
-    rospy.init_node("currents", anonymous=True)
+    rospy.init_node("gui_controller", anonymous=True)
     
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
+
     ui = Controller()
 
+
     ui.setupUi(MainWindow)
-    ui.capture_keyboard_clicks()
-    ui.run_ros_components()
+    ui.run_threads()
+
     ui.list_commands_button.clicked.connect(ui.list_commands)
     ui.stop_button.clicked.connect(ui.emergency_stop)
     

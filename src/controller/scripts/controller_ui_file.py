@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '../resource/PluginUi.ui'
+# Form implementation generated from reading ui file 'src/controller/resource/PluginUi.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import os
 
 
 class Ui_MainWindow(object):
@@ -460,13 +461,54 @@ class Ui_MainWindow(object):
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(40, 20, 91, 51))
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("../resource/../../ros/controller/src/controller/resource/sclogo_header.png"))
         self.label.setObjectName("label")
+        self.layoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
+        self.layoutWidget_2.setGeometry(QtCore.QRect(1400, 10, 371, 61))
+        self.layoutWidget_2.setObjectName("layoutWidget_2")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.layoutWidget_2)
+        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.temp_logo = QtWidgets.QLabel(self.layoutWidget_2)
+        self.temp_logo.setGeometry(QtCore.QRect(40, 20, 91, 51))
+        self.temp_logo.setText("")
+        self.temp_logo.setObjectName("temp_logo")
+        self.horizontalLayout_3.addWidget(self.temp_logo)
+        self.temp1_label = QtWidgets.QLabel(self.layoutWidget_2)
+        self.temp1_label.setText("")
+        self.temp1_label.setObjectName("temp1_label")
+        self.horizontalLayout_3.addWidget(self.temp1_label)
+        self.temp2_label = QtWidgets.QLabel(self.layoutWidget_2)
+        self.temp2_label.setText("")
+        self.temp2_label.setObjectName("temp2_label")
+        self.horizontalLayout_3.addWidget(self.temp2_label)
+        self.temp3_label = QtWidgets.QLabel(self.layoutWidget_2)
+        self.temp3_label.setText("")
+        self.temp3_label.setObjectName("temp3_label")
+        self.horizontalLayout_3.addWidget(self.temp3_label)
+        self.widget = QtWidgets.QWidget(self.centralwidget)
+        self.widget.setGeometry(QtCore.QRect(1180, 10, 181, 61))
+        self.widget.setObjectName("widget")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget)
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.battery_logo = QtWidgets.QLabel(self.widget)
+        self.battery_logo.setGeometry(QtCore.QRect(40, 20, 91, 51))
+        self.battery_logo.setText("")
+        self.battery_logo.setObjectName("battery_logo")
+        self.horizontalLayout_2.addWidget(self.battery_logo)
+        self.voltage_label = QtWidgets.QLabel(self.widget)
+        self.voltage_label.setText("")
+        self.voltage_label.setObjectName("voltage_label")
+        self.horizontalLayout_2.addWidget(self.voltage_label)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1800, 22))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
+
+        self.label.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/sclogo_header.png")))
+        self.temp_logo.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/therm_icon.jpg")))
+        self.battery_logo.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/battery_icon.png")))
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
