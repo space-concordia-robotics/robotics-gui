@@ -4,7 +4,6 @@ from controller_ui_file import Ui_MainWindow
 from mcu_control.msg._Voltage import Voltage
 from mcu_control.msg._Currents import Currents
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
-# from std_msgs.msg import String
 from pynput import keyboard
 from PyQt5 import QtWidgets
 import threading
@@ -54,8 +53,6 @@ class Ros_thread(threading.Thread):
         battery_voltage = rospy.Subscriber("battery_voltage", Voltage, ui.display_voltage)
 
 
-
-
 class Controller(Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -98,7 +95,7 @@ class Controller(Ui_MainWindow):
         elif change == "-":
             if not self.throttle <= 0:
                 self.throttle = (self.throttle * 10 - 0.50) / 10
-        self.throttle_value.setText(str(self.throttle))
+        self.throttle_value.setText(f"{self.throttle}")
 
     def display_temps(self, data):
         degree = u'\N{DEGREE SIGN}'
@@ -124,7 +121,6 @@ class Controller(Ui_MainWindow):
         self.voltage_label.setText(f"{self.voltage} V")
 
 
-
     def run_threads(self):
         "Runs the program's two threads, key capture and ros"
 
@@ -145,7 +141,6 @@ if __name__ == '__main__':
     MainWindow = QtWidgets.QMainWindow()
 
     ui = Controller()
-
 
     ui.setupUi(MainWindow)
     ui.run_threads()
