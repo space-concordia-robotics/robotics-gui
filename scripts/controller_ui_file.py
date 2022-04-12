@@ -458,10 +458,10 @@ class Ui_MainWindow(object):
 "color: rgb(0, 0, 0);")
         self.stream_screen.setAlignment(QtCore.Qt.AlignCenter)
         self.stream_screen.setObjectName("stream_screen")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(40, 20, 91, 51))
-        self.label.setText("")
-        self.label.setObjectName("label")
+        self.sc_logo = QtWidgets.QLabel(self.centralwidget)
+        self.sc_logo.setGeometry(QtCore.QRect(40, 20, 91, 51))
+        self.sc_logo.setText("")
+        self.sc_logo.setObjectName("sc_logo")
         self.layoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
         self.layoutWidget_2.setGeometry(QtCore.QRect(1400, 10, 371, 61))
         self.layoutWidget_2.setObjectName("layoutWidget_2")
@@ -506,7 +506,7 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
 
-        self.label.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/sclogo_header.png")))
+        self.sc_logo.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/sclogo_header.png")))
         self.temp_logo.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/therm_icon.jpg")))
         self.battery_logo.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/battery_icon.png")))
 
