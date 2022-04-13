@@ -4,26 +4,16 @@ from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Currents import Currents
 from mcu_control.msg._Voltage import Voltage
 from controller_ui_file import Ui_MainWindow
+from PyQt5.QtCore import QCoreApplication
 from pynput import keyboard
 from PyQt5 import QtWidgets
 import threading
 import rospy
 
 
-def on_press(key):
+def on_press(function, args=None):
     if not ui.line_edit.has_focus:
-        if key == "<ctrl>+p":
-            ui.ping_rover_mcu()
-        elif key == "<alt>+p":
-            ui.ping_odroid()
-        elif key == "q":
-            ui.emergency_stop()
-        elif key == "l":
-            ui.list_commands()
-        elif key == "u":
-            ui.change_throttle("+")
-        elif key == "i":
-            ui.change_throttle("-")
+        function(args) if args else function()
 
 
 class Key_capture_thread(threading.Thread):
@@ -32,14 +22,21 @@ class Key_capture_thread(threading.Thread):
         self.threadID = threadID
         self.name = name
 
+    def kill(self):
+        QCoreApplication.instance().quit()
+        exit()
+
     def run(self):
         hotkeys = {
-            "<ctrl>+p": lambda: on_press("<ctrl>+p"),
-            "<alt>+p": lambda: on_press("<alt>+p"),
-            "q": lambda: on_press("q"),
-            "l": lambda: on_press("l"),
-            "u": lambda: on_press("u"),
-            "i": lambda: on_press("i"),
+            "<ctrl>+p": lambda: on_press(ui.ping_rover_mcu),
+            "<alt>+p": lambda: on_press(ui.ping_odroid),
+            "q": lambda: on_press(ui.emergency_stop),
+            "l": lambda: on_press(ui.list_commands),
+            "u": lambda: on_press(ui.change_throttle, "+"),
+            "i": lambda: on_press(ui.change_throttle, "-"),
+            # this command isnt in the on_press method because it doesnt need to check if focus is on the input
+            "<shift>": ui.run_command,
+            "<ctrl>+<shift>+k": self.kill,
         }
 
         with keyboard.GlobalHotKeys(hotkeys) as listener:
@@ -63,10 +60,10 @@ class Ros_thread(threading.Thread):
 
 class Controller(Ui_MainWindow):
     def __init__(self):
-        self.throttle = 0.50
-        self.temps = []
-        self.currents = ()
         self.voltage = 0
+        self.throttle = 0.50
+        self.temps = ()
+        self.currents = ()
         self.commands = {
             'ctrl-p': "ping rover mcu",
             'alt-p': "ping odroid",
@@ -84,16 +81,16 @@ class Controller(Ui_MainWindow):
         print("emergency stop")
 
     def list_commands(self):
-        """This method appends this program's keyboard shortcuts to the UI's text browser """
+        """This method appends this program's keyboard shortcuts 
+        to the UI's text browser """
 
         for command in self.commands:
-            self.text_browser.append(
-                f"'{command}': '{self.commands[command]}'")
-        self.text_browser.append("\n")
+            self.append_to_browser(f"'{command}': '{self.commands[command]}'")
+        self.append_to_browser("\n")
 
     def change_throttle(self, change):
-        """Changes the current throttle value either increasing or decreasing and outputs the new
-        value to the throttle label"""
+        """Changes the current throttle value either increasing or
+        decreasing and outputs the new value to the throttle label"""
 
         if change == "+" and not self.throttle >= 1:
             # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
@@ -105,13 +102,13 @@ class Controller(Ui_MainWindow):
 
     def display_temps(self, data):
         degree = u'\N{DEGREE SIGN}'
-        self.temps = str(data).split()[1::2]
+        self.temps = tuple(str(data).split()[1::2])
         self.temp1_label.setText(f"{self.temps[0]} {degree}C")
         self.temp2_label.setText(f"{self.temps[1]} {degree}C")
         self.temp3_label.setText(f"{self.temps[2]} {degree}C")
 
     def display_currents(self, data):
-        self.currents = data.effort
+        self.currents = tuple(data.effort)
 
         self.r_front_current.setText(f"{self.currents[0]}")
         self.r_mid_current.setText(f"{self.currents[1]}")
@@ -125,8 +122,20 @@ class Controller(Ui_MainWindow):
         self.voltage_label.setText(f"{self.voltage} V")
 
     def run_command(self):
+        """Gets the content of the command line and tries to run it if possible"""
+
         command = ui.line_edit.text()
+        if command.strip() != "":
+            self.append_to_browser(f"{command} \n")
         ui.line_edit.clear()
+
+    def append_to_browser(self, data):
+        """Adds functionality to the append method of the browser
+        like scrolling to the bottom"""
+
+        ui.text_browser.append(str(data))
+        self.text_browser.verticalScrollBar().setValue(
+            self.text_browser.verticalScrollBar().maximum())
 
     def run_threads(self):
         "Runs the program's two threads, key capture and ros"

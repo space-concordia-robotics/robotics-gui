@@ -497,7 +497,9 @@ class Ui_MainWindow(object):
         self.sc_logo = QtWidgets.QLabel(self.centralwidget)
         self.sc_logo.setGeometry(QtCore.QRect(
             self.width / 48, self.height / 54, self.width / 21.33, self.height / 21.6))
-        self.sc_logo.setText("")
+        self.sc_logo.setText(
+            f'<a style="text-decoration: none" href="http://spaceconcordia.ca"><img src="{os.path.join(os.path.dirname(__file__), "../resource/sclogo_header.png")}"/></a>')
+        self.sc_logo.setOpenExternalLinks(True)
         self.sc_logo.setObjectName("sc_logo")
         self.layoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
         self.layoutWidget_2.setGeometry(QtCore.QRect(
@@ -548,8 +550,6 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
 
-        self.sc_logo.setPixmap(QtGui.QPixmap(os.path.join(
-            os.path.dirname(__file__), "../resource/sclogo_header.png")))
         self.temp_logo.setPixmap(QtGui.QPixmap(os.path.join(
             os.path.dirname(__file__), "../resource/therm_icon.jpg")))
         self.battery_logo.setPixmap(QtGui.QPixmap(os.path.join(
