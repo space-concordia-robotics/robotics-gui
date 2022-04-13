@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from controller_ui_file import Ui_MainWindow
-from mcu_control.msg._Voltage import Voltage
-from mcu_control.msg._Currents import Currents
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
+from mcu_control.msg._Currents import Currents
+from mcu_control.msg._Voltage import Voltage
+from controller_ui_file import Ui_MainWindow
 from pynput import keyboard
 from PyQt5 import QtWidgets
 import threading
@@ -11,14 +11,19 @@ import rospy
 
 
 def on_press(key):
-    if key == "<ctrl>+p":
-        ui.ping_rover_mcu()
-    elif key == "q":
-        ui.emergency_stop()
-    elif key == "l":
-        ui.list_commands()
-    elif key == "<alt>+p":
-        ui.ping_odroid()
+    if not ui.line_edit.has_focus:
+        if key == "<ctrl>+p":
+            ui.ping_rover_mcu()
+        elif key == "<alt>+p":
+            ui.ping_odroid()
+        elif key == "q":
+            ui.emergency_stop()
+        elif key == "l":
+            ui.list_commands()
+        elif key == "u":
+            ui.change_throttle("+")
+        elif key == "i":
+            ui.change_throttle("-")
 
 
 class Key_capture_thread(threading.Thread):
@@ -29,12 +34,12 @@ class Key_capture_thread(threading.Thread):
 
     def run(self):
         hotkeys = {
-            "l": lambda: on_press("l"),
-            "q": lambda: on_press("q"),
-            "u": lambda: ui.change_throttle("+"),
-            "i": lambda: ui.change_throttle("-"),
-            "<alt>+p": lambda: on_press("<alt>+p"),
             "<ctrl>+p": lambda: on_press("<ctrl>+p"),
+            "<alt>+p": lambda: on_press("<alt>+p"),
+            "q": lambda: on_press("q"),
+            "l": lambda: on_press("l"),
+            "u": lambda: on_press("u"),
+            "i": lambda: on_press("i"),
         }
 
         with keyboard.GlobalHotKeys(hotkeys) as listener:
@@ -48,14 +53,16 @@ class Ros_thread(threading.Thread):
         self.name = name
 
     def run(self):
-        currents = rospy.Subscriber("wheel_motor_currents", Currents, ui.display_currents)
-        battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps, ui.display_temps)
-        battery_voltage = rospy.Subscriber("battery_voltage", Voltage, ui.display_voltage)
+        currents = rospy.Subscriber(
+            "wheel_motor_currents", Currents, ui.display_currents)
+        battery_temps = rospy.Subscriber(
+            "battery_temps", ThermistorTemps, ui.display_temps)
+        battery_voltage = rospy.Subscriber(
+            "battery_voltage", Voltage, ui.display_voltage)
 
 
 class Controller(Ui_MainWindow):
     def __init__(self):
-        super().__init__()
         self.throttle = 0.50
         self.temps = []
         self.currents = ()
@@ -69,10 +76,10 @@ class Controller(Ui_MainWindow):
 
     def ping_rover_mcu(self):
         print("ping rover in mcu")
-    
+
     def ping_odroid(self):
         print("ping odroid")
-    
+
     def emergency_stop(self):
         print("emergency stop")
 
@@ -80,21 +87,20 @@ class Controller(Ui_MainWindow):
         """This method appends this program's keyboard shortcuts to the UI's text browser """
 
         for command in self.commands:
-            self.text_browser.append(f"'{command}': '{self.commands[command]}'")
+            self.text_browser.append(
+                f"'{command}': '{self.commands[command]}'")
         self.text_browser.append("\n")
-
 
     def change_throttle(self, change):
         """Changes the current throttle value either increasing or decreasing and outputs the new
         value to the throttle label"""
 
-        if change == "+":
-            if not self.throttle >= 1:
-                # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
-                self.throttle = (self.throttle * 10 + 0.50) / 10
-        elif change == "-":
-            if not self.throttle <= 0:
-                self.throttle = (self.throttle * 10 - 0.50) / 10
+        if change == "+" and not self.throttle >= 1:
+            # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
+            self.throttle = (self.throttle * 10 + 0.50) / 10
+        elif change == "-" and not self.throttle <= 0:
+            self.throttle = (self.throttle * 10 - 0.50) / 10
+
         self.throttle_value.setText(f"{self.throttle}")
 
     def display_temps(self, data):
@@ -103,7 +109,6 @@ class Controller(Ui_MainWindow):
         self.temp1_label.setText(f"{self.temps[0]} {degree}C")
         self.temp2_label.setText(f"{self.temps[1]} {degree}C")
         self.temp3_label.setText(f"{self.temps[2]} {degree}C")
-
 
     def display_currents(self, data):
         self.currents = data.effort
@@ -115,11 +120,13 @@ class Controller(Ui_MainWindow):
         self.l_mid_current.setText(f"{self.currents[4]}")
         self.l_back_current.setText(f"{self.currents[5]}")
 
-
     def display_voltage(self, data):
         self.voltage = data.data
         self.voltage_label.setText(f"{self.voltage} V")
 
+    def run_command(self):
+        command = ui.line_edit.text()
+        ui.line_edit.clear()
 
     def run_threads(self):
         "Runs the program's two threads, key capture and ros"
@@ -130,13 +137,11 @@ class Controller(Ui_MainWindow):
         ros_thread.start()
 
 
-
-
 if __name__ == '__main__':
     import sys
 
     rospy.init_node("gui_controller", anonymous=True)
-    
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
 
@@ -147,7 +152,8 @@ if __name__ == '__main__':
 
     ui.list_commands_button.clicked.connect(ui.list_commands)
     ui.stop_button.clicked.connect(ui.emergency_stop)
-    
+    ui.send_command_button.clicked.connect(ui.run_command)
+
     MainWindow.show()
 
     sys.exit(app.exec_())

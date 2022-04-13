@@ -12,43 +12,61 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import os
 
 
+class LineEdit(QtWidgets.QLineEdit):
+    has_focus = False
+
+    def focusInEvent(self, event):
+        self.has_focus = True
+        super().focusInEvent(event)
+
+    def focusOutEvent(self, event):
+        self.has_focus = False
+        super().focusOutEvent(event)
+
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        screen = QtWidgets.QDesktopWidget().screenGeometry(-1) # used for adaptive window size
-        self.width = screen.width() # 1920
-        self.height = screen.height() # 1080
-        
-        # self.width = 800
-        # self.height = 450
-        
+        # used for adaptive window size, gets the screen size of the current display
+        screen = QtWidgets.QDesktopWidget().screenGeometry(-1)
+        self.width = screen.width()  # 1920 x 1080 for me
+        self.height = screen.height()
+
+        # self.width = 1500
+        # self.height = 750
+
         MainWindow.resize(self.width, self.height)
         MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n"
-"/*border-color: rgb(238, 238, 236);*/\n"
-"color: rgb(238, 238, 236);")
+                                 "/*border-color: rgb(238, 238, 236);*/\n"
+                                 "color: rgb(238, 238, 236);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.list_commands_button = QtWidgets.QPushButton(self.centralwidget)
-        self.list_commands_button.setGeometry(QtCore.QRect(4.75 * self.width / 6, 2 * self.height / 3, self.width / 10, 2 * self.height / 25))
+        self.list_commands_button.setGeometry(QtCore.QRect(
+            4.75 * self.width / 6, 2 * self.height / 3, self.width / 10, 2 * self.height / 25))
         self.list_commands_button.setObjectName("list_commands_button")
         self.stop_button = QtWidgets.QPushButton(self.centralwidget)
-        self.stop_button.setGeometry(QtCore.QRect(4.75 * self.width / 6, 2.25 * self.height / 3, self.width / 10, 2 * self.height / 25))
+        self.stop_button.setGeometry(QtCore.QRect(
+            4.75 * self.width / 6, 2.25 * self.height / 3, self.width / 10, 2 * self.height / 25))
         self.stop_button.setObjectName("stop_button")
         self.table_frame = QtWidgets.QFrame(self.centralwidget)
-        self.table_frame.setGeometry(QtCore.QRect(5 * self.width / 16, 11 * self.height / 108, 7 * self.width / 24, self.height / 2.16))
+        self.table_frame.setGeometry(QtCore.QRect(
+            5 * self.width / 16, 11 * self.height / 108, 7 * self.width / 24, self.height / 2.16))
         self.table_frame.setStyleSheet("")
         self.table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.table_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.table_frame.setObjectName("table_frame")
         self.wheel_motor_table_label = QtWidgets.QLabel(self.table_frame)
-        self.wheel_motor_table_label.setGeometry(QtCore.QRect(self.width / 192, self.height / 108, self.width / 3.56, self.height / 45))
+        self.wheel_motor_table_label.setGeometry(QtCore.QRect(
+            self.width / 192, self.height / 108, self.width / 3.56, self.height / 45))
         font = QtGui.QFont()
-        font.setPointSize(15)
+        font.setPointSize(self.width / 128)
         self.wheel_motor_table_label.setFont(font)
         self.wheel_motor_table_label.setAlignment(QtCore.Qt.AlignCenter)
         self.wheel_motor_table_label.setObjectName("wheel_motor_table_label")
         self.layoutWidget = QtWidgets.QWidget(self.table_frame)
-        self.layoutWidget.setGeometry(QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56, self.height / 2.4))
+        self.layoutWidget.setGeometry(QtCore.QRect(
+            self.width / 192, self.height / 27, self.width / 3.56, self.height / 2.4))
         self.layoutWidget.setObjectName("layoutWidget")
         self.wheel_motor_table = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.wheel_motor_table.setContentsMargins(0, 0, 0, 0)
@@ -349,19 +367,21 @@ class Ui_MainWindow(object):
         self.l_back_row.addWidget(self.l_back_current)
         self.wheel_motor_table.addLayout(self.l_back_row)
         self.console_frame = QtWidgets.QFrame(self.centralwidget)
-        self.console_frame.setGeometry(QtCore.QRect(self.width / 48, self.height / 9.89, self.width / 4.09, self.height / 3.01))
+        self.console_frame.setGeometry(QtCore.QRect(
+            self.width / 48, self.height / 9.89, self.width / 4.09, self.height / 3.01))
         self.console_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.console_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.console_frame.setObjectName("console_frame")
         self.layoutWidget1 = QtWidgets.QWidget(self.console_frame)
-        self.layoutWidget1.setGeometry(QtCore.QRect(self.width / 96, self.height / 108, self.width / 4.47, self.height / 3.27))
+        self.layoutWidget1.setGeometry(QtCore.QRect(
+            self.width / 96, self.height / 108, self.width / 4.47, self.height / 3.27))
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.log = QtWidgets.QVBoxLayout(self.layoutWidget1)
         self.log.setContentsMargins(0, 0, 0, 0)
         self.log.setObjectName("log")
         self.log_console_label = QtWidgets.QLabel(self.layoutWidget1)
         font = QtGui.QFont()
-        font.setPointSize(self.height / 72)
+        font.setPointSize(self.width / 128)
         self.log_console_label.setFont(font)
         self.log_console_label.setAlignment(QtCore.Qt.AlignCenter)
         self.log_console_label.setObjectName("log_console_label")
@@ -370,14 +390,14 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.text_browser = QtWidgets.QTextBrowser(self.layoutWidget1)
         self.text_browser.setStyleSheet("background-color: rgb(238, 238, 236);\n"
-"color: rgb(0, 0, 0);")
+                                        "color: rgb(0, 0, 0);")
         self.text_browser.setObjectName("text_browser")
         self.verticalLayout.addWidget(self.text_browser)
         self.log_input = QtWidgets.QHBoxLayout()
         self.log_input.setObjectName("log_input")
-        self.line_edit = QtWidgets.QLineEdit(self.layoutWidget1)
+        self.line_edit = LineEdit(self.layoutWidget1)
         self.line_edit.setStyleSheet("background-color: rgb(238, 238, 236);\n"
-"color: rgb(0, 0, 0);")
+                                     "color: rgb(0, 0, 0);")
         self.line_edit.setText("")
         self.line_edit.setObjectName("line_edit")
         self.log_input.addWidget(self.line_edit)
@@ -387,96 +407,108 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.log_input)
         self.log.addLayout(self.verticalLayout)
         self.controls_frame = QtWidgets.QFrame(self.centralwidget)
-        self.controls_frame.setGeometry(QtCore.QRect(self.width / 48, self.height / 2, self.width / 3.76, self.height / 3.18))
+        self.controls_frame.setGeometry(QtCore.QRect(
+            self.width / 48, self.height / 2, self.width / 3.76, self.height / 3.18))
         self.controls_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.controls_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.controls_frame.setObjectName("controls_frame")
         self.controller_left = QtWidgets.QPushButton(self.controls_frame)
-        self.controller_left.setGeometry(QtCore.QRect(self.width / 21.3, self.height / 5.4, self.width / 21.3, self.height / 12))
+        self.controller_left.setGeometry(QtCore.QRect(
+            self.width / 21.3, self.height / 5.4, self.width / 21.3, self.height / 12))
         self.controller_left.setCheckable(False)
         self.controller_left.setChecked(False)
         self.controller_left.setObjectName("controller_left")
         self.controller_down = QtWidgets.QPushButton(self.controls_frame)
-        self.controller_down.setGeometry(QtCore.QRect(self.width / 10, self.height / 5.4, self.width / 21.3, self.height / 12))
+        self.controller_down.setGeometry(QtCore.QRect(
+            self.width / 10, self.height / 5.4, self.width / 21.3, self.height / 12))
         self.controller_down.setCheckable(False)
         self.controller_down.setChecked(False)
         self.controller_down.setObjectName("controller_down")
         self.controller_up = QtWidgets.QPushButton(self.controls_frame)
-        self.controller_up.setGeometry(QtCore.QRect(self.width / 10, self.height / 2.7, self.width / 21.3, self.height / 12))
+        self.controller_up.setGeometry(QtCore.QRect(
+            self.width / 10, self.height / 10.75, self.width / 21.3, self.height / 12))
         self.controller_up.setCheckable(False)
         self.controller_up.setChecked(False)
         self.controller_up.setObjectName("controller_up")
         self.layoutWidget2 = QtWidgets.QWidget(self.controls_frame)
-        self.layoutWidget2.setGeometry(QtCore.QRect(self.width / 96, self.height / 3.43, self.width / 4.68, self.height / 54))
+        self.layoutWidget2.setGeometry(QtCore.QRect(
+            self.width / 96, self.height / 3.43, self.width / 4.68, self.height / 54))
         self.layoutWidget2.setObjectName("layoutWidget2")
         self.throttle_container = QtWidgets.QHBoxLayout(self.layoutWidget2)
         self.throttle_container.setContentsMargins(0, 0, 0, 0)
         self.throttle_container.setObjectName("throttle_container")
         self.throttle_label = QtWidgets.QLabel(self.layoutWidget2)
         font = QtGui.QFont()
-        font.setPointSize(self.height / 83)
+        font.setPointSize(self.width / 160)
         self.throttle_label.setFont(font)
         self.throttle_label.setObjectName("throttle_label")
         self.throttle_container.addWidget(self.throttle_label)
         self.throttle_value = QtWidgets.QLabel(self.layoutWidget2)
         font = QtGui.QFont()
-        font.setPointSize(self.height / 83)
+        font.setPointSize(self.width / 160)
         self.throttle_value.setFont(font)
-        self.throttle_value.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.throttle_value.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.throttle_value.setObjectName("throttle_value")
         self.throttle_container.addWidget(self.throttle_value)
         self.layoutWidget3 = QtWidgets.QWidget(self.controls_frame)
-        self.layoutWidget3.setGeometry(QtCore.QRect(self.height / 96, self.height / 120, self.width / 4.09, self.height / 15))
+        self.layoutWidget3.setGeometry(QtCore.QRect(
+            self.height / 96, self.height / 120, self.width / 4.09, self.height / 15))
         self.layoutWidget3.setObjectName("layoutWidget3")
         self.motor_controls = QtWidgets.QVBoxLayout(self.layoutWidget3)
         self.motor_controls.setContentsMargins(0, 0, 0, 0)
         self.motor_controls.setObjectName("motor_controls")
         self.motor_controls_label = QtWidgets.QLabel(self.layoutWidget3)
         font = QtGui.QFont()
-        font.setPointSize(self.height / 72)
+        font.setPointSize(self.width / 128)
         self.motor_controls_label.setFont(font)
         self.motor_controls_label.setAlignment(QtCore.Qt.AlignCenter)
         self.motor_controls_label.setObjectName("motor_controls_label")
         self.motor_controls.addWidget(self.motor_controls_label)
-        self.RoverSettings = QtWidgets.QWidget(self.layoutWidget3)
-        self.RoverSettings.setObjectName("RoverSettings")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.RoverSettings)
+        self.rover_settings = QtWidgets.QWidget(self.layoutWidget3)
+        self.rover_settings.setObjectName("RoverSettings")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.rover_settings)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.activate_rover = QtWidgets.QCheckBox(self.RoverSettings)
+        self.activate_rover = QtWidgets.QCheckBox(self.rover_settings)
         self.activate_rover.setObjectName("activate_rover")
         self.horizontalLayout.addWidget(self.activate_rover)
-        self.closedLoop = QtWidgets.QCheckBox(self.RoverSettings)
-        self.closedLoop.setStyleSheet("color: rgb(238, 238, 236);")
-        self.closedLoop.setTristate(False)
-        self.closedLoop.setObjectName("closedLoop")
-        self.horizontalLayout.addWidget(self.closedLoop)
-        self.commandListener = QtWidgets.QCheckBox(self.RoverSettings)
-        self.commandListener.setObjectName("commandListener")
-        self.horizontalLayout.addWidget(self.commandListener)
-        self.motor_controls.addWidget(self.RoverSettings)
+        self.closed_loop = QtWidgets.QCheckBox(self.rover_settings)
+        self.closed_loop.setStyleSheet("color: rgb(238, 238, 236);")
+        self.closed_loop.setTristate(False)
+        self.closed_loop.setObjectName("closed_loop")
+        self.horizontalLayout.addWidget(self.closed_loop)
+        self.command_listener = QtWidgets.QCheckBox(self.rover_settings)
+        self.command_listener.setObjectName("command_listener")
+        self.horizontalLayout.addWidget(self.command_listener)
+        self.motor_controls.addWidget(self.rover_settings)
         self.controller_right = QtWidgets.QPushButton(self.controls_frame)
-        self.controller_right.setGeometry(QtCore.QRect(self.width / 6.62, self.height / 5.4, self.width / 21.3, self.height / 12))
+        self.controller_right.setGeometry(QtCore.QRect(
+            self.width / 6.62, self.height / 5.4, self.width / 21.3, self.height / 12))
         self.controller_right.setCheckable(False)
         self.controller_right.setChecked(False)
         self.controller_right.setObjectName("controller_right")
         self.stream_screen = QtWidgets.QLabel(self.centralwidget)
-        self.stream_screen.setGeometry(QtCore.QRect(0.63 * self.width, self.height / 9, 7 * self.width / 24, 0.44 * self.height))
+        self.stream_screen.setGeometry(QtCore.QRect(
+            0.63 * self.width, self.height / 9, 7 * self.width / 24, 0.44 * self.height))
         self.stream_screen.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"color: rgb(0, 0, 0);")
+                                         "color: rgb(0, 0, 0);")
         self.stream_screen.setAlignment(QtCore.Qt.AlignCenter)
         self.stream_screen.setObjectName("stream_screen")
         self.sc_logo = QtWidgets.QLabel(self.centralwidget)
-        self.sc_logo.setGeometry(QtCore.QRect(self.width / 48, self.height / 54, self.width / 21.33, self.height / 21.6))
+        self.sc_logo.setGeometry(QtCore.QRect(
+            self.width / 48, self.height / 54, self.width / 21.33, self.height / 21.6))
         self.sc_logo.setText("")
         self.sc_logo.setObjectName("sc_logo")
         self.layoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.layoutWidget_2.setGeometry(QtCore.QRect(self.width / 1.37, self.height / 108, self.width / 5.19, self.height / 18))
+        self.layoutWidget_2.setGeometry(QtCore.QRect(
+            self.width / 1.37, self.height / 108, self.width / 5.19, self.height / 18))
         self.layoutWidget_2.setObjectName("layoutWidget_2")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.layoutWidget_2)
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.temp_logo = QtWidgets.QLabel(self.layoutWidget_2)
-        self.temp_logo.setGeometry(QtCore.QRect(self.width / 48, self.height / 54, 3 * self.width / 64, self.height / 21.6))
+        self.temp_logo.setGeometry(QtCore.QRect(
+            self.width / 48, self.height / 54, 3 * self.width / 64, self.height / 21.6))
         self.temp_logo.setText("")
         self.temp_logo.setObjectName("temp_logo")
         self.horizontalLayout_3.addWidget(self.temp_logo)
@@ -493,13 +525,15 @@ class Ui_MainWindow(object):
         self.temp3_label.setObjectName("temp3_label")
         self.horizontalLayout_3.addWidget(self.temp3_label)
         self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(self.width / 1.63, self.height / 108, self.width / 10.66, self.height / 18))
+        self.widget.setGeometry(QtCore.QRect(
+            self.width / 1.63, self.height / 108, self.width / 10.66, self.height / 18))
         self.widget.setObjectName("widget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.battery_logo = QtWidgets.QLabel(self.widget)
-        self.battery_logo.setGeometry(QtCore.QRect(self.width / 48, self.height / 54, 3 * self.width / 64, self.height / 21.6))
+        self.battery_logo.setGeometry(QtCore.QRect(
+            self.width / 48, self.height / 54, 3 * self.width / 64, self.height / 21.6))
         self.battery_logo.setText("")
         self.battery_logo.setObjectName("battery_logo")
         self.horizontalLayout_2.addWidget(self.battery_logo)
@@ -509,13 +543,17 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.voltage_label)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 15 * self.width / 16, self.height / 49.1))
+        self.menubar.setGeometry(QtCore.QRect(
+            0, 0, 15 * self.width / 16, self.height / 49.1))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
 
-        self.sc_logo.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/sclogo_header.png")))
-        self.temp_logo.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/therm_icon.jpg")))
-        self.battery_logo.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/battery_icon.png")))
+        self.sc_logo.setPixmap(QtGui.QPixmap(os.path.join(
+            os.path.dirname(__file__), "../resource/sclogo_header.png")))
+        self.temp_logo.setPixmap(QtGui.QPixmap(os.path.join(
+            os.path.dirname(__file__), "../resource/therm_icon.jpg")))
+        self.battery_logo.setPixmap(QtGui.QPixmap(os.path.join(
+            os.path.dirname(__file__), "../resource/battery_icon.png")))
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -523,13 +561,19 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.list_commands_button.setText(_translate("MainWindow", "List Commands (L) "))
+        self.list_commands_button.setText(
+            _translate("MainWindow", "List Commands (L) "))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
-        self.wheel_motor_table_label.setText(_translate("MainWindow", "Wheel Motor Table"))
-        self.motor_title.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Motor</p><p align=\"center\">(Number)</p></body></html>"))
-        self.status_title.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Status</p><p align=\"center\">(Alive / Dead)</p></body></html>"))
-        self.speed_title.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Speed</p><p align=\"center\">(RPM)</p></body></html>"))
-        self.current_title.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Current</p><p align=\"center\">(A)</p></body></html>"))
+        self.wheel_motor_table_label.setText(
+            _translate("MainWindow", "Wheel Motor Table"))
+        self.motor_title.setText(_translate(
+            "MainWindow", "<html><head/><body><p align=\"center\">Motor</p><p align=\"center\">(Number)</p></body></html>"))
+        self.status_title.setText(_translate(
+            "MainWindow", "<html><head/><body><p align=\"center\">Status</p><p align=\"center\">(Alive / Dead)</p></body></html>"))
+        self.speed_title.setText(_translate(
+            "MainWindow", "<html><head/><body><p align=\"center\">Speed</p><p align=\"center\">(RPM)</p></body></html>"))
+        self.current_title.setText(_translate(
+            "MainWindow", "<html><head/><body><p align=\"center\">Current</p><p align=\"center\">(A)</p></body></html>"))
         self.r_front_label.setText(_translate("MainWindow", "R Front"))
         self.r_front_status.setText(_translate("MainWindow", "N/A"))
         self.r_front_speed.setText(_translate("MainWindow", "-"))
@@ -556,19 +600,23 @@ class Ui_MainWindow(object):
         self.l_back_current.setText(_translate("MainWindow", "N/A"))
         self.log_console_label.setText(_translate("MainWindow", "Log Console"))
         self.text_browser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
-        self.send_command_button.setText(_translate("MainWindow", "Send Command"))
+                                             "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                             "p, li { white-space: pre-wrap; }\n"
+                                             "</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+                                             "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.send_command_button.setText(
+            _translate("MainWindow", "Send Command"))
         self.controller_left.setText(_translate("MainWindow", "Left"))
         self.controller_down.setText(_translate("MainWindow", "Down"))
         self.controller_up.setText(_translate("MainWindow", "Up"))
-        self.throttle_label.setText(_translate("MainWindow", "Throttle (U: Increase, I: Decrease)"))
+        self.throttle_label.setText(_translate(
+            "MainWindow", "Throttle (U: Increase, I: Decrease)"))
         self.throttle_value.setText(_translate("MainWindow", "0.5"))
-        self.motor_controls_label.setText(_translate("MainWindow", "Motor Controls"))
+        self.motor_controls_label.setText(
+            _translate("MainWindow", "Motor Controls"))
         self.activate_rover.setText(_translate("MainWindow", "Activate Rover"))
-        self.closedLoop.setText(_translate("MainWindow", "Closed Loop"))
-        self.commandListener.setText(_translate("MainWindow", "Command Listener"))
+        self.closed_loop.setText(_translate("MainWindow", "Closed Loop"))
+        self.command_listener.setText(
+            _translate("MainWindow", "Command Listener"))
         self.controller_right.setText(_translate("MainWindow", "Right"))
         self.stream_screen.setText(_translate("MainWindow", "Stream"))
