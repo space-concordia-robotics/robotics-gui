@@ -34,8 +34,10 @@ class Key_capture_thread(threading.Thread):
             "l": lambda: on_press(ui.list_commands),
             "u": lambda: on_press(ui.change_throttle, "+"),
             "i": lambda: on_press(ui.change_throttle, "-"),
-            # this command isnt in the on_press method because it doesnt need to check if focus is on the input
-            "<shift>": ui.run_command,
+            
+            # the following commands aren't in the on_press method 
+            # because they run dispite textbox focus
+            "<Enter>": ui.run_command,
             "<ctrl>+<shift>+k": self.kill,
         }
 

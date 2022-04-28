@@ -560,7 +560,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Rover Controller"))
         self.list_commands_button.setText(
             _translate("MainWindow", "List Commands (L) "))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
