@@ -7,11 +7,13 @@ from controller_ui_file import Ui_MainWindow
 from PyQt5.QtCore import QCoreApplication
 from pynput import keyboard
 from PyQt5 import QtWidgets
+from time import sleep
 import threading
 import rospy
 
 
 def on_press(function, args=None):
+    print(function)
     if not ui.line_edit.has_focus:
         function(args) if args else function()
 
@@ -34,15 +36,21 @@ class Key_capture_thread(threading.Thread):
             "l": lambda: on_press(ui.list_commands),
             "u": lambda: on_press(ui.change_throttle, "+"),
             "i": lambda: on_press(ui.change_throttle, "-"),
-            
-            # the following commands aren't in the on_press method 
-            # because they run dispite textbox focus
-            "<Enter>": ui.run_command,
-            "<ctrl>+<shift>+k": self.kill,
+            "w": lambda: on_press(ui.controller_up.click),
+            "d": lambda: on_press(ui.controller_right.click),
+            "s": lambda: on_press(ui.controller_down.click),
+            "a": lambda: on_press(ui.controller_left.click),
+            # "<ctrl>+<shift>+k": self.kill,
         }
 
-        with keyboard.GlobalHotKeys(hotkeys) as listener:
-            listener.join()
+        def send_command(key):
+            if key == keyboard.Key.enter:
+                ui.run_command()
+
+        with keyboard.GlobalHotKeys(hotkeys) as hotkey_listener:
+            with keyboard.Listener(on_press=send_command) as enter_listener:
+                enter_listener.join()
+                hotkey_listener.join()
 
 
 class Ros_thread(threading.Thread):
@@ -52,12 +60,16 @@ class Ros_thread(threading.Thread):
         self.name = name
 
     def run(self):
-        currents = rospy.Subscriber(
-            "wheel_motor_currents", Currents, ui.display_currents)
-        battery_temps = rospy.Subscriber(
-            "battery_temps", ThermistorTemps, ui.display_temps)
-        battery_voltage = rospy.Subscriber(
-            "battery_voltage", Voltage, ui.display_voltage)
+        currents = rospy.Subscriber("wheel_motor_currents", Currents,
+                                    ui.display_currents)
+        battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
+                                         ui.display_temps)
+        battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
+                                           ui.display_voltage)
+
+        while True:
+            print(ui.velocity)
+            sleep(1)
 
 
 class Controller(Ui_MainWindow):
@@ -66,12 +78,21 @@ class Controller(Ui_MainWindow):
         self.throttle = 0.50
         self.temps = ()
         self.currents = ()
+        self.velocity = [0, 0, 0, 0]
         self.commands = {
             'ctrl-p': "ping rover mcu",
             'alt-p': "ping odroid",
             'q': "emergency stop all motors",
             'l': "view key commands",
+            'u': "increase throttle value",
+            'i': "decrease throttle value",
         }
+
+    def set_velocity(self, arg):
+        self.velocity[arg] = self.throttle
+
+    def reset_velocity(self, arg):
+        self.velocity[arg] = 0
 
     def ping_rover_mcu(self):
         print("ping rover in mcu")
@@ -83,7 +104,7 @@ class Controller(Ui_MainWindow):
         print("emergency stop")
 
     def list_commands(self):
-        """This method appends this program's keyboard shortcuts 
+        """This method appends this program's keyboard shortcuts
         to the UI's text browser """
 
         for command in self.commands:
@@ -130,6 +151,7 @@ class Controller(Ui_MainWindow):
         if command.strip() != "":
             self.append_to_browser(f"{command} \n")
         ui.line_edit.clear()
+        ui.line_edit.clearFocus()
 
     def append_to_browser(self, data):
         """Adds functionality to the append method of the browser
@@ -164,6 +186,18 @@ if __name__ == '__main__':
     ui.list_commands_button.clicked.connect(ui.list_commands)
     ui.stop_button.clicked.connect(ui.emergency_stop)
     ui.send_command_button.clicked.connect(ui.run_command)
+
+    ui.controller_up.pressed.connect(lambda: ui.set_velocity(0))
+    ui.controller_up.released.connect(lambda: ui.reset_velocity(0))
+
+    ui.controller_right.pressed.connect(lambda: ui.set_velocity(1))
+    ui.controller_right.released.connect(lambda: ui.reset_velocity(1))
+
+    ui.controller_down.pressed.connect(lambda: ui.set_velocity(2))
+    ui.controller_down.released.connect(lambda: ui.reset_velocity(2))
+
+    ui.controller_left.pressed.connect(lambda: ui.set_velocity(3))
+    ui.controller_left.released.connect(lambda: ui.reset_velocity(3))
 
     MainWindow.show()
 
