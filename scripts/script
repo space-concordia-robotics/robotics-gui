@@ -1,0 +1,181 @@
+#!/usr/bin/env python
+
+from mcu_control.msg._ThermistorTemps import ThermistorTemps
+from mcu_control.msg._Currents import Currents
+from mcu_control.msg._Voltage import Voltage
+from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtCore import QCoreApplication
+from controller import Controller
+from pynput import keyboard
+from time import sleep
+import threading
+import rospy
+import os
+
+
+def on_press(function, args=None):
+    if not controller.line_edit.has_focus:
+        function(args) if args else function()
+
+
+class Key_capture_thread(threading.Thread):
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+
+    def kill(self):
+        QCoreApplication.instance().quit()
+        exit()
+
+    def run(self):
+        hotkeys = {
+            "<ctrl>+p": lambda: on_press(controller.ping_rover_mcu),
+            "<alt>+p": lambda: on_press(controller.ping_odroid),
+            "q": lambda: on_press(controller.emergency_stop),
+            "l": lambda: on_press(controller.list_commands),
+            "u": lambda: on_press(controller.change_throttle, "+"),
+            "i": lambda: on_press(controller.change_throttle, "-"),
+            # "w": lambda: on_press(controller.controller_up.click),
+            # "d": lambda: on_press(controller.controller_right.click),
+            # "s": lambda: on_press(controller.controller_down.click),
+            # "a": lambda: on_press(controller.controller_left.click),
+            # "<ctrl>+<shift>+k": self.kill,
+        }
+
+        def send_command(key):
+            if key == keyboard.Key.enter:
+                controller.run_command()
+
+        with keyboard.GlobalHotKeys(hotkeys) as hotkey_listener:
+            with keyboard.Listener(on_press=send_command) as enter_listener:
+                enter_listener.join()
+                hotkey_listener.join()
+
+
+class Ros_thread(threading.Thread):
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+
+    def run(self):
+        currents = rospy.Subscriber("wheel_motor_currents", Currents,
+                                    controller.display_currents)
+        battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
+                                         controller.display_temps)
+        battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
+                                           controller.display_voltage)
+
+        while True:
+            print(controller.velocity)
+            sleep(1)
+
+
+if __name__ == '__main__':
+    import sys
+
+    rospy.init_node("gui_controller", anonymous=True)
+
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    MainWindow.setObjectName("MainWindow")
+
+    # used for adaptive window size, gets the screen size of the current display
+    screen = QtWidgets.QDesktopWidget().screenGeometry(-1)
+    width = screen.width()  # 1920 x 1080 for me
+    height = screen.height()
+    MainWindow.resize(width, height)
+    MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n"
+                             "/*border-color: rgb(238, 238, 236);*/\n"
+                             "color: rgb(238, 238, 236);")
+
+    centralWidget = QtWidgets.QWidget(MainWindow)
+    centralWidget.setObjectName("centralwidget")
+
+    sc_logo = QtWidgets.QLabel(centralWidget)
+    sc_logo.setGeometry(
+        QtCore.QRect(width / 48, height / 90, width / 21.33, height / 21.6))
+    sc_logo.setText(
+        f'<a style="text-decoration: none" href="http://spaceconcordia.ca"><img src="{os.path.join(os.path.dirname(__file__), "../resource/sclogo_header.png")}"/></a>'
+    )
+    sc_logo.setOpenExternalLinks(True)
+    sc_logo.setObjectName("sc_logo")
+
+    widget = QtWidgets.QWidget(centralWidget)
+    widget.setGeometry(
+        QtCore.QRect(width / 1.63, height / 108, width / 10.66, height / 18))
+    widget.setObjectName("widget")
+    horizontalLayout_2 = QtWidgets.QHBoxLayout(widget)
+    horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+    horizontalLayout_2.setObjectName("horizontalLayout_2")
+    battery_logo = QtWidgets.QLabel(widget)
+    battery_logo.setGeometry(
+        QtCore.QRect(width / 48, height / 54, 3 * width / 64, height / 21.6))
+    battery_logo.setText("")
+    battery_logo.setObjectName("battery_logo")
+    horizontalLayout_2.addWidget(battery_logo)
+    voltage_label = QtWidgets.QLabel(widget)
+    voltage_label.setText("- V")
+    voltage_label.setObjectName("voltage_label")
+    horizontalLayout_2.addWidget(voltage_label)
+
+    layoutWidget_2 = QtWidgets.QWidget(centralWidget)
+    layoutWidget_2.setGeometry(
+        QtCore.QRect(width / 1.37, height / 108, width / 5.19, height / 18))
+    layoutWidget_2.setObjectName("layoutWidget_2")
+    horizontalLayout_3 = QtWidgets.QHBoxLayout(layoutWidget_2)
+    horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
+    horizontalLayout_3.setObjectName("horizontalLayout_3")
+    temp_logo = QtWidgets.QLabel(layoutWidget_2)
+    temp_logo.setGeometry(
+        QtCore.QRect(width / 48, height / 54, 3 * width / 64, height / 21.6))
+    temp_logo.setText("")
+    temp_logo.setObjectName("temp_logo")
+    horizontalLayout_3.addWidget(temp_logo)
+    temp1_label = QtWidgets.QLabel(layoutWidget_2)
+    degree = u'\N{DEGREE SIGN}'  # degree sign code
+    temp1_label.setText(f"- {degree}C")
+    temp1_label.setObjectName("temp1_label")
+    horizontalLayout_3.addWidget(temp1_label)
+    temp2_label = QtWidgets.QLabel(layoutWidget_2)
+    temp2_label.setText(f"- {degree}C")
+    temp2_label.setObjectName("temp2_label")
+    horizontalLayout_3.addWidget(temp2_label)
+    temp3_label = QtWidgets.QLabel(layoutWidget_2)
+    temp3_label.setText(f"- {degree}C")
+    temp3_label.setObjectName("temp3_label")
+    horizontalLayout_3.addWidget(temp3_label)
+
+    temp_logo.setPixmap(
+        QtGui.QPixmap(
+            os.path.join(os.path.dirname(__file__),
+                         "../resource/therm_icon.jpg")))
+    battery_logo.setPixmap(
+        QtGui.QPixmap(
+            os.path.join(os.path.dirname(__file__),
+                         "../resource/battery_icon.png")))
+
+    tab_widget = QtWidgets.QTabWidget(centralWidget)
+    tab_widget.setGeometry(QtCore.QRect(0, 70, width, 0.937 * height - 70))
+
+    controller_tab = QtWidgets.QWidget()
+    controller_tab.setObjectName("controller_tab")
+    controller = Controller(controller_tab)
+    controller.setupUi(MainWindow, controller_tab, width, height)
+    controller.start_handling_clicks()
+    tab_widget.addTab(controller_tab, "Controller")
+
+    test = QtWidgets.QWidget()
+    test.setObjectName("test")
+    tab_widget.addTab(test, "")
+
+    MainWindow.setCentralWidget(centralWidget)
+    keyboard_thread = Key_capture_thread(1, "key-capture-thread")
+    keyboard_thread.start()
+    ros_thread = Ros_thread(2, "ros-thread")
+    ros_thread.start()
+
+    MainWindow.show()
+
+    sys.exit(app.exec_())

@@ -23,36 +23,24 @@ class LineEdit(QtWidgets.QLineEdit):
         super().focusOutEvent(event)
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        # used for adaptive window size, gets the screen size of the current display
-        screen = QtWidgets.QDesktopWidget().screenGeometry(-1)
-        self.width = screen.width()  # 1920 x 1080 for me
-        self.height = screen.height()
+class Ui_MainWindow(QtWidgets.QWidget):
+    def setupUi(self, MainWindow, Parent, width, height):
+        self.width = width
+        self.height = height
 
-        # self.width = 1500
-        # self.height = 750
-
-        MainWindow.resize(self.width, self.height)
-        MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n"
-                                 "/*border-color: rgb(238, 238, 236);*/\n"
-                                 "color: rgb(238, 238, 236);")
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.list_commands_button = QtWidgets.QPushButton(self.centralwidget)
+        self.list_commands_button = QtWidgets.QPushButton(Parent)
         self.list_commands_button.setGeometry(
-            QtCore.QRect(4.75 * self.width / 6, 2 * self.height / 3,
+            QtCore.QRect(4.75 * self.width / 6, 4 * self.height / 7,
                          self.width / 10, 2 * self.height / 25))
         self.list_commands_button.setObjectName("list_commands_button")
-        self.stop_button = QtWidgets.QPushButton(self.centralwidget)
+        self.stop_button = QtWidgets.QPushButton(Parent)
         self.stop_button.setGeometry(
-            QtCore.QRect(4.75 * self.width / 6, 2.25 * self.height / 3,
+            QtCore.QRect(4.75 * self.width / 6, 4.6 * self.height / 7,
                          self.width / 10, 2 * self.height / 25))
         self.stop_button.setObjectName("stop_button")
-        self.table_frame = QtWidgets.QFrame(self.centralwidget)
+        self.table_frame = QtWidgets.QFrame(Parent)
         self.table_frame.setGeometry(
-            QtCore.QRect(5 * self.width / 16, 11 * self.height / 108,
+            QtCore.QRect(5 * self.width / 16, self.height / 15,
                          7 * self.width / 24, self.height / 2.16))
         self.table_frame.setStyleSheet("")
         self.table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -370,10 +358,10 @@ class Ui_MainWindow(object):
         self.l_back_current.setObjectName("l_back_current")
         self.l_back_row.addWidget(self.l_back_current)
         self.wheel_motor_table.addLayout(self.l_back_row)
-        self.console_frame = QtWidgets.QFrame(self.centralwidget)
+        self.console_frame = QtWidgets.QFrame(Parent)
         self.console_frame.setGeometry(
-            QtCore.QRect(self.width / 48, self.height / 9.89,
-                         self.width / 4.09, self.height / 3.01))
+            QtCore.QRect(self.width / 48, self.height / 15, self.width / 4.09,
+                         self.height / 3.01))
         self.console_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.console_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.console_frame.setObjectName("console_frame")
@@ -410,12 +398,17 @@ class Ui_MainWindow(object):
         self.log_input.addWidget(self.line_edit)
         self.send_command_button = QtWidgets.QPushButton(self.layoutWidget1)
         self.send_command_button.setObjectName("send_command_button")
+        self.clear_button = QtWidgets.QPushButton(self.layoutWidget1)
+        self.clear_button.setObjectName("clear_button")
+        self.clear_button.setText("Clear")
+        self.clear_button.pressed.connect(self.text_browser.clear)
         self.log_input.addWidget(self.send_command_button)
         self.verticalLayout.addLayout(self.log_input)
+        self.log_input.addWidget(self.clear_button)
         self.log.addLayout(self.verticalLayout)
-        self.controls_frame = QtWidgets.QFrame(self.centralwidget)
+        self.controls_frame = QtWidgets.QFrame(Parent)
         self.controls_frame.setGeometry(
-            QtCore.QRect(self.width / 48, self.height / 2, self.width / 3.76,
+            QtCore.QRect(self.width / 48, self.height / 2.2, self.width / 3.76,
                          self.height / 3.18))
         self.controls_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.controls_frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -502,86 +495,21 @@ class Ui_MainWindow(object):
         self.controller_right.setCheckable(False)
         self.controller_right.setChecked(False)
         self.controller_right.setObjectName("controller_right")
-        self.stream_screen = QtWidgets.QLabel(self.centralwidget)
+        self.stream_screen = QtWidgets.QLabel(Parent)
         self.stream_screen.setGeometry(
-            QtCore.QRect(0.63 * self.width, self.height / 9,
+            QtCore.QRect(0.63 * self.width, self.height / 15,
                          7 * self.width / 24, 0.44 * self.height))
         self.stream_screen.setStyleSheet(
             "background-color: rgb(255, 255, 255);\n"
             "color: rgb(0, 0, 0);")
         self.stream_screen.setAlignment(QtCore.Qt.AlignCenter)
         self.stream_screen.setObjectName("stream_screen")
-        self.sc_logo = QtWidgets.QLabel(self.centralwidget)
-        self.sc_logo.setGeometry(
-            QtCore.QRect(self.width / 48, self.height / 54, self.width / 21.33,
-                         self.height / 21.6))
-        self.sc_logo.setText(
-            f'<a style="text-decoration: none" href="http://spaceconcordia.ca"><img src="{os.path.join(os.path.dirname(__file__), "../resource/sclogo_header.png")}"/></a>'
-        )
-        self.sc_logo.setOpenExternalLinks(True)
-        self.sc_logo.setObjectName("sc_logo")
-        self.layoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.layoutWidget_2.setGeometry(
-            QtCore.QRect(self.width / 1.37, self.height / 108,
-                         self.width / 5.19, self.height / 18))
-        self.layoutWidget_2.setObjectName("layoutWidget_2")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.layoutWidget_2)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.temp_logo = QtWidgets.QLabel(self.layoutWidget_2)
-        self.temp_logo.setGeometry(
-            QtCore.QRect(self.width / 48, self.height / 54,
-                         3 * self.width / 64, self.height / 21.6))
-        self.temp_logo.setText("")
-        self.temp_logo.setObjectName("temp_logo")
-        self.horizontalLayout_3.addWidget(self.temp_logo)
-        self.temp1_label = QtWidgets.QLabel(self.layoutWidget_2)
-        degree = u'\N{DEGREE SIGN}'  # degree sign code
-        self.temp1_label.setText(f"- {degree}C")
-        self.temp1_label.setObjectName("temp1_label")
-        self.horizontalLayout_3.addWidget(self.temp1_label)
-        self.temp2_label = QtWidgets.QLabel(self.layoutWidget_2)
-        self.temp2_label.setText(f"- {degree}C")
-        self.temp2_label.setObjectName("temp2_label")
-        self.horizontalLayout_3.addWidget(self.temp2_label)
-        self.temp3_label = QtWidgets.QLabel(self.layoutWidget_2)
-        self.temp3_label.setText(f"- {degree}C")
-        self.temp3_label.setObjectName("temp3_label")
-        self.horizontalLayout_3.addWidget(self.temp3_label)
-        self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setGeometry(
-            QtCore.QRect(self.width / 1.63, self.height / 108,
-                         self.width / 10.66, self.height / 18))
-        self.widget.setObjectName("widget")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.battery_logo = QtWidgets.QLabel(self.widget)
-        self.battery_logo.setGeometry(
-            QtCore.QRect(self.width / 48, self.height / 54,
-                         3 * self.width / 64, self.height / 21.6))
-        self.battery_logo.setText("")
-        self.battery_logo.setObjectName("battery_logo")
-        self.horizontalLayout_2.addWidget(self.battery_logo)
-        self.voltage_label = QtWidgets.QLabel(self.widget)
-        self.voltage_label.setText("- V")
-        self.voltage_label.setObjectName("voltage_label")
-        self.horizontalLayout_2.addWidget(self.voltage_label)
-        MainWindow.setCentralWidget(self.centralwidget)
+
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(
             QtCore.QRect(0, 0, 15 * self.width / 16, self.height / 49.1))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
-
-        self.temp_logo.setPixmap(
-            QtGui.QPixmap(
-                os.path.join(os.path.dirname(__file__),
-                             "../resource/therm_icon.jpg")))
-        self.battery_logo.setPixmap(
-            QtGui.QPixmap(
-                os.path.join(os.path.dirname(__file__),
-                             "../resource/battery_icon.png")))
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
