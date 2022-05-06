@@ -4,10 +4,14 @@ from controller_ui import Ui_MainWindow
 class Controller(Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.voltage = 0
+        self.voltage_label = None
+        self.temp1_label = None
+        self.temp2_label = None
+        self.temp3_label = None
         self.throttle = 0.50
-        self.temps = ()
-        self.currents = ()
+        self.voltage = 0
+        self.temps = (0, 0, 0)
+        self.currents = (0, 0, 0, 0, 0, 0)
         self.velocity = [0, 0, 0, 0]
         self.commands = {
             'ctrl-p': "ping rover mcu",
