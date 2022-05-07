@@ -1,13 +1,10 @@
 from controller_ui import Ui_MainWindow
+from useful import emergency_stop
 
 
 class Controller(Ui_MainWindow):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-        self.voltage_label = None
-        self.temp1_label = None
-        self.temp2_label = None
-        self.temp3_label = None
+    def __init__(self, width, height, parent=None):
+        super().__init__(width=width, height=height, parent=parent)
         self.throttle = 0.50
         self.voltage = 0
         self.temps = (0, 0, 0)
@@ -28,22 +25,14 @@ class Controller(Ui_MainWindow):
     def reset_velocity(self, arg):
         self.velocity[arg] = 0
 
-    def ping_rover_mcu(self):
-        print("ping rover in mcu")
-
-    def ping_odroid(self):
-        print("ping odroid")
-
-    def emergency_stop(self):
-        print("emergency stop")
-
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
         to the UI's text browser """
 
         for command in self.commands:
-            self.append_to_browser(f"'{command}': '{self.commands[command]}'")
-        self.append_to_browser("\n")
+            self.log_browser.append_to_browser(
+                f"'{command}': '{self.commands[command]}'")
+        self.log_browser.append_to_browser("\n")
 
     def change_throttle(self, change):
         """Changes the current throttle value either increasing or
@@ -78,30 +67,12 @@ class Controller(Ui_MainWindow):
         self.voltage = data.data
         self.voltage_label.setText(f"{self.voltage} V")
 
-    def run_command(self):
-        """Gets the content of the command line and tries to run it if possible"""
-
-        command = self.line_edit.text()
-        if command.strip() != "":
-            self.append_to_browser(f"{command} \n")
-        self.line_edit.clear()
-        self.line_edit.clearFocus()
-
-    def append_to_browser(self, data):
-        """Adds functionality to the append method of the browser
-        like scrolling to the bottom"""
-
-        self.text_browser.append(str(data))
-        self.text_browser.verticalScrollBar().setValue(
-            self.text_browser.verticalScrollBar().maximum())
-
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for 
         the Rover Controller Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(self.emergency_stop)
-        self.send_command_button.clicked.connect(self.run_command)
+        self.stop_button.clicked.connect(emergency_stop)
 
         self.controller_up.pressed.connect(lambda: self.set_velocity(0))
         self.controller_up.released.connect(lambda: self.reset_velocity(0))

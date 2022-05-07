@@ -6,8 +6,10 @@ from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QCoreApplication
 from controller import Controller
+from arm import Arm
 from pynput import keyboard
 from time import sleep
+from useful import *
 import threading
 import rospy
 import os
@@ -30,9 +32,9 @@ class Key_capture_thread(threading.Thread):
 
     def run(self):
         hotkeys = {
-            "<ctrl>+p": lambda: on_press(controller.ping_rover_mcu),
-            "<alt>+p": lambda: on_press(controller.ping_odroid),
-            "q": lambda: on_press(controller.emergency_stop),
+            "<ctrl>+p": lambda: on_press(ping_rover_mcu),
+            "<alt>+p": lambda: on_press(ping_odroid),
+            "q": lambda: on_press(emergency_stop),
             "l": lambda: on_press(controller.list_commands),
             "u": lambda: on_press(controller.change_throttle, ["+"]),
             "i": lambda: on_press(controller.change_throttle, ["-"]),
@@ -45,7 +47,7 @@ class Key_capture_thread(threading.Thread):
 
         def send_command(key):
             if key == keyboard.Key.enter:
-                controller.run_command()
+                controller.log_browser.run_command()
 
         with keyboard.GlobalHotKeys(hotkeys) as hotkey_listener:
             with keyboard.Listener(on_press=send_command) as enter_listener:
@@ -79,18 +81,21 @@ if __name__ == '__main__':
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    controller_tab = QtWidgets.QWidget()
-    controller = Controller(controller_tab)
     MainWindow.setObjectName("MainWindow")
+    controller_tab = QtWidgets.QWidget()
+    arm_tab = QtWidgets.QWidget()
 
     # used for adaptive window size, gets the screen size of the current display
     screen = QtWidgets.QDesktopWidget().screenGeometry(-1)
-    width = screen.width() * 0.85  # 1920 x 1080 for me
-    height = screen.height() * 0.85
+    width = screen.width()  # 1920 x 1080 for me
+    height = screen.height()
     MainWindow.resize(width, height)
     MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n"
                              "/*border-color: rgb(238, 238, 236);*/\n"
                              "color: rgb(238, 238, 236);")
+
+    controller = Controller(width, height, controller_tab)
+    arm = Arm(width, height, arm_tab)
 
     centralWidget = QtWidgets.QWidget(MainWindow)
     centralWidget.setObjectName("centralwidget")
@@ -162,13 +167,15 @@ if __name__ == '__main__':
     tab_widget.setGeometry(QtCore.QRect(0, 70, width, 0.937 * height - 70))
 
     controller_tab.setObjectName("controller_tab")
-    controller.setupUi(MainWindow, controller_tab, width, height)
-    controller.start_handling_clicks()
-    tab_widget.addTab(controller_tab, "Controller")
+    arm_tab.setObjectName("arm_tab")
 
-    # test = QtWidgets.QWidget()
-    # test.setObjectName("test")
-    # tab_widget.addTab(test, "")
+    controller.setupUi(MainWindow)
+    controller.start_handling_clicks()
+    arm.setupUi(MainWindow)
+    arm.start_handling_clicks()
+
+    tab_widget.addTab(controller_tab, "Controller")
+    tab_widget.addTab(arm_tab, "Arm")
 
     MainWindow.setCentralWidget(centralWidget)
     keyboard_thread = Key_capture_thread(1, "key-capture-thread")
