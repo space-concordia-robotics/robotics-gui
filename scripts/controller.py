@@ -1,4 +1,4 @@
-from controller_ui import Ui_MainWindow
+from ui.controller_ui import Ui_MainWindow
 from useful import emergency_stop
 
 
@@ -34,17 +34,18 @@ class Controller(Ui_MainWindow):
                 f"'{command}': '{self.commands[command]}'")
         self.log_browser.append_to_browser("\n")
 
-    def change_throttle(self, change):
+    def change_throttle(self, tab, change):
         """Changes the current throttle value either increasing or
         decreasing and outputs the new value to the throttle label"""
 
-        if change == "+" and not self.throttle >= 1:
-            # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
-            self.throttle = (self.throttle * 10 + 0.50) / 10
-        elif change == "-" and not self.throttle <= 0:
-            self.throttle = (self.throttle * 10 - 0.50) / 10
+        if tab == "controller_tab":
+            if change == "+" and not self.throttle >= 1:
+                # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
+                self.throttle = (self.throttle * 10 + 0.50) / 10
+            elif change == "-" and not self.throttle <= 0:
+                self.throttle = (self.throttle * 10 - 0.50) / 10
 
-        self.throttle_value.setText(f"{self.throttle}")
+            self.throttle_value.setText(f"{self.throttle}")
 
     def display_temps(self, data):
         degree = u'\N{DEGREE SIGN}'
@@ -55,13 +56,7 @@ class Controller(Ui_MainWindow):
 
     def display_currents(self, data):
         self.currents = tuple(data.effort)
-
-        self.r_front_current.setText(f"{self.currents[0]}")
-        self.r_mid_current.setText(f"{self.currents[1]}")
-        self.r_back_current.setText(f"{self.currents[2]}")
-        self.l_front_current.setText(f"{self.currents[3]}")
-        self.l_mid_current.setText(f"{self.currents[4]}")
-        self.l_back_current.setText(f"{self.currents[5]}")
+        self.controller_table.display_currents(self.currents)
 
     def display_voltage(self, data):
         self.voltage = data.data
@@ -72,7 +67,7 @@ class Controller(Ui_MainWindow):
         the Rover Controller Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(emergency_stop)
+        self.stop_button.clicked.connect(lambda: emergency_stop("controller"))
 
         self.controller_up.pressed.connect(lambda: self.set_velocity(0))
         self.controller_up.released.connect(lambda: self.reset_velocity(0))

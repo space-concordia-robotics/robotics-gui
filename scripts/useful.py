@@ -1,16 +1,17 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
+import os
 
 
-def ping_rover_mcu():
-    print("ping rover in mcu")
+def ping_mcu(motor):
+    print(f"ping rover in mcu {motor}")
 
 
-def ping_odroid():
-    print("ping odroid")
+def ping_odroid(motor):
+    print(f"ping odroid {motor}")
 
 
-def emergency_stop():
-    print("emergency stop")
+def emergency_stop(motor):
+    print(f"emergency stop {motor}")
 
 
 class LineEdit(QtWidgets.QLineEdit):
@@ -36,6 +37,9 @@ class Log_browser(QtWidgets.QWidget):
         self.line_edit = None
         self.send_command_button = None
         self.clear_browser_button = None
+
+    def line_edit_has_focus(self):
+        return self.line_edit.has_focus
 
     def run_command(self):
         """Gets the content of the command line and tries to run it if possible"""
@@ -140,3 +144,82 @@ class Stream(QtWidgets.QWidget):
             "color: rgb(0, 0, 0);")
         self.stream_screen.setAlignment(QtCore.Qt.AlignCenter)
         self.stream_screen.setObjectName("stream_screen")
+
+
+class Header(QtWidgets.QWidget):
+    def __init__(self, width, height, controller, parent=None):
+        super().__init__(parent=parent)
+        self.width = width
+        self.height = height
+        self.parent = parent
+        self.controller = controller
+
+    def setup(self):
+        sc_logo = QtWidgets.QLabel(self.parent)
+
+        sc_logo.setGeometry(
+            QtCore.QRect(self.width / 48, self.height / 90, self.width / 21.33,
+                         self.height / 21.6))
+        sc_logo.setText(
+            f'<a style="text-decoration: none" href="http://spaceconcordia.ca"><img src="{os.path.join(os.path.dirname(__file__), "../resource/sclogo_header.png")}"/></a>'
+        )
+        sc_logo.setOpenExternalLinks(True)
+        sc_logo.setObjectName("sc_logo")
+
+        widget = QtWidgets.QWidget(self.parent)
+        widget.setGeometry(
+            QtCore.QRect(self.width / 1.63, self.height / 108,
+                         self.width / 10.66, self.height / 18))
+        widget.setObjectName("widget")
+        horizontalLayout_2 = QtWidgets.QHBoxLayout(widget)
+        horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        horizontalLayout_2.setObjectName("horizontalLayout_2")
+        battery_logo = QtWidgets.QLabel(widget)
+        battery_logo.setGeometry(
+            QtCore.QRect(self.width / 48, self.height / 54,
+                         3 * self.width / 64, self.height / 21.6))
+        battery_logo.setText("")
+        battery_logo.setObjectName("battery_logo")
+        horizontalLayout_2.addWidget(battery_logo)
+        self.controller.voltage_label = QtWidgets.QLabel(widget)
+        self.controller.voltage_label.setText("- V")
+        self.controller.voltage_label.setObjectName("voltage_label")
+        horizontalLayout_2.addWidget(self.controller.voltage_label)
+
+        layoutWidget_2 = QtWidgets.QWidget(self.parent)
+        layoutWidget_2.setGeometry(
+            QtCore.QRect(self.width / 1.37, self.height / 108,
+                         self.width / 5.19, self.height / 18))
+        layoutWidget_2.setObjectName("layoutWidget_2")
+        horizontalLayout_3 = QtWidgets.QHBoxLayout(layoutWidget_2)
+        horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
+        horizontalLayout_3.setObjectName("horizontalLayout_3")
+        temp_logo = QtWidgets.QLabel(layoutWidget_2)
+        temp_logo.setGeometry(
+            QtCore.QRect(self.width / 48, self.height / 54,
+                         3 * self.width / 64, self.height / 21.6))
+        temp_logo.setText("")
+        temp_logo.setObjectName("temp_logo")
+        horizontalLayout_3.addWidget(temp_logo)
+        self.controller.temp1_label = QtWidgets.QLabel(layoutWidget_2)
+        degree = u'\N{DEGREE SIGN}'  # degree sign code
+        self.controller.temp1_label.setText(f"- {degree}C")
+        self.controller.temp1_label.setObjectName("temp1_label")
+        horizontalLayout_3.addWidget(self.controller.temp1_label)
+        self.controller.temp2_label = QtWidgets.QLabel(layoutWidget_2)
+        self.controller.temp2_label.setText(f"- {degree}C")
+        self.controller.temp2_label.setObjectName("temp2_label")
+        horizontalLayout_3.addWidget(self.controller.temp2_label)
+        self.controller.temp3_label = QtWidgets.QLabel(layoutWidget_2)
+        self.controller.temp3_label.setText(f"- {degree}C")
+        self.controller.temp3_label.setObjectName("temp3_label")
+        horizontalLayout_3.addWidget(self.controller.temp3_label)
+
+        temp_logo.setPixmap(
+            QtGui.QPixmap(
+                os.path.join(os.path.dirname(__file__),
+                             "../resource/therm_icon.jpg")))
+        battery_logo.setPixmap(
+            QtGui.QPixmap(
+                os.path.join(os.path.dirname(__file__),
+                             "../resource/battery_icon.png")))

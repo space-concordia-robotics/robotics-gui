@@ -1,13 +1,14 @@
-from arm_ui import Ui_MainWindow
+from ui.arm_ui import Ui_MainWindow
 from useful import emergency_stop
 
 
 class Arm(Ui_MainWindow):
     def __init__(self, width, height, parent=None):
-        super().__init__(width, height, parent=parent)
+        super().__init__(width=width, height=height, parent=parent)
+        self.speed_multiplier = 1
         self.commands = {
-            'ctrl-alt-p': "ping odroid",
-            'p': "ping arm mcu",
+            'ctrl-p': "ping arm mcu",
+            'alt-p': "ping odroid",
             'q': "emergency stop all motors",
             'o': "reset memorized angle values",
             'l': "view key commands",
@@ -24,10 +25,21 @@ class Arm(Ui_MainWindow):
                 f"'{command}': '{self.commands[command]}'")
         self.log_browser.append_to_browser("\n")
 
-    def switch_controls(self):
-        manual_controls = self.manual_controls_button.isChecked()
+    def homing(self):
+        print("homing")
 
-        if manual_controls:
+    def reset_angles(self, tab_name):
+        if tab_name == "arm_tab":
+            print("reset angles")
+
+    def send_speed_multiplier(self):
+        self.speed_multiplier = self.speed_multiplier_input.value()
+        print(self.speed_multiplier)
+
+    def switch_controls(self):
+        """Switches betwee manual controls (keyboard) and mouse controls"""
+
+        if self.manual_controls_button.isChecked():
             self.manual_arm_controls.show()
             self.manual_claw_controls.show()
             self.arm_controls_widget.hide()
@@ -43,6 +55,11 @@ class Arm(Ui_MainWindow):
         the Rover Controller Page"""
 
         self.switch_controls()
-        self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(emergency_stop)
         self.manual_controls_button.clicked.connect(self.switch_controls)
+
+        self.list_commands_button.clicked.connect(self.list_commands)
+        self.stop_button.clicked.connect(lambda: emergency_stop("arm"))
+        self.reset_angles_button.clicked.connect(self.reset_angles)
+        self.homing_button.clicked.connect(self.homing)
+        self.send_speed_multiplier_button.clicked.connect(
+            self.send_speed_multiplier)
