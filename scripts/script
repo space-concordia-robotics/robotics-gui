@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from ast import Lambda
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Currents import Currents
 from mcu_control.msg._Voltage import Voltage
@@ -7,12 +8,12 @@ from PyQt5 import QtWidgets, QtCore
 from controller import Controller
 from arm import Arm
 from pynput import keyboard
-from useful import *
+from useful import ping_mcu, ping_odroid, emergency_stop, Header
 import threading
 import rospy
 
 
-def on_press(function, args=[]):
+def on_press(function: function, args=[]):
     if not controller.log_browser.line_edit_has_focus():
         function(*args) if args else function()
 
@@ -24,7 +25,7 @@ class Key_capture_thread(threading.Thread):
         self.threadID = threadID
         self.name = name
 
-    def list_commands(self, motor):
+    def list_commands(self, motor: str):
         if motor == "controller_tab":
             controller.list_commands()
         elif motor == "arm_tab":
@@ -47,7 +48,7 @@ class Key_capture_thread(threading.Thread):
             # "d": lambda: on_press(controller.controller_right.click),
         }
 
-        def send_command(key):
+        def send_command(key: keyboard.Key):
             self.tab_name = tab_widget.currentWidget().objectName()
             if key == keyboard.Key.enter:
                 if self.tab_name == "controller_tab":
@@ -66,20 +67,34 @@ class Ros_thread(threading.Thread):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
-
-    def run(self):
-        battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
-                                         controller.display_temps)
-        battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
-                                           controller.display_voltage)
-
-        controller_topics = ([
+        self.controller_topics = ([
             "wheel_motor_currents", Currents, controller.display_currents
         ], )
+        self.arm_topics = ()
+        self.subbed_topics = []
 
-        currents = rospy.Subscriber(*controller_topics[0])
+    def subscribe_to_topics(self, page: int):
+        """Called on tab change to unsub to old topics and 
+        replace them with the ones needed for the new tab"""
 
-        arm_topics = ()
+        topic_names = [self.controller_topics, self.arm_topics]
+
+        for i in reversed(range(len(self.subbed_topics))):
+            self.subbed_topics[i].unregister()  # unsubs to all previous topics
+            self.subbed_topics.pop()
+        for topic in topic_names[page]:
+            self.subbed_topics.append(rospy.Subscriber(*topic))
+
+    def run(self):
+        # these 2 topics are needed for all tabs since they are used outside the tab widget
+        battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
+                                         header.update_temps)
+        battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
+                                           header.update_voltage)
+
+        self.subscribe_to_topics(
+            0
+        )  # subs to controller topics so we dont't have to wait for tab change at the beginning
 
 
 if __name__ == '__main__':
@@ -108,7 +123,7 @@ if __name__ == '__main__':
     centralWidget = QtWidgets.QWidget(MainWindow)
     centralWidget.setObjectName("centralwidget")
 
-    header = Header(width, height, controller, centralWidget)
+    header = Header(width, height, centralWidget)
     header.setup()
 
     tab_widget = QtWidgets.QTabWidget(centralWidget)
@@ -131,6 +146,9 @@ if __name__ == '__main__':
     ros_thread = Ros_thread(2, "ros-thread")
     ros_thread.start()
 
+    MainWindow.setWindowTitle("Rover Controller")
     MainWindow.show()
+
+    tab_widget.currentChanged.connect(ros_thread.subscribe_to_topics)
 
     sys.exit(app.exec_())

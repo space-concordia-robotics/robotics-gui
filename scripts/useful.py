@@ -2,15 +2,15 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import os
 
 
-def ping_mcu(motor):
+def ping_mcu(motor: str):
     print(f"ping rover in mcu {motor}")
 
 
-def ping_odroid(motor):
+def ping_odroid(motor: str):
     print(f"ping odroid {motor}")
 
 
-def emergency_stop(motor):
+def emergency_stop(motor: str):
     print(f"emergency stop {motor}")
 
 
@@ -29,7 +29,10 @@ class LineEdit(QtWidgets.QLineEdit):
 
 
 class Log_browser(QtWidgets.QWidget):
-    def __init__(self, width, height, parent=None):
+    def __init__(self,
+                 width: float,
+                 height: float,
+                 parent: QtWidgets.QMainWindow = None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -128,7 +131,10 @@ class Log_browser(QtWidgets.QWidget):
 
 
 class Stream(QtWidgets.QWidget):
-    def __init__(self, width, height, parent=None):
+    def __init__(self,
+                 width: float,
+                 height: float,
+                 parent: QtWidgets.QMainWindow = None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -147,12 +153,27 @@ class Stream(QtWidgets.QWidget):
 
 
 class Header(QtWidgets.QWidget):
-    def __init__(self, width, height, controller, parent=None):
+    def __init__(self,
+                 width: float,
+                 height: float,
+                 parent: QtWidgets.QMainWindow = None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
-        self.controller = controller
+        self.temps = (0, 0, 0)
+        self.voltage = 0
+
+    def update_temps(self, data):
+        degree = u'\N{DEGREE SIGN}'
+        self.temps = tuple(str(data).split()[1::2])
+        self.temp1_label.setText(f"{self.temps[0]} {degree}C")
+        self.temp2_label.setText(f"{self.temps[1]} {degree}C")
+        self.temp3_label.setText(f"{self.temps[2]} {degree}C")
+
+    def update_voltage(self, data):
+        self.voltage = data.data
+        self.voltage_label.setText(f"{self.voltage} V")
 
     def setup(self):
         sc_logo = QtWidgets.QLabel(self.parent)
@@ -181,10 +202,10 @@ class Header(QtWidgets.QWidget):
         battery_logo.setText("")
         battery_logo.setObjectName("battery_logo")
         horizontalLayout_2.addWidget(battery_logo)
-        self.controller.voltage_label = QtWidgets.QLabel(widget)
-        self.controller.voltage_label.setText("- V")
-        self.controller.voltage_label.setObjectName("voltage_label")
-        horizontalLayout_2.addWidget(self.controller.voltage_label)
+        self.voltage_label = QtWidgets.QLabel(widget)
+        self.voltage_label.setText("- V")
+        self.voltage_label.setObjectName("voltage_label")
+        horizontalLayout_2.addWidget(self.voltage_label)
 
         layoutWidget_2 = QtWidgets.QWidget(self.parent)
         layoutWidget_2.setGeometry(
@@ -201,19 +222,19 @@ class Header(QtWidgets.QWidget):
         temp_logo.setText("")
         temp_logo.setObjectName("temp_logo")
         horizontalLayout_3.addWidget(temp_logo)
-        self.controller.temp1_label = QtWidgets.QLabel(layoutWidget_2)
+        self.temp1_label = QtWidgets.QLabel(layoutWidget_2)
         degree = u'\N{DEGREE SIGN}'  # degree sign code
-        self.controller.temp1_label.setText(f"- {degree}C")
-        self.controller.temp1_label.setObjectName("temp1_label")
-        horizontalLayout_3.addWidget(self.controller.temp1_label)
-        self.controller.temp2_label = QtWidgets.QLabel(layoutWidget_2)
-        self.controller.temp2_label.setText(f"- {degree}C")
-        self.controller.temp2_label.setObjectName("temp2_label")
-        horizontalLayout_3.addWidget(self.controller.temp2_label)
-        self.controller.temp3_label = QtWidgets.QLabel(layoutWidget_2)
-        self.controller.temp3_label.setText(f"- {degree}C")
-        self.controller.temp3_label.setObjectName("temp3_label")
-        horizontalLayout_3.addWidget(self.controller.temp3_label)
+        self.temp1_label.setText(f"- {degree}C")
+        self.temp1_label.setObjectName("temp1_label")
+        horizontalLayout_3.addWidget(self.temp1_label)
+        self.temp2_label = QtWidgets.QLabel(layoutWidget_2)
+        self.temp2_label.setText(f"- {degree}C")
+        self.temp2_label.setObjectName("temp2_label")
+        horizontalLayout_3.addWidget(self.temp2_label)
+        self.temp3_label = QtWidgets.QLabel(layoutWidget_2)
+        self.temp3_label.setText(f"- {degree}C")
+        self.temp3_label.setObjectName("temp3_label")
+        horizontalLayout_3.addWidget(self.temp3_label)
 
         temp_logo.setPixmap(
             QtGui.QPixmap(

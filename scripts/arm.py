@@ -28,7 +28,7 @@ class Arm(Ui_MainWindow):
     def homing(self):
         print("homing")
 
-    def reset_angles(self, tab_name):
+    def reset_angles(self, tab_name: str):
         if tab_name == "arm_tab":
             print("reset angles")
 

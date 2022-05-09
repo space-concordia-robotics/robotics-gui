@@ -126,18 +126,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.controller_right.setObjectName("controller_right")
         self.stream_screen = Stream(self.width, self.height, self.parent)
         self.stream_screen.setup()
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(
-            QtCore.QRect(0, 0, 15 * self.width / 16, self.height / 49.1))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Rover Controller"))
         self.list_commands_button.setText(
             _translate("MainWindow", "List Commands (L) "))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))

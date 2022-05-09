@@ -19,10 +19,10 @@ class Controller(Ui_MainWindow):
             'i': "decrease throttle value",
         }
 
-    def set_velocity(self, arg):
+    def set_velocity(self, arg: int):
         self.velocity[arg] = self.throttle
 
-    def reset_velocity(self, arg):
+    def reset_velocity(self, arg: int):
         self.velocity[arg] = 0
 
     def list_commands(self):
@@ -34,7 +34,7 @@ class Controller(Ui_MainWindow):
                 f"'{command}': '{self.commands[command]}'")
         self.log_browser.append_to_browser("\n")
 
-    def change_throttle(self, tab, change):
+    def change_throttle(self, tab: str, change: str):
         """Changes the current throttle value either increasing or
         decreasing and outputs the new value to the throttle label"""
 
@@ -47,20 +47,9 @@ class Controller(Ui_MainWindow):
 
             self.throttle_value.setText(f"{self.throttle}")
 
-    def display_temps(self, data):
-        degree = u'\N{DEGREE SIGN}'
-        self.temps = tuple(str(data).split()[1::2])
-        self.temp1_label.setText(f"{self.temps[0]} {degree}C")
-        self.temp2_label.setText(f"{self.temps[1]} {degree}C")
-        self.temp3_label.setText(f"{self.temps[2]} {degree}C")
-
     def display_currents(self, data):
         self.currents = tuple(data.effort)
         self.controller_table.display_currents(self.currents)
-
-    def display_voltage(self, data):
-        self.voltage = data.data
-        self.voltage_label.setText(f"{self.voltage} V")
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for 
