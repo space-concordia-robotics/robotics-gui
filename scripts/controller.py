@@ -56,7 +56,8 @@ class Controller(Ui_MainWindow):
         the Rover Controller Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(lambda: emergency_stop("controller"))
+        self.stop_button.clicked.connect(
+            lambda: emergency_stop("controller_tab"))
 
         self.controller_up.pressed.connect(lambda: self.set_velocity(0))
         self.controller_up.released.connect(lambda: self.reset_velocity(0))

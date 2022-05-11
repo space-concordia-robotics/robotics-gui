@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from ast import Lambda
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Currents import Currents
 from mcu_control.msg._Voltage import Voltage
@@ -13,7 +12,7 @@ import threading
 import rospy
 
 
-def on_press(function: function, args=[]):
+def on_press(function, args=[]):
     if not controller.log_browser.line_edit_has_focus():
         function(*args) if args else function()
 
