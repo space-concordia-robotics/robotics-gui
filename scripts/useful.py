@@ -2,16 +2,16 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import os
 
 
-def ping_mcu(motor: str):
-    print(f"ping rover in mcu {motor}")
+def ping_mcu(tab_name: str):
+    print(f"ping rover in mcu {tab_name}")
 
 
-def ping_odroid(motor: str):
-    print(f"ping odroid {motor}")
+def ping_odroid(tab_name: str):
+    print(f"ping odroid {tab_name}")
 
 
-def emergency_stop(motor: str):
-    print(f"emergency stop {motor}")
+def emergency_stop(tab_name: str):
+    print(f"emergency stop {tab_name}")
 
 
 class LineEdit(QtWidgets.QLineEdit):
@@ -41,7 +41,7 @@ class Log_browser(QtWidgets.QWidget):
         self.send_command_button = None
         self.clear_browser_button = None
 
-    def line_edit_has_focus(self):
+    def line_edit_has_focus(self) -> bool:
         return self.line_edit.has_focus
 
     def run_command(self):
@@ -73,7 +73,7 @@ class Log_browser(QtWidgets.QWidget):
     def setup(self):
         self.console_frame = QtWidgets.QFrame(self.parent)
         self.console_frame.setGeometry(
-            QtCore.QRect(0.03 * self.width, 0.04 * self.height,
+            QtCore.QRect(0.03 * self.width, 0.02 * self.height,
                          0.25 * self.width, 0.33 * self.height))
         self.console_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.console_frame.setFrameShadow(QtWidgets.QFrame.Raised)

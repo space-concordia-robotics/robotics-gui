@@ -38,7 +38,7 @@ class Controller(Ui_MainWindow):
         """Changes the current throttle value either increasing or
         decreasing and outputs the new value to the throttle label"""
 
-        if tab == "controller_tab":
+        if tab == "controller":
             if change == "+" and not self.throttle >= 1:
                 # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
                 self.throttle = (self.throttle * 10 + 0.50) / 10
@@ -56,8 +56,7 @@ class Controller(Ui_MainWindow):
         the Rover Controller Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(
-            lambda: emergency_stop("controller_tab"))
+        self.stop_button.clicked.connect(lambda: emergency_stop("controller"))
 
         self.controller_up.pressed.connect(lambda: self.set_velocity(0))
         self.controller_up.released.connect(lambda: self.reset_velocity(0))

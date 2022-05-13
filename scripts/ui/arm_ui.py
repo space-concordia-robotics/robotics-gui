@@ -13,7 +13,7 @@ from useful import Log_browser, Stream
 
 
 class Ui_MainWindow(QtWidgets.QWidget):
-    def __init__(self, width, height, parent=None):
+    def __init__(self, width: float, height: float, parent=None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height

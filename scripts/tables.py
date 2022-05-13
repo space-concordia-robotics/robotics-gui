@@ -2,11 +2,13 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 class Controller_table(QtWidgets.QWidget):
-    def __init__(self, width, height, parent=None):
+    def __init__(self, width, height, parent=None, x=0, y=0):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
+        self.x = x if x else 5 * self.width / 16
+        self.y = y if y else self.height / 15
 
     def display_currents(self, currents):
         self.r_front_current.setText(f"{currents[0]}")
@@ -19,8 +21,8 @@ class Controller_table(QtWidgets.QWidget):
     def setup(self):
         self.table_frame = QtWidgets.QFrame(self.parent)
         self.table_frame.setGeometry(
-            QtCore.QRect(5 * self.width / 16, self.height / 15,
-                         7 * self.width / 24, self.height / 2.16))
+            QtCore.QRect(self.x, self.y, 7 * self.width / 24,
+                         self.height / 2.16))
         self.table_frame.setStyleSheet("")
         self.table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.table_frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -388,17 +390,18 @@ class Controller_table(QtWidgets.QWidget):
 
 
 class Arm_table(QtWidgets.QWidget):
-    def __init__(self, width, height, parent=None):
+    def __init__(self, width, height, parent=None, x=0, y=0):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
+        self.x = x if x else 5 * self.width / 16
+        self.y = y if y else self.height / 15
 
     def setup(self):
         self.table_frame_3 = QtWidgets.QFrame(self.parent)
         self.table_frame_3.setGeometry(
-            QtCore.QRect(5 * self.width / 16, self.height / 15,
-                         self.width / 3.4, self.height / 2.16))
+            QtCore.QRect(self.x, self.y, self.width / 3.4, self.height / 2.16))
         self.table_frame_3.setStyleSheet("")
         self.table_frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.table_frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -776,3 +779,227 @@ class Arm_table(QtWidgets.QWidget):
         self.m6_status.setText(_translate("MainWindow", "N/A"))
         self.m6_position.setText(_translate("MainWindow", "-"))
         self.m6_current.setText(_translate("MainWindow", "N/A"))
+
+
+class Pds_table(QtWidgets.QWidget):
+    def __init__(self, width, height, parent=None, x=0, y=0):
+        super().__init__(parent=parent)
+        self.width = width
+        self.height = height
+        self.parent = parent
+        self.x = x if x else self.width / 48
+        self.y = y if y else self.height / 2.7
+
+    def setup(self):
+        self.pds_table_frame = QtWidgets.QFrame(self.parent)
+        self.pds_table_frame.setGeometry(
+            QtCore.QRect(self.width / 48, self.height / 2.7, self.width / 3.43,
+                         self.height / 2.16))
+        self.pds_table_frame.setStyleSheet("")
+        self.pds_table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.pds_table_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.pds_table_frame.setObjectName("pds_table_frame")
+        self.pds_table_title = QtWidgets.QLabel(self.pds_table_frame)
+        self.pds_table_title.setGeometry(
+            QtCore.QRect(self.width / 192, self.height / 108,
+                         self.width / 3.56, self.height / 46.96))
+        font = QtGui.QFont()
+        font.setPointSize(self.width / 128)
+        self.pds_table_title.setFont(font)
+        self.pds_table_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.pds_table_title.setObjectName("pds_table_title")
+        self.layoutWidget_19 = QtWidgets.QWidget(self.pds_table_frame)
+        self.layoutWidget_19.setGeometry(
+            QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56,
+                         self.height / 2.4))
+        self.layoutWidget_19.setObjectName("layoutWidget_19")
+        self.pds_table = QtWidgets.QVBoxLayout(self.layoutWidget_19)
+        self.pds_table.setContentsMargins(11, 11, 11, 11)
+        self.pds_table.setSpacing(6)
+        self.pds_table.setObjectName("pds_table")
+        self.pds_table_head = QtWidgets.QHBoxLayout()
+        self.pds_table_head.setSpacing(6)
+        self.pds_table_head.setObjectName("pds_table_head")
+        self.flag_title = QtWidgets.QLabel(self.layoutWidget_19)
+        self.flag_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.flag_title.setObjectName("flag_title")
+        self.pds_table_head.addWidget(self.flag_title)
+        self.line_406 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_406.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_406.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_406.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_406.setObjectName("line_406")
+        self.pds_table_head.addWidget(self.line_406)
+        self.state_title = QtWidgets.QLabel(self.layoutWidget_19)
+        self.state_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.state_title.setObjectName("state_title")
+        self.pds_table_head.addWidget(self.state_title)
+        self.line_407 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_407.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_407.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_407.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_407.setObjectName("line_407")
+        self.pds_table_head.addWidget(self.line_407)
+        self.fan_title = QtWidgets.QLabel(self.layoutWidget_19)
+        self.fan_title.setAlignment(QtCore.Qt.AlignCenter)
+        self.fan_title.setObjectName("fan_title")
+        self.pds_table_head.addWidget(self.fan_title)
+        self.line_408 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_408.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_408.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_408.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_408.setObjectName("line_408")
+        self.pds_table_head.addWidget(self.line_408)
+        self.speed_title_15 = QtWidgets.QLabel(self.layoutWidget_19)
+        self.speed_title_15.setAlignment(QtCore.Qt.AlignCenter)
+        self.speed_title_15.setObjectName("speed_title_15")
+        self.pds_table_head.addWidget(self.speed_title_15)
+        self.pds_table.addLayout(self.pds_table_head)
+        self.line_409 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_409.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_409.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_409.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_409.setObjectName("line_409")
+        self.pds_table.addWidget(self.line_409)
+        self.first_row = QtWidgets.QHBoxLayout()
+        self.first_row.setSpacing(6)
+        self.first_row.setObjectName("first_row")
+        self.overvoltage_label = QtWidgets.QLabel(self.layoutWidget_19)
+        self.overvoltage_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.overvoltage_label.setObjectName("overvoltage_label")
+        self.first_row.addWidget(self.overvoltage_label)
+        self.line_410 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_410.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_410.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_410.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_410.setObjectName("line_410")
+        self.first_row.addWidget(self.line_410)
+        self.overvoltage_state = QtWidgets.QLabel(self.layoutWidget_19)
+        self.overvoltage_state.setAlignment(QtCore.Qt.AlignCenter)
+        self.overvoltage_state.setObjectName("overvoltage_state")
+        self.first_row.addWidget(self.overvoltage_state)
+        self.line_411 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_411.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_411.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_411.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_411.setObjectName("line_411")
+        self.first_row.addWidget(self.line_411)
+        self.bigfan_label = QtWidgets.QLabel(self.layoutWidget_19)
+        self.bigfan_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.bigfan_label.setObjectName("bigfan_label")
+        self.first_row.addWidget(self.bigfan_label)
+        self.line_412 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_412.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_412.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_412.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_412.setObjectName("line_412")
+        self.first_row.addWidget(self.line_412)
+        self.bigfan_speed = QtWidgets.QLabel(self.layoutWidget_19)
+        self.bigfan_speed.setAlignment(QtCore.Qt.AlignCenter)
+        self.bigfan_speed.setObjectName("bigfan_speed")
+        self.first_row.addWidget(self.bigfan_speed)
+        self.pds_table.addLayout(self.first_row)
+        self.line_413 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_413.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_413.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_413.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_413.setObjectName("line_413")
+        self.pds_table.addWidget(self.line_413)
+        self.second_row = QtWidgets.QHBoxLayout()
+        self.second_row.setSpacing(6)
+        self.second_row.setObjectName("second_row")
+        self.undervoltage_label = QtWidgets.QLabel(self.layoutWidget_19)
+        self.undervoltage_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.undervoltage_label.setObjectName("undervoltage_label")
+        self.second_row.addWidget(self.undervoltage_label)
+        self.line_414 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_414.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_414.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_414.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_414.setObjectName("line_414")
+        self.second_row.addWidget(self.line_414)
+        self.undervoltage_state = QtWidgets.QLabel(self.layoutWidget_19)
+        self.undervoltage_state.setAlignment(QtCore.Qt.AlignCenter)
+        self.undervoltage_state.setObjectName("undervoltage_state")
+        self.second_row.addWidget(self.undervoltage_state)
+        self.line_415 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_415.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_415.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_415.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_415.setObjectName("line_415")
+        self.second_row.addWidget(self.line_415)
+        self.littlefan_label = QtWidgets.QLabel(self.layoutWidget_19)
+        self.littlefan_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.littlefan_label.setObjectName("littlefan_label")
+        self.second_row.addWidget(self.littlefan_label)
+        self.line_416 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_416.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_416.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_416.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_416.setObjectName("line_416")
+        self.second_row.addWidget(self.line_416)
+        self.littlefan_speed = QtWidgets.QLabel(self.layoutWidget_19)
+        self.littlefan_speed.setAlignment(QtCore.Qt.AlignCenter)
+        self.littlefan_speed.setObjectName("littlefan_speed")
+        self.second_row.addWidget(self.littlefan_speed)
+        self.pds_table.addLayout(self.second_row)
+        self.line_417 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_417.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_417.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_417.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_417.setObjectName("line_417")
+        self.pds_table.addWidget(self.line_417)
+        self.third_row = QtWidgets.QHBoxLayout()
+        self.third_row.setSpacing(6)
+        self.third_row.setObjectName("third_row")
+        self.critical_error_label = QtWidgets.QLabel(self.layoutWidget_19)
+        self.critical_error_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.critical_error_label.setObjectName("critical_error_label")
+        self.third_row.addWidget(self.critical_error_label)
+        self.line_418 = QtWidgets.QFrame(self.layoutWidget_19)
+        self.line_418.setStyleSheet("background-color: rgb(238, 238, 236);")
+        self.line_418.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_418.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_418.setObjectName("line_418")
+        self.third_row.addWidget(self.line_418)
+        self.critical_error_state = QtWidgets.QLabel(self.layoutWidget_19)
+        self.critical_error_state.setAlignment(QtCore.Qt.AlignCenter)
+        self.critical_error_state.setObjectName("critical_error_state")
+        self.third_row.addWidget(self.critical_error_state)
+        self.pds_table.addLayout(self.third_row)
+
+        _translate = QtCore.QCoreApplication.translate
+
+        self.pds_table_title.setText(_translate("MainWindow", "PDS Table"))
+        self.flag_title.setText(
+            _translate(
+                "MainWindow",
+                "<html><head/><body><p align=\"center\">Flag</p><p align=\"center\">(Error)</p></body></html>"
+            ))
+        self.state_title.setText(
+            _translate(
+                "MainWindow",
+                "<html><head/><body><p align=\"center\">State</p><p align=\"center\">(On / Off)</p></body></html>"
+            ))
+        self.fan_title.setText(
+            _translate(
+                "MainWindow",
+                "<html><head/><body><p align=\"center\">Fan</p><p align=\"center\">(Number)</p></body></html>"
+            ))
+        self.speed_title_15.setText(
+            _translate(
+                "MainWindow",
+                "<html><head/><body><p align=\"center\">Speed</p><p align=\"center\">(%)</p></body></html>"
+            ))
+        self.overvoltage_label.setText(_translate("MainWindow", "Overvoltage"))
+        self.overvoltage_state.setText(_translate("MainWindow", "-"))
+        self.bigfan_label.setText(_translate("MainWindow", "Big Fan"))
+        self.bigfan_speed.setText(_translate("MainWindow", "-"))
+        self.undervoltage_label.setText(
+            _translate("MainWindow", "Undervoltage"))
+        self.undervoltage_state.setText(_translate("MainWindow", "-"))
+        self.littlefan_label.setText(_translate("MainWindow", "Little Fan"))
+        self.littlefan_speed.setText(_translate("MainWindow", "-"))
+        self.critical_error_label.setText(
+            _translate("MainWindow", "Critical Error"))
+        self.critical_error_state.setText(_translate("MainWindow", "-"))

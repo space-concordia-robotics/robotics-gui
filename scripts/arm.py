@@ -58,7 +58,7 @@ class Arm(Ui_MainWindow):
         self.manual_controls_button.clicked.connect(self.switch_controls)
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(lambda: emergency_stop("arm_tab"))
+        self.stop_button.clicked.connect(lambda: emergency_stop("arm"))
         self.reset_angles_button.clicked.connect(self.reset_angles)
         self.homing_button.clicked.connect(self.homing)
         self.send_speed_multiplier_button.clicked.connect(
