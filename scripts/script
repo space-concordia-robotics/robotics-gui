@@ -5,10 +5,10 @@ from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Currents import Currents
 from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtWidgets, QtCore
-from controller import Controller
+from pages.controller import Controller
 from pynput import keyboard
-from arm import Arm
-from pds import Pds
+from pages.arm import Arm
+from pages.pds import Pds
 import threading
 import rospy
 
