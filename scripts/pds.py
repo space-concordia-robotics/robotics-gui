@@ -43,11 +43,8 @@ class Pds(Ui_MainWindow):
             self.fan2_speed = self.fan2_speed_input.value()
             self.fan2_speed_input.clearFocus()
 
-    def toggle_motor(self, index: int, set: bool = False, value: bool = None):
-        if not set:
-            self.motors[index - 1] = not self.motors[index - 1]
-        else:
-            self.motors[index - 1] = value
+    def toggle_motor(self, index: int):
+        self.motors[index - 1] = not self.motors[index - 1]
 
     def toggle_all_motors(self, tab_name):
         if tab_name == "pds":
@@ -59,8 +56,6 @@ class Pds(Ui_MainWindow):
                 self.motor4.setChecked(False)
                 self.motor5.setChecked(False)
                 self.motor6.setChecked(False)
-                for i in range(1, 7):
-                    self.toggle_motor(i, True, False)
             else:
                 self.motors = [True] * 6
                 self.motor1.setChecked(True)
@@ -69,8 +64,6 @@ class Pds(Ui_MainWindow):
                 self.motor4.setChecked(True)
                 self.motor5.setChecked(True)
                 self.motor6.setChecked(True)
-                for i in range(1, 7):
-                    self.toggle_motor(i, True, True)
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for 
