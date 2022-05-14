@@ -127,10 +127,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.stream_screen = Stream(self.width, self.height, self.parent)
         self.stream_screen.setup()
 
-        self.retranslateUi(MainWindow)
+        self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.list_commands_button.setText(
             _translate("MainWindow", "List Commands (L) "))

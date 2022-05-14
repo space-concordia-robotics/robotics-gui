@@ -3,7 +3,7 @@ from useful import emergency_stop
 
 
 class Arm(Ui_MainWindow):
-    def __init__(self, width, height, parent=None):
+    def __init__(self, width: float, height: float, parent=None):
         super().__init__(width=width, height=height, parent=parent)
         self.speed_multiplier = 1
         self.commands = {
@@ -29,7 +29,7 @@ class Arm(Ui_MainWindow):
         print("homing")
 
     def reset_angles(self, tab_name: str):
-        if tab_name == "arm_tab":
+        if tab_name == "arm":
             print("reset angles")
 
     def send_speed_multiplier(self):

@@ -3,7 +3,7 @@ from useful import emergency_stop
 
 
 class Controller(Ui_MainWindow):
-    def __init__(self, width, height, parent=None):
+    def __init__(self, width: float, height: float, parent=None):
         super().__init__(width=width, height=height, parent=parent)
         self.throttle = 0.50
         self.voltage = 0

@@ -73,7 +73,7 @@ class Log_browser(QtWidgets.QWidget):
     def setup(self):
         self.console_frame = QtWidgets.QFrame(self.parent)
         self.console_frame.setGeometry(
-            QtCore.QRect(0.03 * self.width, 0.02 * self.height,
+            QtCore.QRect(self.width / 48, 0.02 * self.height,
                          0.25 * self.width, 0.33 * self.height))
         self.console_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.console_frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -84,7 +84,7 @@ class Log_browser(QtWidgets.QWidget):
                          0.22 * self.width, 0.31 * self.height))
         self.layoutWidget.setObjectName("layoutWidget_2")
         self.log = QtWidgets.QVBoxLayout(self.layoutWidget)
-        self.log.setContentsMargins(11, 11, 11, 11)
+        self.log.setContentsMargins(0, 0, 0, 0)
         self.log.setSpacing(6)
         self.log.setObjectName("log")
         self.log_console_label = QtWidgets.QLabel(self.layoutWidget)

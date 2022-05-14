@@ -253,10 +253,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.stop_button.raise_()
         self.speed_multiplier_input.raise_()
 
-        self.retranslateUi(MainWindow)
+        self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.claw_controls_label.setText(
             _translate("MainWindow", "Claw Controls"))

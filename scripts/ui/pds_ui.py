@@ -13,7 +13,7 @@ from tables import *
 
 
 class Ui_MainWindow(QtWidgets.QWidget):
-    def __init__(self, width, height, parent):
+    def __init__(self, width: float, height: float, parent=None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -24,34 +24,44 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.log_browser.setup()
 
         self.arm_motor_table = Arm_table(self.width, self.height, self.parent,
-                                         1240, 400)
+                                         self.width / 1.55, self.height / 2.7)
         self.arm_motor_table.setup()
 
         self.controller_table = Controller_table(self.width, self.height,
-                                                 self.parent, 630, 400)
+                                                 self.parent,
+                                                 self.width / 3.05,
+                                                 self.height / 2.7)
         self.controller_table.setup()
 
         self.list_commands_button = QtWidgets.QPushButton(self.parent)
-        self.list_commands_button.setGeometry(QtCore.QRect(550, 210, 131, 71))
+        self.list_commands_button.setGeometry(
+            QtCore.QRect(self.width / 3.49, self.height / 5.14,
+                         self.width / 14.66, self.height / 15.21))
         self.list_commands_button.setObjectName("list_commands_button")
         self.stop_button = QtWidgets.QPushButton(self.parent)
-        self.stop_button.setGeometry(QtCore.QRect(550, 290, 131, 71))
+        self.stop_button.setGeometry(
+            QtCore.QRect(self.width / 3.49, self.height / 3.72,
+                         self.width / 14.66, self.height / 15.21))
         self.stop_button.setObjectName("stop_button")
         self.reset_general_flags_button = QtWidgets.QPushButton(self.parent)
         self.reset_general_flags_button.setGeometry(
-            QtCore.QRect(760, 210, 131, 71))
+            QtCore.QRect(self.width / 2.53, self.height / 5.14,
+                         self.width / 14.66, self.height / 15.21))
         self.reset_general_flags_button.setObjectName(
             "reset_general_flags_button")
         self.reset_current_flags_button = QtWidgets.QPushButton(self.parent)
         self.reset_current_flags_button.setGeometry(
-            QtCore.QRect(760, 290, 131, 71))
+            QtCore.QRect(self.width / 2.53, self.height / 3.72,
+                         self.width / 14.66, self.height / 15.21))
         self.reset_current_flags_button.setObjectName(
             "reset_current_flags_button")
         self.layoutWidget1 = QtWidgets.QWidget(self.parent)
-        self.layoutWidget1.setGeometry(QtCore.QRect(760, 50, 321, 91))
+        self.layoutWidget1.setGeometry(
+            QtCore.QRect(self.width / 2.53, self.height / 21.6,
+                         self.width / 5.98, self.height / 12))
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.motors_layout = QtWidgets.QVBoxLayout(self.layoutWidget1)
-        self.motors_layout.setContentsMargins(11, 11, 11, 11)
+        self.motors_layout.setContentsMargins(0, 0, 0, 0)
         self.motors_layout.setSpacing(6)
         self.motors_layout.setObjectName("motors_layout")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
@@ -81,10 +91,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.horizontalLayout.addWidget(self.motor6)
         self.motors_layout.addLayout(self.horizontalLayout)
         self.layoutWidget2 = QtWidgets.QWidget(self.parent)
-        self.layoutWidget2.setGeometry(QtCore.QRect(550, 50, 155, 101))
+        self.layoutWidget2.setGeometry(
+            QtCore.QRect(self.width / 3.49, self.height / 21.6,
+                         self.width / 12.39, self.height / 10.69))
         self.layoutWidget2.setObjectName("layoutWidget2")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.layoutWidget2)
-        self.verticalLayout_5.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_5.setSpacing(6)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.command_listener_checkbox = QtWidgets.QCheckBox(
@@ -96,10 +108,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.auto_mode_checkbox.setObjectName("auto_mode_checkbox")
         self.verticalLayout_5.addWidget(self.auto_mode_checkbox)
         self.layoutWidget3 = QtWidgets.QWidget(self.parent)
-        self.layoutWidget3.setGeometry(QtCore.QRect(990, 210, 99, 50))
+        self.layoutWidget3.setGeometry(
+            QtCore.QRect(self.width / 1.94, self.height / 5.14,
+                         self.width / 19.2, self.height / 21.6))
         self.layoutWidget3.setObjectName("layoutWidget3")
         self.formLayout = QtWidgets.QFormLayout(self.layoutWidget3)
-        self.formLayout.setContentsMargins(11, 11, 11, 11)
+        self.formLayout.setContentsMargins(0, 0, 0, 0)
         self.formLayout.setSpacing(6)
         self.formLayout.setObjectName("formLayout")
         self.label_2 = QtWidgets.QLabel(self.layoutWidget3)
@@ -113,10 +127,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole,
                                   self.fan1_speed_input)
         self.layoutWidget4 = QtWidgets.QWidget(self.parent)
-        self.layoutWidget4.setGeometry(QtCore.QRect(990, 300, 101, 56))
+        self.layoutWidget4.setGeometry(
+            QtCore.QRect(self.width / 1.94, self.height / 3.6,
+                         self.width / 19.2, self.height / 19.29))
         self.layoutWidget4.setObjectName("layoutWidget4")
         self.formLayout_2 = QtWidgets.QFormLayout(self.layoutWidget4)
-        self.formLayout_2.setContentsMargins(11, 11, 11, 11)
+        self.formLayout_2.setContentsMargins(0, 0, 0, 0)
         self.formLayout_2.setSpacing(6)
         self.formLayout_2.setObjectName("formLayout_2")
         self.fan2_speed_input = QtWidgets.QDoubleSpinBox(self.layoutWidget4)
@@ -134,10 +150,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                    self.width / 48, self.height / 2.7)
         self.pds_table.setup()
 
-        self.retranslateUi(MainWindow)
+        self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.list_commands_button.setText(
             _translate("MainWindow", "List Commands\n"

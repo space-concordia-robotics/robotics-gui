@@ -2,7 +2,12 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 class Controller_table(QtWidgets.QWidget):
-    def __init__(self, width, height, parent=None, x=0, y=0):
+    def __init__(self,
+                 width: float,
+                 height: float,
+                 parent=None,
+                 x: float = 0,
+                 y: float = 0):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -43,9 +48,11 @@ class Controller_table(QtWidgets.QWidget):
         self.layoutWidget.setObjectName("layoutWidget")
         self.wheel_motor_table = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.wheel_motor_table.setContentsMargins(0, 0, 0, 0)
+        self.wheel_motor_table.setSpacing(0)
         self.wheel_motor_table.setObjectName("wheel_motor_table")
         self.table_head = QtWidgets.QHBoxLayout()
         self.table_head.setObjectName("table_head")
+        self.table_head.setSpacing(0)
         self.motor_title = QtWidgets.QLabel(self.layoutWidget)
         self.motor_title.setAlignment(QtCore.Qt.AlignCenter)
         self.motor_title.setObjectName("motor_title")
@@ -89,6 +96,7 @@ class Controller_table(QtWidgets.QWidget):
         self.wheel_motor_table.addWidget(self.line_6)
         self.r_front_row = QtWidgets.QHBoxLayout()
         self.r_front_row.setObjectName("r_front_row")
+        self.r_front_row.setSpacing(0)
         self.r_front_label = QtWidgets.QLabel(self.layoutWidget)
         self.r_front_label.setAlignment(QtCore.Qt.AlignCenter)
         self.r_front_label.setObjectName("r_front_label")
@@ -132,6 +140,7 @@ class Controller_table(QtWidgets.QWidget):
         self.wheel_motor_table.addWidget(self.line)
         self.r_mid_row = QtWidgets.QHBoxLayout()
         self.r_mid_row.setObjectName("r_mid_row")
+        self.r_mid_row.setSpacing(0)
         self.r_mid_label = QtWidgets.QLabel(self.layoutWidget)
         self.r_mid_label.setAlignment(QtCore.Qt.AlignCenter)
         self.r_mid_label.setObjectName("r_mid_label")
@@ -175,6 +184,7 @@ class Controller_table(QtWidgets.QWidget):
         self.wheel_motor_table.addWidget(self.line_2)
         self.r_back_row = QtWidgets.QHBoxLayout()
         self.r_back_row.setObjectName("r_back_row")
+        self.r_back_row.setSpacing(0)
         self.r_back_label = QtWidgets.QLabel(self.layoutWidget)
         self.r_back_label.setAlignment(QtCore.Qt.AlignCenter)
         self.r_back_label.setObjectName("r_back_label")
@@ -218,6 +228,7 @@ class Controller_table(QtWidgets.QWidget):
         self.wheel_motor_table.addWidget(self.line_3)
         self.l_front_row = QtWidgets.QHBoxLayout()
         self.l_front_row.setObjectName("l_front_row")
+        self.l_front_row.setSpacing(0)
         self.l_front_label = QtWidgets.QLabel(self.layoutWidget)
         self.l_front_label.setAlignment(QtCore.Qt.AlignCenter)
         self.l_front_label.setObjectName("l_front_label")
@@ -261,6 +272,7 @@ class Controller_table(QtWidgets.QWidget):
         self.wheel_motor_table.addWidget(self.line_4)
         self.l_mid_row = QtWidgets.QHBoxLayout()
         self.l_mid_row.setObjectName("l_mid_row")
+        self.l_mid_row.setSpacing(0)
         self.l_mid_label = QtWidgets.QLabel(self.layoutWidget)
         self.l_mid_label.setAlignment(QtCore.Qt.AlignCenter)
         self.l_mid_label.setObjectName("l_mid_label")
@@ -304,6 +316,7 @@ class Controller_table(QtWidgets.QWidget):
         self.wheel_motor_table.addWidget(self.line_5)
         self.l_back_row = QtWidgets.QHBoxLayout()
         self.l_back_row.setObjectName("l_back_row")
+        self.l_back_row.setSpacing(0)
         self.l_back_label = QtWidgets.QLabel(self.layoutWidget)
         self.l_back_label.setAlignment(QtCore.Qt.AlignCenter)
         self.l_back_label.setObjectName("l_back_label")
@@ -390,7 +403,12 @@ class Controller_table(QtWidgets.QWidget):
 
 
 class Arm_table(QtWidgets.QWidget):
-    def __init__(self, width, height, parent=None, x=0, y=0):
+    def __init__(self,
+                 width: float,
+                 height: float,
+                 parent=None,
+                 x: float = 0,
+                 y: float = 0):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -410,7 +428,6 @@ class Arm_table(QtWidgets.QWidget):
         self.arm_motor_table_title.setGeometry(
             QtCore.QRect(self.width / 192, self.height / 108,
                          0.28 * self.width, self.height / 54))
-
         font = QtGui.QFont()
         font.setPointSize(self.width / 128)
         self.arm_motor_table_title.setFont(font)
@@ -422,11 +439,11 @@ class Arm_table(QtWidgets.QWidget):
                          self.height / 2.4))
         self.layoutWidget_4.setObjectName("layoutWidget_4")
         self.arm_motor_table = QtWidgets.QVBoxLayout(self.layoutWidget_4)
-        self.arm_motor_table.setContentsMargins(11, 11, 11, 11)
-        self.arm_motor_table.setSpacing(6)
+        self.arm_motor_table.setContentsMargins(0, 0, 0, 0)
+        self.arm_motor_table.setSpacing(0)
         self.arm_motor_table.setObjectName("arm_motor_table")
         self.table_head_4 = QtWidgets.QHBoxLayout()
-        self.table_head_4.setSpacing(6)
+        self.table_head_4.setSpacing(0)
         self.table_head_4.setObjectName("table_head_4")
         self.motor_title_3 = QtWidgets.QLabel(self.layoutWidget_4)
         self.motor_title_3.setAlignment(QtCore.Qt.AlignCenter)
@@ -470,7 +487,7 @@ class Arm_table(QtWidgets.QWidget):
         self.line_85.setObjectName("line_85")
         self.arm_motor_table.addWidget(self.line_85)
         self.m1_row = QtWidgets.QHBoxLayout()
-        self.m1_row.setSpacing(6)
+        self.m1_row.setSpacing(0)
         self.m1_row.setObjectName("m1_row")
         self.m1_label = QtWidgets.QLabel(self.layoutWidget_4)
         self.m1_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -514,7 +531,7 @@ class Arm_table(QtWidgets.QWidget):
         self.line_89.setObjectName("line_89")
         self.arm_motor_table.addWidget(self.line_89)
         self.m2_row = QtWidgets.QHBoxLayout()
-        self.m2_row.setSpacing(6)
+        self.m2_row.setSpacing(0)
         self.m2_row.setObjectName("m2_row")
         self.m2_label = QtWidgets.QLabel(self.layoutWidget_4)
         self.m2_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -558,7 +575,7 @@ class Arm_table(QtWidgets.QWidget):
         self.line_93.setObjectName("line_93")
         self.arm_motor_table.addWidget(self.line_93)
         self.m3_row = QtWidgets.QHBoxLayout()
-        self.m3_row.setSpacing(6)
+        self.m3_row.setSpacing(0)
         self.m3_row.setObjectName("m3_row")
         self.m3_label = QtWidgets.QLabel(self.layoutWidget_4)
         self.m3_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -602,7 +619,7 @@ class Arm_table(QtWidgets.QWidget):
         self.line_55.setObjectName("line_55")
         self.arm_motor_table.addWidget(self.line_55)
         self.m4_row = QtWidgets.QHBoxLayout()
-        self.m4_row.setSpacing(6)
+        self.m4_row.setSpacing(0)
         self.m4_row.setObjectName("m4_row")
         self.m4_label = QtWidgets.QLabel(self.layoutWidget_4)
         self.m4_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -646,7 +663,7 @@ class Arm_table(QtWidgets.QWidget):
         self.line_101.setObjectName("line_101")
         self.arm_motor_table.addWidget(self.line_101)
         self.m5_row = QtWidgets.QHBoxLayout()
-        self.m5_row.setSpacing(6)
+        self.m5_row.setSpacing(0)
         self.m5_row.setObjectName("m5_row")
         self.m5_label = QtWidgets.QLabel(self.layoutWidget_4)
         self.m5_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -690,7 +707,7 @@ class Arm_table(QtWidgets.QWidget):
         self.line_105.setObjectName("line_105")
         self.arm_motor_table.addWidget(self.line_105)
         self.m6_row = QtWidgets.QHBoxLayout()
-        self.m6_row.setSpacing(6)
+        self.m6_row.setSpacing(0)
         self.m6_row.setObjectName("m6_row")
         self.m6_label = QtWidgets.QLabel(self.layoutWidget_4)
         self.m6_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -782,7 +799,12 @@ class Arm_table(QtWidgets.QWidget):
 
 
 class Pds_table(QtWidgets.QWidget):
-    def __init__(self, width, height, parent=None, x=0, y=0):
+    def __init__(self,
+                 width: float,
+                 height: float,
+                 parent=None,
+                 x: float = 0,
+                 y: float = 0):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -793,7 +815,7 @@ class Pds_table(QtWidgets.QWidget):
     def setup(self):
         self.pds_table_frame = QtWidgets.QFrame(self.parent)
         self.pds_table_frame.setGeometry(
-            QtCore.QRect(self.width / 48, self.height / 2.7, self.width / 3.43,
+            QtCore.QRect(self.x, self.y, self.width / 3.43,
                          self.height / 2.16))
         self.pds_table_frame.setStyleSheet("")
         self.pds_table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -815,10 +837,10 @@ class Pds_table(QtWidgets.QWidget):
         self.layoutWidget_19.setObjectName("layoutWidget_19")
         self.pds_table = QtWidgets.QVBoxLayout(self.layoutWidget_19)
         self.pds_table.setContentsMargins(11, 11, 11, 11)
-        self.pds_table.setSpacing(6)
+        self.pds_table.setSpacing(0)
         self.pds_table.setObjectName("pds_table")
         self.pds_table_head = QtWidgets.QHBoxLayout()
-        self.pds_table_head.setSpacing(6)
+        self.pds_table_head.setSpacing(0)
         self.pds_table_head.setObjectName("pds_table_head")
         self.flag_title = QtWidgets.QLabel(self.layoutWidget_19)
         self.flag_title.setAlignment(QtCore.Qt.AlignCenter)
@@ -862,7 +884,7 @@ class Pds_table(QtWidgets.QWidget):
         self.line_409.setObjectName("line_409")
         self.pds_table.addWidget(self.line_409)
         self.first_row = QtWidgets.QHBoxLayout()
-        self.first_row.setSpacing(6)
+        self.first_row.setSpacing(0)
         self.first_row.setObjectName("first_row")
         self.overvoltage_label = QtWidgets.QLabel(self.layoutWidget_19)
         self.overvoltage_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -906,7 +928,7 @@ class Pds_table(QtWidgets.QWidget):
         self.line_413.setObjectName("line_413")
         self.pds_table.addWidget(self.line_413)
         self.second_row = QtWidgets.QHBoxLayout()
-        self.second_row.setSpacing(6)
+        self.second_row.setSpacing(0)
         self.second_row.setObjectName("second_row")
         self.undervoltage_label = QtWidgets.QLabel(self.layoutWidget_19)
         self.undervoltage_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -950,7 +972,7 @@ class Pds_table(QtWidgets.QWidget):
         self.line_417.setObjectName("line_417")
         self.pds_table.addWidget(self.line_417)
         self.third_row = QtWidgets.QHBoxLayout()
-        self.third_row.setSpacing(6)
+        self.third_row.setSpacing(0)
         self.third_row.setObjectName("third_row")
         self.critical_error_label = QtWidgets.QLabel(self.layoutWidget_19)
         self.critical_error_label.setAlignment(QtCore.Qt.AlignCenter)

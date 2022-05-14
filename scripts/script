@@ -58,6 +58,8 @@ class Key_capture_thread(threading.Thread):
                              ["-"]),
             "o":
             lambda: on_press(arm.reset_angles, self.tab_name[:-4]),
+            "<ctrl>+<shift>+r":
+            lambda: on_press(pds.toggle_all_motors, self.tab_name[:-4])
             # "w": lambda: on_press(controller.controller_up.click),
             # "a": lambda: on_press(controller.controller_left.click),
             # "s": lambda: on_press(controller.controller_down.click),
@@ -73,7 +75,8 @@ class Key_capture_thread(threading.Thread):
                     controller.log_browser.run_command()
                 elif self.tab_name == "arm_tab":
                     arm.log_browser.run_command()
-                elif self.tab_name == "pds_tab":
+                elif self.tab_name == "pds_tab" and not pds.fan1_speed_input.hasFocus(
+                ) and not pds.fan2_speed_input.hasFocus():
                     pds.log_browser.run_command()
 
         with keyboard.GlobalHotKeys(hotkeys) as hotkey_listener:
@@ -93,7 +96,9 @@ class Ros_thread(threading.Thread):
             "wheel_motor_currents", Currents, controller.display_currents
         ], )
         self.arm_topics = ()
-        self.pds_topics = ()
+        self.pds_topics = ([
+            "wheel_motor_currents", Currents, pds.display_currents
+        ], )
 
     def subscribe_to_topics(self, page_index: int):
         """Called on tab change to unsub to old topics and 
@@ -108,7 +113,7 @@ class Ros_thread(threading.Thread):
             self.subbed_topics.pop()
         for topic in topic_names[page_index]:
             self.subbed_topics.append(
-                rospy.Subscriber(*topic))  # subcs to new page topics
+                rospy.Subscriber(*topic))  # subs to new page topics
 
     def run(self):
         # these 2 topics are needed for all tabs since they are used outside the tab widget
@@ -165,6 +170,7 @@ if __name__ == '__main__':
     arm.setupUi(MainWindow)
     arm.start_handling_clicks()
     pds.setupUi(MainWindow)
+    pds.start_handling_clicks()
 
     tab_widget.addTab(controller_tab, "Controller")
     tab_widget.addTab(arm_tab, "Arm")
