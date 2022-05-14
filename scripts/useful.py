@@ -14,20 +14,6 @@ def emergency_stop(tab_name: str):
     print(f"emergency stop {tab_name}")
 
 
-class LineEdit(QtWidgets.QLineEdit):
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-        self.has_focus = False
-
-    def focusInEvent(self, event):
-        self.has_focus = True
-        super().focusInEvent(event)
-
-    def focusOutEvent(self, event):
-        self.has_focus = False
-        super().focusOutEvent(event)
-
-
 class Log_browser(QtWidgets.QWidget):
     def __init__(self,
                  width: float,
@@ -37,12 +23,6 @@ class Log_browser(QtWidgets.QWidget):
         self.width = width
         self.height = height
         self.parent = parent
-        self.line_edit = None
-        self.send_command_button = None
-        self.clear_browser_button = None
-
-    def line_edit_has_focus(self) -> bool:
-        return self.line_edit.has_focus
 
     def run_command(self):
         """Gets the content of the command line and tries to run it if possible"""
@@ -58,8 +38,7 @@ class Log_browser(QtWidgets.QWidget):
         like scrolling to the bottom"""
 
         self.text_browser.append(str(data))
-        self.text_browser.verticalScrollBar().setValue(
-            self.text_browser.verticalScrollBar().maximum())
+        self.text_browser.ensureCursorVisible()
 
     def submit(self):
         """Gets the content of the command line and tries to run it if possible"""
@@ -98,8 +77,9 @@ class Log_browser(QtWidgets.QWidget):
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setSpacing(6)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.text_browser = QtWidgets.QTextBrowser(self.layoutWidget)
+        self.text_browser = QtWidgets.QTextEdit(self.layoutWidget)
         self.text_browser.setFocusPolicy(QtCore.Qt.WheelFocus)
+        self.text_browser.setReadOnly(True)
         self.text_browser.setStyleSheet(
             "background-color: rgb(238, 238, 236);\n"
             "color: rgb(0, 0, 0);")
@@ -108,7 +88,7 @@ class Log_browser(QtWidgets.QWidget):
         self.log_input = QtWidgets.QHBoxLayout()
         self.log_input.setSpacing(6)
         self.log_input.setObjectName("log_input")
-        self.line_edit = LineEdit(self.layoutWidget)
+        self.line_edit = QtWidgets.QLineEdit(self.layoutWidget)
         self.line_edit.setFocusPolicy(QtCore.Qt.WheelFocus)
         self.line_edit.setStyleSheet("background-color: rgb(238, 238, 236);\n"
                                      "color: rgb(0, 0, 0);")
@@ -130,6 +110,7 @@ class Log_browser(QtWidgets.QWidget):
         self.log.addLayout(self.verticalLayout)
 
 
+# This is currently a place holder for the Stream component
 class Stream(QtWidgets.QWidget):
     def __init__(self,
                  width: float,

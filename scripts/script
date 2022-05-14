@@ -15,13 +15,13 @@ import rospy
 
 def on_press(function, tab_name: str, args=[]):
     if tab_name == "controller":
-        if not controller.log_browser.line_edit_has_focus():
+        if not controller.log_browser.line_edit.hasFocus():
             function(tab_name, *args) if args else function(tab_name)
     elif tab_name == "arm":
-        if not arm.log_browser.line_edit_has_focus():
+        if not arm.log_browser.line_edit.hasFocus():
             function(tab_name, *args) if args else function(tab_name)
     elif tab_name == "pds":
-        if not pds.log_browser.line_edit_has_focus():
+        if not pds.log_browser.line_edit.hasFocus():
             function(tab_name, *args) if args else function(tab_name)
 
 
