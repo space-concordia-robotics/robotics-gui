@@ -67,7 +67,7 @@ class Pds(Ui_MainWindow):
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for 
-        the Rover Controller Page"""
+        the Rover PDS Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(lambda: emergency_stop("pds"))

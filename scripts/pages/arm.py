@@ -52,7 +52,7 @@ class Arm(Ui_MainWindow):
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for 
-        the Rover Controller Page"""
+        the Rover Arm Page"""
 
         self.switch_controls()
         self.manual_controls_button.clicked.connect(self.switch_controls)

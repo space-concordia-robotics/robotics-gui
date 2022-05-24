@@ -6,6 +6,7 @@ from mcu_control.msg._Currents import Currents
 from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtWidgets, QtCore
 from pages.controller import Controller
+from pages.science import Science
 from pynput import keyboard
 from pages.arm import Arm
 from pages.pds import Pds
@@ -23,6 +24,9 @@ def on_press(function, tab_name: str, args=[]):
     elif tab_name == "pds":
         if not pds.log_browser.line_edit.hasFocus():
             function(tab_name, *args) if args else function(tab_name)
+    elif tab_name == "science":
+        if not science.log_browser.line_edit.hasFocus():
+            function(tab_name, *args) if args else function(tab_name)
 
 
 class Key_capture_thread(threading.Thread):
@@ -39,6 +43,8 @@ class Key_capture_thread(threading.Thread):
             arm.list_commands()
         elif tab_name == "pds":
             pds.list_commands()
+        elif tab_name == "science":
+            science.list_commands()
 
     def run(self):
         hotkeys = {
@@ -78,6 +84,8 @@ class Key_capture_thread(threading.Thread):
                 elif self.tab_name == "pds_tab" and not pds.fan1_speed_input.hasFocus(
                 ) and not pds.fan2_speed_input.hasFocus():
                     pds.log_browser.run_command()
+                elif self.tab_name == "science_tab":
+                    science.log_browser.run_command()
 
         with keyboard.GlobalHotKeys(hotkeys) as hotkey_listener:
             with keyboard.Listener(on_press=send_command) as enter_listener:
@@ -99,13 +107,15 @@ class Ros_thread(threading.Thread):
         self.pds_topics = ([
             "wheel_motor_currents", Currents, pds.display_currents
         ], )
+        self.science_topics = ()
 
     def subscribe_to_topics(self, page_index: int):
         """Called on tab change to unsub to old topics and 
         replace them with the ones needed for the new tab"""
 
         topic_names = [
-            self.controller_topics, self.arm_topics, self.pds_topics
+            self.controller_topics, self.arm_topics, self.pds_topics,
+            self.science_topics
         ]
 
         for i in reversed(range(len(self.subbed_topics))):
@@ -123,8 +133,8 @@ class Ros_thread(threading.Thread):
                                            header.update_voltage)
 
         self.subscribe_to_topics(
-            0
-        )  # subs to controller topics so we dont't have to wait for tab change at the beginning
+            0  # 0 just signifies the topics of the first tab since this is the first tab displayed
+        )
 
 
 if __name__ == '__main__':
@@ -138,6 +148,7 @@ if __name__ == '__main__':
     controller_tab = QtWidgets.QWidget()
     arm_tab = QtWidgets.QWidget()
     pds_tab = QtWidgets.QWidget()
+    science_tab = QtWidgets.QWidget()
 
     # used for adaptive window size, gets the screen size of the current display
     screen = QtWidgets.QDesktopWidget().screenGeometry(-1)
@@ -151,6 +162,7 @@ if __name__ == '__main__':
     controller = Controller(width, height, controller_tab)
     arm = Arm(width, height, arm_tab)
     pds = Pds(width, height, pds_tab)
+    science = Science(width, height, science_tab)
 
     centralWidget = QtWidgets.QWidget(MainWindow)
     centralWidget.setObjectName("centralwidget")
@@ -164,17 +176,21 @@ if __name__ == '__main__':
     controller_tab.setObjectName("controller_tab")
     arm_tab.setObjectName("arm_tab")
     pds_tab.setObjectName("pds_tab")
+    science_tab.setObjectName("science_tab")
 
     controller.setupUi(MainWindow)
-    controller.start_handling_clicks()
     arm.setupUi(MainWindow)
-    arm.start_handling_clicks()
     pds.setupUi(MainWindow)
+    science.setupUi(MainWindow)
+    controller.start_handling_clicks()
+    arm.start_handling_clicks()
     pds.start_handling_clicks()
+    science.start_handling_clicks()
 
     tab_widget.addTab(controller_tab, "Controller")
     tab_widget.addTab(arm_tab, "Arm")
     tab_widget.addTab(pds_tab, "PDS")
+    tab_widget.addTab(science_tab, "Science")
 
     MainWindow.setCentralWidget(centralWidget)
     keyboard_thread = Key_capture_thread(1, "key-capture-thread")
