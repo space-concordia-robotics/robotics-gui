@@ -12,8 +12,8 @@ class Controller_table(QtWidgets.QWidget):
         self.width = width
         self.height = height
         self.parent = parent
-        self.x = x if x else 5 * self.width / 16
-        self.y = y if y else self.height / 15
+        self.x = x or 5 * self.width / 16
+        self.y = y or self.height / 15
 
     def display_currents(self, currents):
         self.r_front_current.setText(f"{currents[0]}")
@@ -413,8 +413,8 @@ class Arm_table(QtWidgets.QWidget):
         self.width = width
         self.height = height
         self.parent = parent
-        self.x = x if x else 5 * self.width / 16
-        self.y = y if y else self.height / 15
+        self.x = x or 5 * self.width / 16
+        self.y = y or self.height / 15
 
     def setup(self):
         self.table_frame_3 = QtWidgets.QFrame(self.parent)
@@ -809,8 +809,8 @@ class Pds_table(QtWidgets.QWidget):
         self.width = width
         self.height = height
         self.parent = parent
-        self.x = x if x else self.width / 48
-        self.y = y if y else self.height / 2.7
+        self.x = x or self.width / 48
+        self.y = y or self.height / 2.7
 
     def setup(self):
         self.pds_table_frame = QtWidgets.QFrame(self.parent)

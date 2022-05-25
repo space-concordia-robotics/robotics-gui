@@ -1,8 +1,8 @@
-from ui.controller_ui import Ui_MainWindow
+from ui.controller_ui import Controller_Ui
 from useful import emergency_stop
 
 
-class Controller(Ui_MainWindow):
+class Controller(Controller_Ui):
     def __init__(self, width: float, height: float, parent=None):
         super().__init__(width=width, height=height, parent=parent)
         self.throttle = 0.50
@@ -44,7 +44,6 @@ class Controller(Ui_MainWindow):
                 self.throttle = (self.throttle * 10 + 0.50) / 10
             elif change == "-" and not self.throttle <= 0:
                 self.throttle = (self.throttle * 10 - 0.50) / 10
-
             self.throttle_value.setText(f"{self.throttle}")
 
     def display_currents(self, data):

@@ -11,6 +11,8 @@ def ping_odroid(tab_name: str):
 
 
 def emergency_stop(tab_name: str):
+    """Emergency stops the respective motor(s)"""
+
     print(f"emergency stop {tab_name}")
 
 

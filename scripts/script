@@ -12,21 +12,12 @@ from pages.arm import Arm
 from pages.pds import Pds
 import threading
 import rospy
+from time import sleep
 
 
 def on_press(function, tab_name: str, args=[]):
-    if tab_name == "controller":
-        if not controller.log_browser.line_edit.hasFocus():
-            function(tab_name, *args) if args else function(tab_name)
-    elif tab_name == "arm":
-        if not arm.log_browser.line_edit.hasFocus():
-            function(tab_name, *args) if args else function(tab_name)
-    elif tab_name == "pds":
-        if not pds.log_browser.line_edit.hasFocus():
-            function(tab_name, *args) if args else function(tab_name)
-    elif tab_name == "science":
-        if not science.log_browser.line_edit.hasFocus():
-            function(tab_name, *args) if args else function(tab_name)
+    if not tabs[tab_name].log_browser.line_edit.hasFocus():
+        function(tab_name, *args) if args else function(tab_name)
 
 
 class Key_capture_thread(threading.Thread):
@@ -37,36 +28,26 @@ class Key_capture_thread(threading.Thread):
         self.name = name
 
     def list_commands(self, tab_name: str):
-        if tab_name == "controller":
-            controller.list_commands()
-        elif tab_name == "arm":
-            arm.list_commands()
-        elif tab_name == "pds":
-            pds.list_commands()
-        elif tab_name == "science":
-            science.list_commands()
+        tabs[tab_name].list_commands()
 
     def run(self):
         hotkeys = {
             "<ctrl>+p":
-            lambda: on_press(ping_mcu, self.tab_name[:-4]),
+            lambda: on_press(ping_mcu, self.tab_name),
             "<alt>+p":
-            lambda: on_press(ping_odroid, self.tab_name[:-4]),
+            lambda: on_press(ping_odroid, self.tab_name),
             "q":
-            lambda: on_press(emergency_stop, self.tab_name[:-4]),
+            lambda: on_press(emergency_stop, self.tab_name),
             "l":
-            lambda: on_press(self.list_commands, self.tab_name[:-4]),
+            lambda: on_press(self.list_commands, self.tab_name),
             "u":
-            lambda: on_press(controller.change_throttle, self.tab_name[:-4],
-                             ["+"]),
+            lambda: on_press(controller.change_throttle, self.tab_name, ["+"]),
             "i":
-            lambda: on_press(controller.change_throttle, self.tab_name[:-4],
-                             ["-"]),
+            lambda: on_press(controller.change_throttle, self.tab_name, ["-"]),
             "o":
-            lambda: on_press(arm.reset_angles, self.tab_name[:-4]),
+            lambda: on_press(arm.reset_angles, self.tab_name),
             "<ctrl>+<shift>+r":
-            lambda: on_press(pds.toggle_all_motors, self.tab_name[:-4])
-            # "w": lambda: on_press(controller.controller_up.click),
+            lambda: on_press(pds.toggle_all_motors, self.tab_name),
             # "a": lambda: on_press(controller.controller_left.click),
             # "s": lambda: on_press(controller.controller_down.click),
             # "d": lambda: on_press(controller.controller_right.click),
@@ -77,15 +58,11 @@ class Key_capture_thread(threading.Thread):
         def send_command(key: keyboard.Key):
             self.tab_name = tab_widget.currentWidget().objectName()
             if key == keyboard.Key.enter:
-                if self.tab_name == "controller_tab":
-                    controller.log_browser.run_command()
-                elif self.tab_name == "arm_tab":
-                    arm.log_browser.run_command()
-                elif self.tab_name == "pds_tab" and not pds.fan1_speed_input.hasFocus(
+                if self.tab_name == "pds" and not pds.fan1_speed_input.hasFocus(
                 ) and not pds.fan2_speed_input.hasFocus():
                     pds.log_browser.run_command()
-                elif self.tab_name == "science_tab":
-                    science.log_browser.run_command()
+                else:
+                    tabs[self.tab_name].log_browser.run_command()
 
         with keyboard.GlobalHotKeys(hotkeys) as hotkey_listener:
             with keyboard.Listener(on_press=send_command) as enter_listener:
@@ -100,28 +77,29 @@ class Ros_thread(threading.Thread):
         self.name = name
         self.subbed_topics = []
 
-        self.controller_topics = ([
-            "wheel_motor_currents", Currents, controller.display_currents
-        ], )
-        self.arm_topics = ()
-        self.pds_topics = ([
-            "wheel_motor_currents", Currents, pds.display_currents
-        ], )
-        self.science_topics = ()
+        # each item in this tuple is a collection of all topics needed for the according page
+        # each item (topic) in said collection is a tuple that contains the arguments needed for the Subscriber method
+        self.topics = (
+            [
+                ("wheel_motor_currents", Currents,
+                 controller.display_currents),
+            ],  # wheel topics
+            [],  # arm topics
+            [
+                ("wheel_motor_currents", Currents, pds.display_currents),
+            ],  # pds topics
+            [],  # science topics
+        )
 
     def subscribe_to_topics(self, page_index: int):
         """Called on tab change to unsub to old topics and 
         replace them with the ones needed for the new tab"""
 
-        topic_names = [
-            self.controller_topics, self.arm_topics, self.pds_topics,
-            self.science_topics
-        ]
-
         for i in reversed(range(len(self.subbed_topics))):
             self.subbed_topics[i].unregister()  # unsubs to all previous topics
             self.subbed_topics.pop()
-        for topic in topic_names[page_index]:
+        for topic in self.topics[page_index]:
+            print(topic)
             self.subbed_topics.append(
                 rospy.Subscriber(*topic))  # subs to new page topics
 
@@ -136,6 +114,10 @@ class Ros_thread(threading.Thread):
             0  # 0 just signifies the topics of the first tab since this is the first tab displayed
         )
 
+        while True:
+            print(controller.velocity)
+            sleep(1)
+
 
 if __name__ == '__main__':
     import sys
@@ -145,10 +127,6 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     MainWindow.setObjectName("MainWindow")
-    controller_tab = QtWidgets.QWidget()
-    arm_tab = QtWidgets.QWidget()
-    pds_tab = QtWidgets.QWidget()
-    science_tab = QtWidgets.QWidget()
 
     # used for adaptive window size, gets the screen size of the current display
     screen = QtWidgets.QDesktopWidget().screenGeometry(-1)
@@ -159,10 +137,23 @@ if __name__ == '__main__':
                              "/*border-color: rgb(238, 238, 236);*/\n"
                              "color: rgb(238, 238, 236);")
 
+    controller_tab = QtWidgets.QWidget()
+    arm_tab = QtWidgets.QWidget()
+    pds_tab = QtWidgets.QWidget()
+    science_tab = QtWidgets.QWidget()
+
     controller = Controller(width, height, controller_tab)
     arm = Arm(width, height, arm_tab)
     pds = Pds(width, height, pds_tab)
     science = Science(width, height, science_tab)
+
+    global tabs
+    tabs = {
+        "controller": controller,
+        "arm": arm,
+        "pds": pds,
+        "science": science,
+    }
 
     centralWidget = QtWidgets.QWidget(MainWindow)
     centralWidget.setObjectName("centralwidget")
@@ -171,12 +162,12 @@ if __name__ == '__main__':
     header.setup()
 
     tab_widget = QtWidgets.QTabWidget(centralWidget)
-    tab_widget.setGeometry(QtCore.QRect(0, 70, width, 0.937 * height - 70))
+    tab_widget.setGeometry(QtCore.QRect(0, 70, width, 0.87 * height))
 
-    controller_tab.setObjectName("controller_tab")
-    arm_tab.setObjectName("arm_tab")
-    pds_tab.setObjectName("pds_tab")
-    science_tab.setObjectName("science_tab")
+    controller_tab.setObjectName("controller")
+    arm_tab.setObjectName("arm")
+    pds_tab.setObjectName("pds")
+    science_tab.setObjectName("science")
 
     controller.setupUi(MainWindow)
     arm.setupUi(MainWindow)

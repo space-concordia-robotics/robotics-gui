@@ -12,7 +12,7 @@ from useful import Log_browser, Stream
 from tables import Controller_table
 
 
-class Ui_MainWindow(QtWidgets.QWidget):
+class Science_Ui(QtWidgets.QWidget):
     def __init__(self, width: float, height: float, parent=None):
         super().__init__(parent=parent)
         self.width = width
@@ -30,6 +30,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
             QtCore.QRect(4.75 * self.width / 6, 4.6 * self.height / 7,
                          self.width / 10, 2 * self.height / 25))
         self.stop_button.setObjectName("stop_button")
+        self.collect_analyse_button = QtWidgets.QPushButton(self.parent)
+        self.collect_analyse_button.setGeometry(
+            QtCore.QRect(4.75 * self.width / 6, 5.2 * self.height / 7,
+                         self.width / 10, 2 * self.height / 25))
+        self.collect_analyse_button.setObjectName("collect_analyse_button")
+        self.collect_analyse_button.setText("collect and analyse")
         self.controller_table = Controller_table(self.width, self.height,
                                                  self.parent)
         self.controller_table.setup()

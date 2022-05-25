@@ -1,8 +1,8 @@
-from ui.pds_ui import Ui_MainWindow
+from ui.pds_ui import Pds_Ui
 from useful import emergency_stop
 
 
-class Pds(Ui_MainWindow):
+class Pds(Pds_Ui):
     def __init__(self, width: float, height: float, parent=None):
         super().__init__(width=width, height=height, parent=parent)
         self.motors = [False] * 6

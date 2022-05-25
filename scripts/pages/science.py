@@ -1,13 +1,12 @@
+from ui.science_ui import Science_Ui
 from useful import emergency_stop
-from ui.science_ui import Ui_MainWindow
 
 
-class Science(Ui_MainWindow):
+class Science(Science_Ui):
     def __init__(self, width: float, height: float, parent=None):
-        super().__init__(width, height, parent)
-        self.width = width
-        self.height = height
-        self.parent = parent
+        super().__init__(width=width, height=height, parent=parent)
+        self.used_vials = 0
+        self.vials = {}  # template: ( [ number, status, CCD, Ramen ] )
         self.commands = {"test": "test"}
 
     def list_commands(self):
@@ -19,9 +18,13 @@ class Science(Ui_MainWindow):
                 f"'{command}': '{self.commands[command]}'")
         self.log_browser.append_to_browser("\n")
 
+    def collect_analyse(self):
+        print("Collect and analyse next sample")
+
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for 
         the Rover Science Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(lambda: emergency_stop("science"))
+        self.collect_analyse_button.clicked.connect(self.collect_analyse)

@@ -12,7 +12,7 @@ from useful import Log_browser, Stream
 from tables import Arm_table
 
 
-class Ui_MainWindow(QtWidgets.QWidget):
+class Arm_Ui(QtWidgets.QWidget):
     def __init__(self, width: float, height: float, parent=None):
         super().__init__(parent=parent)
         self.width = width

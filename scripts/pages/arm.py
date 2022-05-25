@@ -1,8 +1,8 @@
-from ui.arm_ui import Ui_MainWindow
+from ui.arm_ui import Arm_Ui
 from useful import emergency_stop
 
 
-class Arm(Ui_MainWindow):
+class Arm(Arm_Ui):
     def __init__(self, width: float, height: float, parent=None):
         super().__init__(width=width, height=height, parent=parent)
         self.speed_multiplier = 1
