@@ -13,6 +13,7 @@ from tables import Arm_table
 
 
 class Arm_Ui(QtWidgets.QWidget):
+
     def __init__(self, width: float, height: float, parent=None):
         super().__init__(parent=parent)
         self.width = width
@@ -266,13 +267,18 @@ class Arm_Ui(QtWidgets.QWidget):
             _translate("MainWindow", "Command Listener"))
         self.manual_controls_button.setText(
             _translate("MainWindow", "Manual Controls"))
-        self.arm_down_button.setText(_translate("MainWindow", "Arm\n" "Down"))
-        self.arm_left_button.setText(_translate("MainWindow", "Arm\n" "Left"))
+        self.arm_down_button.setText(_translate("MainWindow", "Arm\n"
+                                                "Down"))
+        self.arm_left_button.setText(_translate("MainWindow", "Arm\n"
+                                                "Left"))
         self.arm_right_button.setText(_translate("MainWindow", "Arm\n"
                                                  "Right"))
-        self.arm_up_button.setText(_translate("MainWindow", "Arm\n" "Up"))
-        self.arm_fwd_button.setText(_translate("MainWindow", "Arm\n" "Fwd"))
-        self.arm_back_button.setText(_translate("MainWindow", "Arm\n" "Back"))
+        self.arm_up_button.setText(_translate("MainWindow", "Arm\n"
+                                              "Up"))
+        self.arm_fwd_button.setText(_translate("MainWindow", "Arm\n"
+                                               "Fwd"))
+        self.arm_back_button.setText(_translate("MainWindow", "Arm\n"
+                                                "Back"))
         self.claw_open_button.setText(_translate("MainWindow", "Claw\n"
                                                  "Open"))
         self.roll_left_button_2.setText(
@@ -287,7 +293,8 @@ class Arm_Ui(QtWidgets.QWidget):
         self.claw_close_button.setText(
             _translate("MainWindow", "Claw\n"
                        "Close"))
-        self.pitch_up_button.setText(_translate("MainWindow", "Pitch\n" "Up"))
+        self.pitch_up_button.setText(_translate("MainWindow", "Pitch\n"
+                                                "Up"))
         self.m3_elbow_down_button.setText(
             _translate("MainWindow", "Down\n"
                        "F"))
@@ -302,7 +309,8 @@ class Arm_Ui(QtWidgets.QWidget):
         self.m1_shoulder_right_button.setText(
             _translate("MainWindow", "Right\n"
                        "S"))
-        self.m3_elbow_up_button.setText(_translate("MainWindow", "Up\n" "R"))
+        self.m3_elbow_up_button.setText(_translate("MainWindow", "Up\n"
+                                                   "R"))
         self.m6_claw_open_button.setText(_translate("MainWindow", "Open\n"
                                                     "U"))
         self.m4_wrist_down_button.setText(
@@ -311,9 +319,12 @@ class Arm_Ui(QtWidgets.QWidget):
         self.m6_claw_close_button.setText(
             _translate("MainWindow", "Close\n"
                        "J"))
-        self.m4_wrist_up_button.setText(_translate("MainWindow", "Up\n" "T"))
-        self.m5_wrist_in_button.setText(_translate("MainWindow", "In\n" "H"))
-        self.m5_wrist_out_button.setText(_translate("MainWindow", "Out\n" "Y"))
+        self.m4_wrist_up_button.setText(_translate("MainWindow", "Up\n"
+                                                   "T"))
+        self.m5_wrist_in_button.setText(_translate("MainWindow", "In\n"
+                                                   "H"))
+        self.m5_wrist_out_button.setText(_translate("MainWindow", "Out\n"
+                                                    "Y"))
         self.list_commands_button.setText(
             _translate("MainWindow", "List Commands (L)"))
         self.homing_button.setText(_translate("MainWindow", "Homing"))
