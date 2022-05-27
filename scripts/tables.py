@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 class Controller_table(QtWidgets.QWidget):
+
     def __init__(self,
                  width: float,
                  height: float,
@@ -403,6 +404,7 @@ class Controller_table(QtWidgets.QWidget):
 
 
 class Arm_table(QtWidgets.QWidget):
+
     def __init__(self,
                  width: float,
                  height: float,
@@ -780,25 +782,30 @@ class Arm_table(QtWidgets.QWidget):
         self.m2_status.setText(_translate("MainWindow", "N/A"))
         self.m2_position.setText(_translate("MainWindow", "-"))
         self.m2_current.setText(_translate("MainWindow", "N/A"))
-        self.m3_label.setText(_translate("MainWindow", "M3\n" "(Elbow Flex)"))
+        self.m3_label.setText(_translate("MainWindow", "M3\n"
+                                         "(Elbow Flex)"))
         self.m3_status.setText(_translate("MainWindow", "N/A"))
         self.m3_position.setText(_translate("MainWindow", "-"))
         self.m3_current.setText(_translate("MainWindow", "N/A"))
-        self.m4_label.setText(_translate("MainWindow", "M4\n" "(Wrist Flex)"))
+        self.m4_label.setText(_translate("MainWindow", "M4\n"
+                                         "(Wrist Flex)"))
         self.m4_status.setText(_translate("MainWindow", "N/A"))
         self.m4_position.setText(_translate("MainWindow", "-"))
         self.m4_current.setText(_translate("MainWindow", "N/A"))
-        self.m5_label.setText(_translate("MainWindow", "M5\n" "(Wrist Twist)"))
+        self.m5_label.setText(_translate("MainWindow", "M5\n"
+                                         "(Wrist Twist)"))
         self.m5_status.setText(_translate("MainWindow", "N/A"))
         self.m5_position.setText(_translate("MainWindow", "-"))
         self.m5_current.setText(_translate("MainWindow", "N/A"))
-        self.m6_label.setText(_translate("MainWindow", "M6\n" "(Gripper)"))
+        self.m6_label.setText(_translate("MainWindow", "M6\n"
+                                         "(Gripper)"))
         self.m6_status.setText(_translate("MainWindow", "N/A"))
         self.m6_position.setText(_translate("MainWindow", "-"))
         self.m6_current.setText(_translate("MainWindow", "N/A"))
 
 
 class Pds_table(QtWidgets.QWidget):
+
     def __init__(self,
                  width: float,
                  height: float,

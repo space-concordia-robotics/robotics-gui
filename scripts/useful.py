@@ -17,6 +17,7 @@ def emergency_stop(tab_name: str):
 
 
 class Log_browser(QtWidgets.QWidget):
+
     def __init__(self,
                  width: float,
                  height: float,
@@ -114,6 +115,7 @@ class Log_browser(QtWidgets.QWidget):
 
 # This is currently a place holder for the Stream component
 class Stream(QtWidgets.QWidget):
+
     def __init__(self,
                  width: float,
                  height: float,
@@ -136,6 +138,7 @@ class Stream(QtWidgets.QWidget):
 
 
 class Header(QtWidgets.QWidget):
+
     def __init__(self,
                  width: float,
                  height: float,

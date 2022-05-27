@@ -21,6 +21,7 @@ def on_press(function, tab_name: str, args=[]):
 
 
 class Key_capture_thread(threading.Thread):
+
     def __init__(self, threadID, name):
         threading.Thread.__init__(self)
         self.tab_name = ""
@@ -71,6 +72,7 @@ class Key_capture_thread(threading.Thread):
 
 
 class Ros_thread(threading.Thread):
+
     def __init__(self, threadID, name):
         threading.Thread.__init__(self)
         self.threadID = threadID

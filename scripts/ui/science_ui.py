@@ -13,6 +13,7 @@ from tables import Controller_table
 
 
 class Science_Ui(QtWidgets.QWidget):
+
     def __init__(self, width: float, height: float, parent=None):
         super().__init__(parent=parent)
         self.width = width

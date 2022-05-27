@@ -3,6 +3,7 @@ from useful import emergency_stop
 
 
 class Science(Science_Ui):
+
     def __init__(self, width: float, height: float, parent=None):
         super().__init__(width=width, height=height, parent=parent)
         self.used_vials = 0

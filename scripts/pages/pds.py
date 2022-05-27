@@ -3,6 +3,7 @@ from useful import emergency_stop
 
 
 class Pds(Pds_Ui):
+
     def __init__(self, width: float, height: float, parent=None):
         super().__init__(width=width, height=height, parent=parent)
         self.motors = [False] * 6
