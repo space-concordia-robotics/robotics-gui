@@ -7,7 +7,7 @@ from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtWidgets, QtCore
 from pages.controller import Controller
 from pages.science import Science
-from pynput import keyboard
+# from pynput import keyboard
 from pages.arm import Arm
 from pages.pds import Pds
 import threading
