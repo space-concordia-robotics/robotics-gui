@@ -12,7 +12,6 @@ from pages.arm import Arm
 from pages.pds import Pds
 import threading
 import rospy
-from time import sleep
 
 
 def on_press(function, tab_name: str, args=[]):
@@ -22,7 +21,7 @@ def on_press(function, tab_name: str, args=[]):
 
 class Key_capture_thread(threading.Thread):
 
-    def __init__(self, threadID, name):
+    def __init__(self, threadID: int, name: str):
         threading.Thread.__init__(self)
         self.tab_name = ""
         self.threadID = threadID
@@ -49,9 +48,6 @@ class Key_capture_thread(threading.Thread):
             lambda: on_press(arm.reset_angles, self.tab_name),
             "<ctrl>+<shift>+r":
             lambda: on_press(pds.toggle_all_motors, self.tab_name),
-            # "a": lambda: on_press(controller.controller_left.click),
-            # "s": lambda: on_press(controller.controller_down.click),
-            # "d": lambda: on_press(controller.controller_right.click),
         }
 
         self.tab_name = tab_widget.currentWidget().objectName()
@@ -73,7 +69,7 @@ class Key_capture_thread(threading.Thread):
 
 class Ros_thread(threading.Thread):
 
-    def __init__(self, threadID, name):
+    def __init__(self, threadID: int, name: str):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
@@ -101,7 +97,6 @@ class Ros_thread(threading.Thread):
             self.subbed_topics[i].unregister()  # unsubs to all previous topics
             self.subbed_topics.pop()
         for topic in self.topics[page_index]:
-            print(topic)
             self.subbed_topics.append(
                 rospy.Subscriber(*topic))  # subs to new page topics
 
@@ -115,10 +110,6 @@ class Ros_thread(threading.Thread):
         self.subscribe_to_topics(
             0  # 0 just signifies the topics of the first tab since this is the first tab displayed
         )
-
-        while True:
-            print(controller.velocity)
-            sleep(1)
 
 
 if __name__ == '__main__':
@@ -136,7 +127,6 @@ if __name__ == '__main__':
     height = screen.height()
     MainWindow.resize(width, height)
     MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n"
-                             "/*border-color: rgb(238, 238, 236);*/\n"
                              "color: rgb(238, 238, 236);")
 
     controller_tab = QtWidgets.QWidget()

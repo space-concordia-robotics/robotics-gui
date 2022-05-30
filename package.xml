@@ -2,9 +2,9 @@
 <package format="2">
   <name>controller</name>
   <version>1.0.0</version>
-  <description>The controller package</description>
+  <description>Space Concordia Robotics Rover GUI</description>
 
-  <maintainer email="mohamadali.taha@spaceconcordia.ca">mohamadali</maintainer>
+  <maintainer email="mohamadali.taha@spaceconcordia.ca">Mohamad Ali Taha</maintainer>
 
   <license>TODO</license>
 
@@ -22,8 +22,4 @@
   <exec_depend>rqt_gui_py</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 
-
-  <export>
-    <rqt_gui plugin="${prefix}/plugin.xml"/>
-  </export>
 </package>

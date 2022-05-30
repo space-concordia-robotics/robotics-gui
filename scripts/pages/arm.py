@@ -56,7 +56,7 @@ class Arm(Arm_Ui):
         the Rover Arm Page"""
 
         self.switch_controls()
-        self.manual_controls_button.clicked.connect(self.switch_controls)
+        self.manual_controls_button.toggled.connect(self.switch_controls)
 
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(lambda: emergency_stop("arm"))

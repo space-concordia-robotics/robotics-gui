@@ -20,7 +20,7 @@ class Arm_Ui(QtWidgets.QWidget):
         self.height = height
         self.parent = parent
 
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow: QtWidgets.QMainWindow):
         self.arm_table = Arm_table(self.width, self.height, self.parent)
         self.arm_table.setup()
 

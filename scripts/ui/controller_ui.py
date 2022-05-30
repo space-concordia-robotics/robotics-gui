@@ -20,7 +20,7 @@ class Controller_Ui(QtWidgets.QWidget):
         self.height = height
         self.parent = parent
 
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow: QtWidgets.QMainWindow):
         self.list_commands_button = QtWidgets.QPushButton(self.parent)
         self.list_commands_button.setGeometry(
             QtCore.QRect(4.75 * self.width / 6, 4 * self.height / 7,
@@ -114,9 +114,9 @@ class Controller_Ui(QtWidgets.QWidget):
         self.closed_loop.setTristate(False)
         self.closed_loop.setObjectName("closed_loop")
         self.horizontalLayout.addWidget(self.closed_loop)
-        self.command_listener = QtWidgets.QCheckBox(self.rover_settings)
-        self.command_listener.setObjectName("command_listener")
-        self.horizontalLayout.addWidget(self.command_listener)
+        self.command_listener_button = QtWidgets.QCheckBox(self.rover_settings)
+        self.command_listener_button.setObjectName("command_listener_button")
+        self.horizontalLayout.addWidget(self.command_listener_button)
         self.motor_controls.addWidget(self.rover_settings)
         self.controller_right = QtWidgets.QPushButton(self.controls_frame)
         self.controller_right.setGeometry(
@@ -147,6 +147,6 @@ class Controller_Ui(QtWidgets.QWidget):
             _translate("MainWindow", "Motor Controls"))
         self.activate_rover.setText(_translate("MainWindow", "Activate Rover"))
         self.closed_loop.setText(_translate("MainWindow", "Closed Loop"))
-        self.command_listener.setText(
+        self.command_listener_button.setText(
             _translate("MainWindow", "Command Listener"))
         self.controller_right.setText(_translate("MainWindow", "Right"))

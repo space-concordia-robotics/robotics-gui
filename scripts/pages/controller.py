@@ -20,11 +20,11 @@ class Controller(Controller_Ui):
             'i': "decrease throttle value",
         }
 
-    def set_velocity(self, arg: int):
-        self.velocity[arg] = self.throttle
+    def set_velocity(self, index: int):
+        self.velocity[index] = self.throttle
 
-    def reset_velocity(self, arg: int):
-        self.velocity[arg] = 0
+    def reset_velocity(self, index: int):
+        self.velocity[index] = 0
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts

@@ -20,7 +20,7 @@ class Pds_Ui(QtWidgets.QWidget):
         self.height = height
         self.parent = parent
 
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow: QtWidgets.QMainWindow):
         self.log_browser = Log_browser(self.width, self.height, self.parent)
         self.log_browser.setup()
 
