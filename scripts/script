@@ -87,19 +87,19 @@ if __name__ == '__main__':
     controller_tab = QtWidgets.QWidget()
     arm_tab = QtWidgets.QWidget()
     pds_tab = QtWidgets.QWidget()
-    science_tab = QtWidgets.QWidget()
+    # science_tab = QtWidgets.QWidget()
 
     controller = Controller(width, height, controller_tab)
     arm = Arm(width, height, arm_tab)
     pds = Pds(width, height, pds_tab)
-    science = Science(width, height, science_tab)
+    # science = Science(width, height, science_tab)
 
     global tabs
     tabs = {
         "controller": controller,
         "arm": arm,
         "pds": pds,
-        "science": science,
+        # "science": science,
     }
 
     header = Header(width, height, MainWindow)
@@ -111,21 +111,21 @@ if __name__ == '__main__':
     controller_tab.setObjectName("controller")
     arm_tab.setObjectName("arm")
     pds_tab.setObjectName("pds")
-    science_tab.setObjectName("science")
+    # science_tab.setObjectName("science")
 
     controller.setupUi(MainWindow)
     arm.setupUi(MainWindow)
     pds.setupUi(MainWindow)
-    science.setupUi(MainWindow)
+    # science.setupUi(MainWindow)
     controller.start_handling_clicks()
     arm.start_handling_clicks()
     pds.start_handling_clicks()
-    science.start_handling_clicks()
+    # science.start_handling_clicks()
 
     tab_widget.addTab(controller_tab, "Controller")
     tab_widget.addTab(arm_tab, "Arm")
     tab_widget.addTab(pds_tab, "PDS")
-    tab_widget.addTab(science_tab, "Science")
+    # tab_widget.addTab(science_tab, "Science")
 
     ros_thread = Ros_thread(1, "ros-thread")
     ros_thread.start()

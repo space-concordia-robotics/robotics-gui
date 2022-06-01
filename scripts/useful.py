@@ -21,7 +21,7 @@ class Log_browser(QtWidgets.QWidget):
     def __init__(self,
                  width: float,
                  height: float,
-                 parent: QtWidgets.QMainWindow = None):
+                 parent: QtWidgets.QWidget = None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -119,7 +119,7 @@ class Stream(QtWidgets.QWidget):
     def __init__(self,
                  width: float,
                  height: float,
-                 parent: QtWidgets.QMainWindow = None):
+                 parent: QtWidgets.QWidget = None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -142,7 +142,7 @@ class Header(QtWidgets.QWidget):
     def __init__(self,
                  width: float,
                  height: float,
-                 parent: QtWidgets.QMainWindow = None):
+                 parent: QtWidgets.QWidget = None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -225,7 +225,7 @@ class Header(QtWidgets.QWidget):
         temp_logo.setPixmap(
             QtGui.QPixmap(
                 os.path.join(os.path.dirname(__file__),
-                             "../resource/therm_icon.jpg")))
+                             "../resource/therm_icon.png")))
         battery_logo.setPixmap(
             QtGui.QPixmap(
                 os.path.join(os.path.dirname(__file__),

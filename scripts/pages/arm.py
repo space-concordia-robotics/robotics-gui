@@ -30,7 +30,6 @@ class Arm(Arm_Ui):
         self.log_browser.append_to_browser("\n")
 
     def display_currents(self, data):
-        print(data)
         self.currents = tuple(data.effort)
         self.arm_table.display_currents(self.currents)
 
