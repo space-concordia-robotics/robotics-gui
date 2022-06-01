@@ -1,5 +1,7 @@
 from ui.arm_ui import Arm_Ui
-from useful import emergency_stop
+from useful import emergency_stop, ping_odroid, ping_mcu
+from PyQt5.QtWidgets import QShortcut
+from PyQt5.QtGui import QKeySequence
 
 
 class Arm(Arm_Ui):
@@ -7,6 +9,7 @@ class Arm(Arm_Ui):
     def __init__(self, width: float, height: float, parent=None):
         super().__init__(width=width, height=height, parent=parent)
         self.speed_multiplier = 1
+        self.currents = (0, 0, 0, 0, 0, 0)
         self.commands = {
             'ctrl-p': "ping arm mcu",
             'alt-p': "ping odroid",
@@ -26,19 +29,22 @@ class Arm(Arm_Ui):
                 f"'{command}': '{self.commands[command]}'")
         self.log_browser.append_to_browser("\n")
 
+    def display_currents(self, data):
+        print(data)
+        self.currents = tuple(data.effort)
+        self.arm_table.display_currents(self.currents)
+
     def homing(self):
         print("homing")
 
-    def reset_angles(self, tab_name: str):
-        if tab_name == "arm":
-            print("reset angles")
+    def reset_angles(self):
+        print("reset angles")
 
     def send_speed_multiplier(self):
         self.speed_multiplier = self.speed_multiplier_input.value()
-        print(self.speed_multiplier)
 
     def switch_controls(self):
-        """Switches betwee manual controls (keyboard) and mouse controls"""
+        """Switches betwee manual controls (keyboard) and regular controls (mouse)"""
 
         if self.manual_controls_button.isChecked():
             self.manual_arm_controls.show()
@@ -64,3 +70,20 @@ class Arm(Arm_Ui):
         self.homing_button.clicked.connect(self.homing)
         self.send_speed_multiplier_button.clicked.connect(
             self.send_speed_multiplier)
+
+        self.ping_odroid_sequence = QShortcut(QKeySequence("Alt+P"), self)
+        self.ping_odroid_sequence.activated.connect(lambda: ping_odroid("arm"))
+        self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
+        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("arm"))
+        self.emergency_stop_sequence = QShortcut(QKeySequence("Q"), self)
+        self.emergency_stop_sequence.activated.connect(
+            lambda: emergency_stop("arm"))
+
+        self.return_sequence = QShortcut(QKeySequence("Return"), self)
+        self.return_sequence.activated.connect(self.log_browser.run_command)
+
+        self.list_commands_sequence = QShortcut(QKeySequence("L"), self)
+        self.list_commands_sequence.activated.connect(self.list_commands)
+
+        self.reset_angles_sequence = QShortcut(QKeySequence("O"), self)
+        self.reset_angles_sequence.activated.connect(self.reset_angles)

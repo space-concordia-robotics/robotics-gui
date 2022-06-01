@@ -1,5 +1,7 @@
 from ui.controller_ui import Controller_Ui
-from useful import emergency_stop
+from useful import emergency_stop, ping_odroid, ping_mcu
+from PyQt5.QtWidgets import QShortcut
+from PyQt5.QtGui import QKeySequence
 
 
 class Controller(Controller_Ui):
@@ -35,17 +37,16 @@ class Controller(Controller_Ui):
                 f"'{command}': '{self.commands[command]}'")
         self.log_browser.append_to_browser("\n")
 
-    def change_throttle(self, tab: str, change: str):
+    def change_throttle(self, change: str):
         """Changes the current throttle value either increasing or
         decreasing and outputs the new value to the throttle label"""
 
-        if tab == "controller":
-            if change == "+" and not self.throttle >= 1:
-                # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
-                self.throttle = (self.throttle * 10 + 0.50) / 10
-            elif change == "-" and not self.throttle <= 0:
-                self.throttle = (self.throttle * 10 - 0.50) / 10
-            self.throttle_value.setText(f"{self.throttle}")
+        if change == "+" and not self.throttle >= 1:
+            # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
+            self.throttle = (self.throttle * 10 + 0.50) / 10
+        elif change == "-" and not self.throttle <= 0:
+            self.throttle = (self.throttle * 10 - 0.50) / 10
+        self.throttle_value.setText(f"{self.throttle}")
 
     def display_currents(self, data):
         self.currents = tuple(data.effort)
@@ -69,3 +70,32 @@ class Controller(Controller_Ui):
 
         self.controller_left.pressed.connect(lambda: self.set_velocity(3))
         self.controller_left.released.connect(lambda: self.reset_velocity(3))
+
+        self.ping_odroid_sequence = QShortcut(QKeySequence("Alt+P"), self)
+        self.ping_odroid_sequence.activated.connect(
+            lambda: ping_odroid("controller"))
+        self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
+        self.ping_mcu_sequence.activated.connect(
+            lambda: ping_mcu("controller"))
+        self.emergency_stop_sequence = QShortcut(QKeySequence("Q"), self)
+        self.emergency_stop_sequence.activated.connect(
+            lambda: emergency_stop("controller"))
+
+        self.return_sequence = QShortcut(QKeySequence("Return"), self)
+        self.return_sequence.activated.connect(self.log_browser.run_command)
+
+        self.list_commands_sequence = QShortcut(QKeySequence("L"), self)
+        self.list_commands_sequence.activated.connect(self.list_commands)
+
+        self.inc_throttle_sequence = QShortcut(QKeySequence("U"), self)
+        self.inc_throttle_sequence.activated.connect(
+            lambda: self.change_throttle("+"))
+
+        self.dec_throttle_sequence = QShortcut(QKeySequence("I"), self)
+        self.dec_throttle_sequence.activated.connect(
+            lambda: self.change_throttle("-"))
+
+        self.controller_up.setShortcut("W")
+        self.controller_down.setShortcut("S")
+        self.controller_right.setShortcut("D")
+        self.controller_left.setShortcut("A")

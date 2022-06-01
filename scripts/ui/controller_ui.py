@@ -20,7 +20,7 @@ class Controller_Ui(QtWidgets.QWidget):
         self.height = height
         self.parent = parent
 
-    def setupUi(self, MainWindow: QtWidgets.QMainWindow):
+    def setupUi(self, MainWindow):
         self.list_commands_button = QtWidgets.QPushButton(self.parent)
         self.list_commands_button.setGeometry(
             QtCore.QRect(4.75 * self.width / 6, 4 * self.height / 7,

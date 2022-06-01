@@ -1,4 +1,3 @@
-pynput
 pyqt5
 rospy
 pyyaml

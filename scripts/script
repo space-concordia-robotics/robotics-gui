@@ -1,70 +1,16 @@
 #!/usr/bin/env python
 
-from useful import ping_mcu, ping_odroid, emergency_stop, Header
+from useful import Header
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Currents import Currents
 from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtWidgets, QtCore
 from pages.controller import Controller
 from pages.science import Science
-from pynput import keyboard
 from pages.arm import Arm
 from pages.pds import Pds
 import threading
 import rospy
-
-
-def on_press(function, tab_name: str, args=[]):
-    if not tabs[tab_name].log_browser.line_edit.hasFocus():
-        function(tab_name, *args) if args else function(tab_name)
-
-
-class Key_capture_thread(threading.Thread):
-
-    def __init__(self, threadID: int, name: str):
-        threading.Thread.__init__(self)
-        self.tab_name = ""
-        self.threadID = threadID
-        self.name = name
-
-    def list_commands(self, tab_name: str):
-        tabs[tab_name].list_commands()
-
-    def run(self):
-        hotkeys = {
-            "<ctrl>+p":
-            lambda: on_press(ping_mcu, self.tab_name),
-            "<alt>+p":
-            lambda: on_press(ping_odroid, self.tab_name),
-            "q":
-            lambda: on_press(emergency_stop, self.tab_name),
-            "l":
-            lambda: on_press(self.list_commands, self.tab_name),
-            "u":
-            lambda: on_press(controller.change_throttle, self.tab_name, ["+"]),
-            "i":
-            lambda: on_press(controller.change_throttle, self.tab_name, ["-"]),
-            "o":
-            lambda: on_press(arm.reset_angles, self.tab_name),
-            "<ctrl>+<shift>+r":
-            lambda: on_press(pds.toggle_all_motors, self.tab_name),
-        }
-
-        self.tab_name = tab_widget.currentWidget().objectName()
-
-        def send_command(key: keyboard.Key):
-            self.tab_name = tab_widget.currentWidget().objectName()
-            if key == keyboard.Key.enter:
-                if self.tab_name == "pds" and not pds.fan1_speed_input.hasFocus(
-                ) and not pds.fan2_speed_input.hasFocus():
-                    pds.log_browser.run_command()
-                else:
-                    tabs[self.tab_name].log_browser.run_command()
-
-        with keyboard.GlobalHotKeys(hotkeys) as hotkey_listener:
-            with keyboard.Listener(on_press=send_command) as enter_listener:
-                enter_listener.join()
-                hotkey_listener.join()
 
 
 class Ros_thread(threading.Thread):
@@ -82,7 +28,9 @@ class Ros_thread(threading.Thread):
                 ("wheel_motor_currents", Currents,
                  controller.display_currents),
             ],  # wheel topics
-            [],  # arm topics
+            [
+                ("arm_motor_currents", Currents, arm.display_currents),
+            ],  # arm topics
             [
                 ("wheel_motor_currents", Currents, pds.display_currents),
             ],  # pds topics
@@ -100,12 +48,19 @@ class Ros_thread(threading.Thread):
             self.subbed_topics.append(
                 rospy.Subscriber(*topic))  # subs to new page topics
 
+    def unregister_all(self):
+        self.battery_temps.unregister()
+        self.battery_voltage.unregister()
+        for i in reversed(range(len(self.subbed_topics))):
+            self.subbed_topics[i].unregister()
+            self.subbed_topics.pop()
+
     def run(self):
         # these 2 topics are needed for all tabs since they are used outside the tab widget
-        battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
-                                         header.update_temps)
-        battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
-                                           header.update_voltage)
+        self.battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
+                                              header.update_temps)
+        self.battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
+                                                header.update_voltage)
 
         self.subscribe_to_topics(
             0  # 0 just signifies the topics of the first tab since this is the first tab displayed
@@ -118,7 +73,7 @@ if __name__ == '__main__':
     rospy.init_node("gui_controller", anonymous=True)
 
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
+    MainWindow = QtWidgets.QWidget()
     MainWindow.setObjectName("MainWindow")
 
     # used for adaptive window size, gets the screen size of the current display
@@ -147,13 +102,10 @@ if __name__ == '__main__':
         "science": science,
     }
 
-    centralWidget = QtWidgets.QWidget(MainWindow)
-    centralWidget.setObjectName("centralwidget")
-
-    header = Header(width, height, centralWidget)
+    header = Header(width, height, MainWindow)
     header.setup()
 
-    tab_widget = QtWidgets.QTabWidget(centralWidget)
+    tab_widget = QtWidgets.QTabWidget(MainWindow)
     tab_widget.setGeometry(QtCore.QRect(0, 70, width, 0.87 * height))
 
     controller_tab.setObjectName("controller")
@@ -175,10 +127,7 @@ if __name__ == '__main__':
     tab_widget.addTab(pds_tab, "PDS")
     tab_widget.addTab(science_tab, "Science")
 
-    MainWindow.setCentralWidget(centralWidget)
-    keyboard_thread = Key_capture_thread(1, "key-capture-thread")
-    keyboard_thread.start()
-    ros_thread = Ros_thread(2, "ros-thread")
+    ros_thread = Ros_thread(1, "ros-thread")
     ros_thread.start()
 
     MainWindow.setWindowTitle("Rover Controller")
@@ -186,4 +135,9 @@ if __name__ == '__main__':
 
     tab_widget.currentChanged.connect(ros_thread.subscribe_to_topics)
 
-    sys.exit(app.exec_())
+    def exit_():
+        app.exec_()
+        ros_thread.unregister_all()
+        exit()
+
+    sys.exit(exit_())

@@ -418,6 +418,15 @@ class Arm_table(QtWidgets.QWidget):
         self.x = x or 5 * self.width / 16
         self.y = y or self.height / 15
 
+    def display_currents(self, currents):
+        print(currents)
+        self.m1_current.setText(f"{currents[0]}")
+        self.m2_current.setText(f"{currents[1]}")
+        self.m3_current.setText(f"{currents[2]}")
+        self.m4_current.setText(f"{currents[3]}")
+        self.m5_current.setText(f"{currents[4]}")
+        self.m6_current.setText(f"{currents[5]}")
+
     def setup(self):
         self.table_frame_3 = QtWidgets.QFrame(self.parent)
         self.table_frame_3.setGeometry(
