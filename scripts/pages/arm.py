@@ -2,6 +2,8 @@ from ui.arm_ui import Arm_Ui
 from useful import emergency_stop, ping_odroid, ping_mcu
 from PyQt5.QtWidgets import QShortcut
 from PyQt5.QtGui import QKeySequence
+from PyQt5.QtCore import Qt
+from mcu_control.msg._Currents import Currents
 
 
 class Arm(Arm_Ui):
@@ -29,7 +31,7 @@ class Arm(Arm_Ui):
                 f"'{command}': '{self.commands[command]}'")
         self.log_browser.append_to_browser("\n")
 
-    def display_currents(self, data):
+    def display_currents(self, data: Currents):
         self.currents = tuple(data.effort)
         self.arm_table.display_currents(self.currents)
 
@@ -57,7 +59,7 @@ class Arm(Arm_Ui):
             self.claw_controls_widget.show()
 
     def start_handling_clicks(self):
-        """This method is for grouping all button click methods for 
+        """This method is for grouping all button click methods for
         the Rover Arm Page"""
 
         self.switch_controls()
@@ -74,15 +76,15 @@ class Arm(Arm_Ui):
         self.ping_odroid_sequence.activated.connect(lambda: ping_odroid("arm"))
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("arm"))
-        self.emergency_stop_sequence = QShortcut(QKeySequence("Q"), self)
+        self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(
             lambda: emergency_stop("arm"))
 
-        self.return_sequence = QShortcut(QKeySequence("Return"), self)
-        self.return_sequence.activated.connect(self.log_browser.run_command)
+        self.log_browser.line_edit.returnPressed.connect(
+            self.log_browser.run_command)
 
-        self.list_commands_sequence = QShortcut(QKeySequence("L"), self)
+        self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)
 
-        self.reset_angles_sequence = QShortcut(QKeySequence("O"), self)
+        self.reset_angles_sequence = QShortcut(Qt.Key_O, self)
         self.reset_angles_sequence.activated.connect(self.reset_angles)

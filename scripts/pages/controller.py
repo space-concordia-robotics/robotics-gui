@@ -2,6 +2,8 @@ from ui.controller_ui import Controller_Ui
 from useful import emergency_stop, ping_odroid, ping_mcu
 from PyQt5.QtWidgets import QShortcut
 from PyQt5.QtGui import QKeySequence
+from PyQt5.QtCore import Qt
+from mcu_control.msg._Currents import Currents
 
 
 class Controller(Controller_Ui):
@@ -48,12 +50,12 @@ class Controller(Controller_Ui):
             self.throttle = (self.throttle * 10 - 0.50) / 10
         self.throttle_value.setText(f"{self.throttle}")
 
-    def display_currents(self, data):
+    def display_currents(self, data: Currents):
         self.currents = tuple(data.effort)
         self.controller_table.display_currents(self.currents)
 
     def start_handling_clicks(self):
-        """This method is for grouping all button click methods for 
+        """This method is for grouping all button click methods for
         the Rover Controller Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
@@ -77,21 +79,21 @@ class Controller(Controller_Ui):
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(
             lambda: ping_mcu("controller"))
-        self.emergency_stop_sequence = QShortcut(QKeySequence("Q"), self)
+        self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(
             lambda: emergency_stop("controller"))
 
-        self.return_sequence = QShortcut(QKeySequence("Return"), self)
-        self.return_sequence.activated.connect(self.log_browser.run_command)
+        self.log_browser.line_edit.returnPressed.connect(
+            self.log_browser.run_command)
 
-        self.list_commands_sequence = QShortcut(QKeySequence("L"), self)
+        self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)
 
-        self.inc_throttle_sequence = QShortcut(QKeySequence("U"), self)
+        self.inc_throttle_sequence = QShortcut(Qt.Key_U, self)
         self.inc_throttle_sequence.activated.connect(
             lambda: self.change_throttle("+"))
 
-        self.dec_throttle_sequence = QShortcut(QKeySequence("I"), self)
+        self.dec_throttle_sequence = QShortcut(Qt.Key_I, self)
         self.dec_throttle_sequence.activated.connect(
             lambda: self.change_throttle("-"))
 

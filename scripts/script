@@ -32,7 +32,8 @@ class Ros_thread(threading.Thread):
                 ("arm_motor_currents", Currents, arm.display_currents),
             ],  # arm topics
             [
-                ("wheel_motor_currents", Currents, pds.display_currents),
+                ("wheel_motor_currents", Currents, pds.display_wheel_currents),
+                ("arm_motor_currents", Currents, pds.display_arm_currents)
             ],  # pds topics
             [],  # science topics
         )
@@ -70,7 +71,7 @@ class Ros_thread(threading.Thread):
 if __name__ == '__main__':
     import sys
 
-    rospy.init_node("gui_controller", anonymous=True)
+    rospy.init_node("gui_controller")
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QWidget()

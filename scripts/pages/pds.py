@@ -2,6 +2,8 @@ from ui.pds_ui import Pds_Ui
 from useful import emergency_stop, ping_odroid, ping_mcu
 from PyQt5.QtWidgets import QShortcut
 from PyQt5.QtGui import QKeySequence
+from PyQt5.QtCore import Qt
+from mcu_control.msg._Currents import Currents
 
 
 class Pds(Pds_Ui):
@@ -27,9 +29,13 @@ class Pds(Pds_Ui):
                 f"'{command}': '{self.commands[command]}'")
         self.log_browser.append_to_browser("\n")
 
-    def display_currents(self, data):
-        self.currents = tuple(data.effort)
-        self.controller_table.display_currents(self.currents)
+    def display_wheel_currents(self, data: Currents):
+        self.wheel_currents = tuple(data.effort)
+        self.controller_table.display_currents(self.wheel_currents)
+
+    def display_arm_currents(self, data: Currents):
+        self.arm_currents = tuple(data.effort)
+        self.arm_motor_table.display_currents(self.arm_currents)
 
     def reset_general_flags(self):
         print("reset gen flags")
@@ -49,7 +55,7 @@ class Pds(Pds_Ui):
     def toggle_motor(self, index: int, state: bool = None):
         exec(f"print(self.motor{index}.isChecked())")
 
-    def check_on_motors(self):
+    def check_on_motors(self) -> bool:
         return self.motor1.isChecked() or self.motor2.isChecked(
         ) or self.motor3.isChecked() or self.motor4.isChecked(
         ) or self.motor5.isChecked() or self.motor6.isChecked()
@@ -100,14 +106,13 @@ class Pds(Pds_Ui):
         self.ping_odroid_sequence.activated.connect(lambda: ping_odroid("pds"))
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("pds"))
-        self.emergency_stop_sequence = QShortcut(QKeySequence("Q"), self)
+        self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(
             lambda: emergency_stop("pds"))
 
-        self.return_sequence = QShortcut(QKeySequence("Return"), self)
-        self.return_sequence.activated.connect(self.log_browser.run_command)
+        self.log_browser.line_edit.returnPressed.connect(self.handle_return)
 
-        self.list_commands_sequence = QShortcut(QKeySequence("L"), self)
+        self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)
 
         self.toggle_all_motors_sequence = QShortcut(
