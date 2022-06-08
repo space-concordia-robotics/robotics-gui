@@ -14,11 +14,13 @@ from tables import Controller_table
 
 class Controller_Ui(QtWidgets.QWidget):
 
-    def __init__(self, width: float, height: float, parent=None):
+    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
+
+        self.setupUi(MainWindow)
 
     def setupUi(self, MainWindow):
         self.list_commands_button = QtWidgets.QPushButton(self.parent)

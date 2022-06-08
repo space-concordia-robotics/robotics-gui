@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 
-from useful import Header
-from mcu_control.msg._ThermistorTemps import ThermistorTemps
-from mcu_control.msg._Currents import Currents
-from mcu_control.msg._Voltage import Voltage
-from PyQt5 import QtWidgets, QtCore
-from pages.controller import Controller
-from pages.science import Science
-from pages.arm import Arm
-from pages.pds import Pds
 import threading
+
 import rospy
+from mcu_control.msg._Currents import Currents
+from mcu_control.msg._ThermistorTemps import ThermistorTemps
+from mcu_control.msg._Voltage import Voltage
+from PyQt5 import QtCore, QtWidgets
+
+from pages.arm import Arm
+from pages.controller import Controller
+from pages.pds import Pds
+from pages.science import Science
+from useful import Header
 
 
 class Ros_thread(threading.Thread):
@@ -18,6 +20,7 @@ class Ros_thread(threading.Thread):
     def __init__(self, threadID: int, name: str):
         threading.Thread.__init__(self)
         self.threadID = threadID
+        self.daemon = True  # close with parent
         self.name = name
         self.subbed_topics = []
 
@@ -25,15 +28,20 @@ class Ros_thread(threading.Thread):
         # each item (topic) in said collection is a tuple that contains the arguments needed for the Subscriber method
         self.topics = (
             [
-                ("wheel_motor_currents", Currents,
-                 controller.display_currents),
+                ("wheel_motor_currents", Currents, controller.display_currents),
+                ("battery_temps", ThermistorTemps, header.update_temps),
+                ("battery_voltage", Voltage, header.update_voltage),
             ],  # wheel topics
             [
                 ("arm_motor_currents", Currents, arm.display_currents),
+                ("battery_temps", ThermistorTemps, header.update_temps),
+                ("battery_voltage", Voltage, header.update_voltage),
             ],  # arm topics
             [
                 ("wheel_motor_currents", Currents, pds.display_wheel_currents),
-                ("arm_motor_currents", Currents, pds.display_arm_currents)
+                ("arm_motor_currents", Currents, pds.display_arm_currents),
+                ("battery_temps", ThermistorTemps, header.update_temps),
+                ("battery_voltage", Voltage, header.update_voltage),
             ],  # pds topics
             [],  # science topics
         )
@@ -49,23 +57,22 @@ class Ros_thread(threading.Thread):
             self.subbed_topics.append(
                 rospy.Subscriber(*topic))  # subs to new page topics
 
-    def unregister_all(self):
-        self.battery_temps.unregister()
-        self.battery_voltage.unregister()
-        for i in reversed(range(len(self.subbed_topics))):
-            self.subbed_topics[i].unregister()
-            self.subbed_topics.pop()
-
     def run(self):
         # these 2 topics are needed for all tabs since they are used outside the tab widget
-        self.battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
-                                              header.update_temps)
-        self.battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
-                                                header.update_voltage)
+        # self.battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
+        #                                       header.update_temps)
+        # self.battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
+        #                                         header.update_voltage)
 
         self.subscribe_to_topics(
             0  # 0 just signifies the topics of the first tab since this is the first tab displayed
         )
+
+        from time import sleep
+
+        while True:
+            print(controller.velocity)
+            sleep(1)
 
 
 if __name__ == '__main__':
@@ -79,8 +86,8 @@ if __name__ == '__main__':
 
     # used for adaptive window size, gets the screen size of the current display
     screen = QtWidgets.QDesktopWidget().screenGeometry(-1)
-    width = screen.width()  # 1920 x 1080 for me
-    height = screen.height()
+    width: int = screen.width()  # 1920 x 1080 for me
+    height: int = screen.height()
     MainWindow.resize(width, height)
     MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n"
                              "color: rgb(238, 238, 236);")
@@ -88,19 +95,19 @@ if __name__ == '__main__':
     controller_tab = QtWidgets.QWidget()
     arm_tab = QtWidgets.QWidget()
     pds_tab = QtWidgets.QWidget()
-    # science_tab = QtWidgets.QWidget()
+    science_tab = QtWidgets.QWidget()
 
-    controller = Controller(width, height, controller_tab)
-    arm = Arm(width, height, arm_tab)
-    pds = Pds(width, height, pds_tab)
-    # science = Science(width, height, science_tab)
+    controller = Controller(width, height, controller_tab, MainWindow)
+    arm = Arm(width, height, arm_tab, MainWindow)
+    pds = Pds(width, height, pds_tab, MainWindow)
+    science = Science(width, height, science_tab, MainWindow)
 
     global tabs
     tabs = {
         "controller": controller,
         "arm": arm,
         "pds": pds,
-        # "science": science,
+        "science": science,
     }
 
     header = Header(width, height, MainWindow)
@@ -112,33 +119,18 @@ if __name__ == '__main__':
     controller_tab.setObjectName("controller")
     arm_tab.setObjectName("arm")
     pds_tab.setObjectName("pds")
-    # science_tab.setObjectName("science")
-
-    controller.setupUi(MainWindow)
-    arm.setupUi(MainWindow)
-    pds.setupUi(MainWindow)
-    # science.setupUi(MainWindow)
-    controller.start_handling_clicks()
-    arm.start_handling_clicks()
-    pds.start_handling_clicks()
-    # science.start_handling_clicks()
+    science_tab.setObjectName("science")
 
     tab_widget.addTab(controller_tab, "Controller")
     tab_widget.addTab(arm_tab, "Arm")
     tab_widget.addTab(pds_tab, "PDS")
-    # tab_widget.addTab(science_tab, "Science")
+    tab_widget.addTab(science_tab, "Science")
 
     ros_thread = Ros_thread(1, "ros-thread")
     ros_thread.start()
+    tab_widget.currentChanged.connect(ros_thread.subscribe_to_topics)
 
     MainWindow.setWindowTitle("Rover Controller")
     MainWindow.show()
 
-    tab_widget.currentChanged.connect(ros_thread.subscribe_to_topics)
-
-    def exit_():
-        app.exec_()
-        ros_thread.unregister_all()
-        exit()
-
-    sys.exit(exit_())
+    sys.exit(app.exec_())

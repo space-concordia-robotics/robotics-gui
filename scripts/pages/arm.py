@@ -1,15 +1,15 @@
-from ui.arm_ui import Arm_Ui
-from useful import emergency_stop, ping_odroid, ping_mcu
-from PyQt5.QtWidgets import QShortcut
-from PyQt5.QtGui import QKeySequence
-from PyQt5.QtCore import Qt
 from mcu_control.msg._Currents import Currents
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QShortcut
+from ui.arm_ui import Arm_Ui
+from useful import emergency_stop, ping_mcu, ping_odroid
 
 
 class Arm(Arm_Ui):
 
-    def __init__(self, width: float, height: float, parent=None):
-        super().__init__(width=width, height=height, parent=parent)
+    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
+        super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
         self.speed_multiplier = 1
         self.currents = (0, 0, 0, 0, 0, 0)
         self.commands = {
@@ -21,6 +21,8 @@ class Arm(Arm_Ui):
             "Keys 'w' to 'u'": "move motors 1-6 forwards",
             "Keys 's' to 'j'": "move motors 1-6 backwards"
         }
+
+        self.start_handling_clicks()
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts

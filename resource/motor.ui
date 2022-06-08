@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1800</width>
-    <height>900</height>
+    <height>1080</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -765,7 +765,7 @@ color: rgb(0, 0, 0);</string>
       <x>40</x>
       <y>520</y>
       <width>511</width>
-      <height>341</height>
+      <height>381</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -834,8 +834,8 @@ color: rgb(0, 0, 0);</string>
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>310</y>
+       <x>40</x>
+       <y>340</y>
        <width>411</width>
        <height>22</height>
       </rect>
@@ -1026,7 +1026,7 @@ color: rgb(0, 0, 0);</string>
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>1180</x>

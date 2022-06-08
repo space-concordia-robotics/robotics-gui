@@ -1,9 +1,13 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
 import os
+
+from ping_acknowledgment.srv._PingResponse import PingResponse
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 def ping_mcu(tab_name: str):
     print(f"ping rover in mcu {tab_name}")
+
+    print(dir(PingResponse))
 
 
 def ping_odroid(tab_name: str):
@@ -48,7 +52,7 @@ class Log_browser(QtWidgets.QWidget):
 
         command = self.line_edit.text()
         if command.strip() != "":
-            self.append_to_browser(f"{command} \n")
+            self.append_to_browser(f"{command} \n")  # filler code
         self.line_edit.clear()
         self.line_edit.clearFocus()
 

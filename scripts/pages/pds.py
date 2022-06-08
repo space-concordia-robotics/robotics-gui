@@ -1,15 +1,15 @@
-from ui.pds_ui import Pds_Ui
-from useful import emergency_stop, ping_odroid, ping_mcu
-from PyQt5.QtWidgets import QShortcut
-from PyQt5.QtGui import QKeySequence
-from PyQt5.QtCore import Qt
 from mcu_control.msg._Currents import Currents
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QShortcut
+from ui.pds_ui import Pds_Ui
+from useful import emergency_stop, ping_mcu, ping_odroid
 
 
 class Pds(Pds_Ui):
 
-    def __init__(self, width: float, height: float, parent=None):
-        super().__init__(width=width, height=height, parent=parent)
+    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
+        super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
         self.fan1_speed = 100.0
         self.fan2_speed = 100.0
         self.commands = {
@@ -19,6 +19,8 @@ class Pds(Pds_Ui):
             'l': "view key commands",
             'ctrl-shift-r': "turn on / off all motors"
         }
+
+        self.start_handling_clicks()
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
