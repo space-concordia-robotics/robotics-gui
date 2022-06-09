@@ -12,7 +12,23 @@ from pages.arm import Arm
 from pages.controller import Controller
 from pages.pds import Pds
 from pages.science import Science
-from useful import Header
+from useful import Header, MaxSizeList
+
+
+class Worker(threading.Thread):
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.daemon = True
+        self.commands = MaxSizeList(10)
+
+    def run(self):
+        while True:
+            if self.commands.get_list():
+                self.commands.get_list()[0][0](
+                    *self.commands.get_list()[0][1]) if self.commands.get_list()[0][1] else self.commands.get_list()[0][0]()
+                self.commands.get_list().pop(0)
 
 
 class Ros_thread(threading.Thread):
@@ -26,59 +42,63 @@ class Ros_thread(threading.Thread):
 
         # each item in this tuple is a collection of all topics needed for the according page
         # each item (topic) in said collection is a tuple that contains the arguments needed for the Subscriber method
+        # the 1 in for the queue size and the None is for the callback args
         self.topics = (
             [
-                ("wheel_motor_currents", Currents, controller.display_currents),
-                ("battery_temps", ThermistorTemps, header.update_temps),
-                ("battery_voltage", Voltage, header.update_voltage),
+                ("wheel_motor_currents", Currents,
+                 lambda data: worker.commands.append([controller.display_currents, [data]]), None, 1),
             ],  # wheel topics
             [
-                ("arm_motor_currents", Currents, arm.display_currents),
-                ("battery_temps", ThermistorTemps, header.update_temps),
-                ("battery_voltage", Voltage, header.update_voltage),
+                ("arm_motor_currents", Currents, lambda data: worker.commands.append(
+                    [arm.display_currents, [data]]), None, 1),
             ],  # arm topics
             [
-                ("wheel_motor_currents", Currents, pds.display_wheel_currents),
-                ("arm_motor_currents", Currents, pds.display_arm_currents),
-                ("battery_temps", ThermistorTemps, header.update_temps),
-                ("battery_voltage", Voltage, header.update_voltage),
+                ("wheel_motor_currents", Currents,
+                 lambda data: worker.commands.append(
+                     [pds.display_wheel_currents, [data]]), None, 1),
+                ("arm_motor_currents", Currents, lambda data: worker.commands.append(
+                    [pds.display_arm_currents, [data]]), None, 1),
             ],  # pds topics
             [],  # science topics
         )
 
     def subscribe_to_topics(self, page_index: int):
-        """Called on tab change to unsub to old topics and 
+        """Called on tab change to unsub to old topics and
         replace them with the ones needed for the new tab"""
 
         for i in reversed(range(len(self.subbed_topics))):
             self.subbed_topics[i].unregister()  # unsubs to all previous topics
             self.subbed_topics.pop()
+        worker.commands.clear()
         for topic in self.topics[page_index]:
             self.subbed_topics.append(
                 rospy.Subscriber(*topic))  # subs to new page topics
 
     def run(self):
         # these 2 topics are needed for all tabs since they are used outside the tab widget
-        # self.battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
-        #                                       header.update_temps)
-        # self.battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
-        #                                         header.update_voltage)
+        self.battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
+                                              lambda data: worker.commands.append([header.update_temps, [data]]), queue_size=1)
+        self.battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
+                                                lambda data: worker.commands.append([header.update_voltage, [data]]), queue_size=1)
 
         self.subscribe_to_topics(
             0  # 0 just signifies the topics of the first tab since this is the first tab displayed
         )
 
-        from time import sleep
+        # from time import sleep
 
-        while True:
-            print(controller.velocity)
-            sleep(1)
+        # while True:
+        #     print(controller.throttle)
+        #     sleep(1)
 
 
 if __name__ == '__main__':
     import sys
 
     rospy.init_node("gui_controller")
+
+    worker = Worker(2, "worker")
+    worker.start()
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QWidget()

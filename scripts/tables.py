@@ -419,7 +419,6 @@ class Arm_table(QtWidgets.QWidget):
         self.y = y or self.height / 15
 
     def display_currents(self, currents):
-        print(currents)
         self.m1_current.setText(f"{currents[0]}")
         self.m2_current.setText(f"{currents[1]}")
         self.m3_current.setText(f"{currents[2]}")

@@ -1,3 +1,4 @@
+from time import sleep
 from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -11,8 +12,6 @@ class Controller(Controller_Ui):
     def __init__(self, width: float, height: float, parent=None, MainWindow=None):
         super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
         self.throttle = 0.50
-        self.voltage = 0
-        self.temps = (0, 0, 0)
         self.currents = (0, 0, 0, 0, 0, 0)
         self.velocity = [0, 0, 0, 0]
         self.commands = {
@@ -53,8 +52,10 @@ class Controller(Controller_Ui):
         self.throttle_value.setText(f"{self.throttle}")
 
     def display_currents(self, data: Currents):
-        self.currents = tuple(data.effort)
-        self.controller_table.display_currents(self.currents)
+        if tuple(data.effort) != self.currents:
+            self.currents = tuple(data.effort)
+            self.controller_table.display_currents(self.currents)
+            # print(self.currents)
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for

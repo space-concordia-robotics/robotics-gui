@@ -20,6 +20,25 @@ def emergency_stop(tab_name: str):
     print(f"emergency stop {tab_name}")
 
 
+class MaxSizeList(object):
+    def __init__(self, max_size: int) -> None:
+        self.max_size = max_size
+        self.ls = []
+
+    def get_list(self) -> list:
+        return self.ls
+
+    def clear(self):
+        self.ls.clear()
+
+    def append(self, data):
+        if len(self.ls) <= self.max_size:
+            self.ls.append(data)
+        else:
+            self.ls.pop(0)
+            self.ls.append(data)
+
+
 class Log_browser(QtWidgets.QWidget):
 
     def __init__(self,
@@ -45,6 +64,7 @@ class Log_browser(QtWidgets.QWidget):
         like scrolling to the bottom"""
 
         self.text_browser.append(str(data))
+        self.text_browser.moveCursor(QtGui.QTextCursor.End)
         self.text_browser.ensureCursorVisible()
 
     def submit(self):
