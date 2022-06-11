@@ -13,7 +13,7 @@ from pages.arm import Arm
 from pages.controller import Controller
 from pages.pds import Pds
 from pages.science import Science
-from useful import Header, MaxSizeList
+from useful import Header, Queue
 
 
 class Worker(threading.Thread):
@@ -23,7 +23,7 @@ class Worker(threading.Thread):
         self.threadID = threadID
         self.name = name
         self.daemon = True
-        self.commands = MaxSizeList(10)
+        self.commands = Queue(10)
 
     def run(self):
         while not rospy.is_shutdown():
@@ -46,7 +46,7 @@ class Ros_thread(threading.Thread):
         # each item in this tuple is a collection of all topics needed for the according page
         # each item (topic) in said collection is a tuple that contains the arguments needed for the Subscriber method
         # the 1 in for the queue size and the None is for the callback args
-        # the lambda function used appends the passed function and its args to the MaxSizeList Queue so they are run in order
+        # the lambda function used appends the passed function and its args to the Queue Queue so they are run in order
         self.topics = (
             [
                 ("wheel_motor_currents", Currents,
@@ -87,12 +87,6 @@ class Ros_thread(threading.Thread):
         self.subscribe_to_topics(
             0  # 0 just signifies the topics of the first tab since this is the first tab displayed
         )
-
-        # from time import sleep
-
-        # while True:
-        #     print(worker.commands.get_list())
-        #     sleep(1)
 
 
 if __name__ == '__main__':

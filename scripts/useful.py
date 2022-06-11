@@ -20,23 +20,23 @@ def emergency_stop(tab_name: str):
     print(f"emergency stop {tab_name}")
 
 
-class MaxSizeList(object):
-    def __init__(self, max_size: int) -> None:
-        self.max_size = max_size
-        self.ls = []
+class Queue(object):
+    def __init__(self, queue_size: int) -> None:
+        self.queue_size = queue_size
+        self.queue = []
 
     def get_list(self) -> list:
-        return self.ls
+        return self.queue
 
     def clear(self):
-        self.ls.clear()
+        self.queue.clear()
 
     def append(self, data):
-        if len(self.ls) <= self.max_size:
-            self.ls.append(data)
+        if len(self.queue) < self.queue_size:
+            self.queue.append(data)
         else:
-            self.ls.pop(0)
-            self.ls.append(data)
+            self.queue.pop(0)
+            self.queue.append(data)
 
 
 class Log_browser(QtWidgets.QWidget):

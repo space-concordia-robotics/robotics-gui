@@ -55,7 +55,6 @@ class Controller(Controller_Ui):
         if tuple(data.effort) != self.currents:
             self.currents = tuple(data.effort)
             self.controller_table.display_currents(self.currents)
-            # print(self.currents)
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for
