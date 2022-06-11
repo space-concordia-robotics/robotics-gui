@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import threading
+from time import sleep
 
 import rospy
 from mcu_control.msg._Currents import Currents
@@ -16,7 +17,8 @@ from useful import Header, MaxSizeList
 
 
 class Worker(threading.Thread):
-    def __init__(self, threadID, name):
+
+    def __init__(self, threadID: int, name: str):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
@@ -24,11 +26,12 @@ class Worker(threading.Thread):
         self.commands = MaxSizeList(10)
 
     def run(self):
-        while True:
+        while not rospy.is_shutdown():
             if self.commands.get_list():
                 self.commands.get_list()[0][0](
                     *self.commands.get_list()[0][1]) if self.commands.get_list()[0][1] else self.commands.get_list()[0][0]()
                 self.commands.get_list().pop(0)
+                sleep(0.01)
 
 
 class Ros_thread(threading.Thread):
@@ -43,21 +46,21 @@ class Ros_thread(threading.Thread):
         # each item in this tuple is a collection of all topics needed for the according page
         # each item (topic) in said collection is a tuple that contains the arguments needed for the Subscriber method
         # the 1 in for the queue size and the None is for the callback args
+        # the lambda function used appends the passed function and its args to the MaxSizeList Queue so they are run in order
         self.topics = (
             [
                 ("wheel_motor_currents", Currents,
-                 lambda data: worker.commands.append([controller.display_currents, [data]]), None, 1),
+                 lambda data: worker.commands.append((controller.display_currents, [data]))),
             ],  # wheel topics
             [
                 ("arm_motor_currents", Currents, lambda data: worker.commands.append(
-                    [arm.display_currents, [data]]), None, 1),
+                    (arm.display_currents, [data]))),
             ],  # arm topics
             [
                 ("wheel_motor_currents", Currents,
-                 lambda data: worker.commands.append(
-                     [pds.display_wheel_currents, [data]]), None, 1),
+                 lambda data: worker.commands.append((pds.display_wheel_currents, [data]))),
                 ("arm_motor_currents", Currents, lambda data: worker.commands.append(
-                    [pds.display_arm_currents, [data]]), None, 1),
+                    (pds.display_arm_currents, [data]))),
             ],  # pds topics
             [],  # science topics
         )
@@ -72,7 +75,7 @@ class Ros_thread(threading.Thread):
         worker.commands.clear()
         for topic in self.topics[page_index]:
             self.subbed_topics.append(
-                rospy.Subscriber(*topic))  # subs to new page topics
+                rospy.Subscriber(*topic, queue_size=1))  # subs to new page topics
 
     def run(self):
         # these 2 topics are needed for all tabs since they are used outside the tab widget
@@ -88,7 +91,7 @@ class Ros_thread(threading.Thread):
         # from time import sleep
 
         # while True:
-        #     print(controller.throttle)
+        #     print(worker.commands.get_list())
         #     sleep(1)
 
 
@@ -97,7 +100,7 @@ if __name__ == '__main__':
 
     rospy.init_node("gui_controller")
 
-    worker = Worker(2, "worker")
+    worker = Worker(1, "worker")
     worker.start()
 
     app = QtWidgets.QApplication(sys.argv)
@@ -134,7 +137,8 @@ if __name__ == '__main__':
     header.setup()
 
     tab_widget = QtWidgets.QTabWidget(MainWindow)
-    tab_widget.setGeometry(QtCore.QRect(0, 70, width, 0.87 * height))
+    tab_widget.setGeometry(QtCore.QRect(
+        0, height / 15.43, width, 0.87 * height))
 
     controller_tab.setObjectName("controller")
     arm_tab.setObjectName("arm")
@@ -146,7 +150,7 @@ if __name__ == '__main__':
     tab_widget.addTab(pds_tab, "PDS")
     tab_widget.addTab(science_tab, "Science")
 
-    ros_thread = Ros_thread(1, "ros-thread")
+    ros_thread = Ros_thread(2, "ros-thread")
     ros_thread.start()
     tab_widget.currentChanged.connect(ros_thread.subscribe_to_topics)
 
