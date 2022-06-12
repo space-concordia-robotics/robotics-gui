@@ -70,17 +70,12 @@ class Pds(Pds_Ui):
             for i in range(1, 7):
                 exec(f"self.motor{i}.setChecked(True)")
 
-    def handle_return(self):
-        if not self.fan1_speed_input.hasFocus(
-        ) and not self.fan2_speed_input.hasFocus():
-            self.log_browser.run_command()
-
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for 
         the Rover PDS Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(lambda: emergency_stop("pds"))
+        self.stop_button.clicked.connect(lambda: emergency_stop(self))
         self.reset_current_flags_button.clicked.connect(
             self.reset_current_flags)
         self.reset_general_flags_button.clicked.connect(
@@ -105,14 +100,12 @@ class Pds(Pds_Ui):
             lambda: self.set_fan_speed(2))
 
         self.ping_odroid_sequence = QShortcut(QKeySequence("Alt+P"), self)
-        self.ping_odroid_sequence.activated.connect(lambda: ping_odroid("pds"))
+        self.ping_odroid_sequence.activated.connect(lambda: ping_odroid(self))
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("pds"))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(
-            lambda: emergency_stop("pds"))
-
-        self.log_browser.line_edit.returnPressed.connect(self.handle_return)
+            lambda: emergency_stop(self))
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)

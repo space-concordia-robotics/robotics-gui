@@ -61,7 +61,7 @@ class Controller(Controller_Ui):
         the Rover Controller Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(lambda: emergency_stop("controller"))
+        self.stop_button.clicked.connect(lambda: emergency_stop(self))
 
         self.controller_up.pressed.connect(lambda: self.set_velocity(0))
         self.controller_up.released.connect(lambda: self.reset_velocity(0))
@@ -77,16 +77,13 @@ class Controller(Controller_Ui):
 
         self.ping_odroid_sequence = QShortcut(QKeySequence("Alt+P"), self)
         self.ping_odroid_sequence.activated.connect(
-            lambda: ping_odroid("controller"))
+            lambda: ping_odroid(self))
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(
             lambda: ping_mcu("controller"))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(
-            lambda: emergency_stop("controller"))
-
-        self.log_browser.line_edit.returnPressed.connect(
-            self.log_browser.run_command)
+            lambda: emergency_stop(self))
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)

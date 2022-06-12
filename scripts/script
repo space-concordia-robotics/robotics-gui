@@ -27,11 +27,14 @@ class Worker(threading.Thread):
 
     def run(self):
         while not rospy.is_shutdown():
-            if self.commands.get_list():
-                self.commands.get_list()[0][0](
-                    *self.commands.get_list()[0][1]) if self.commands.get_list()[0][1] else self.commands.get_list()[0][0]()
-                self.commands.get_list().pop(0)
-                sleep(0.01)
+            try:
+                if self.commands.get_list():
+                    self.commands.get_list()[0][0](
+                        *self.commands.get_list()[0][1]) if self.commands.get_list()[0][1] else self.commands.get_list()[0][0]()
+                    self.commands.get_list().pop(0)
+                    sleep(0.01)
+            except RuntimeError:
+                pass
 
 
 class Ros_thread(threading.Thread):
@@ -46,7 +49,7 @@ class Ros_thread(threading.Thread):
         # each item in this tuple is a collection of all topics needed for the according page
         # each item (topic) in said collection is a tuple that contains the arguments needed for the Subscriber method
         # the 1 in for the queue size and the None is for the callback args
-        # the lambda function used appends the passed function and its args to the Queue Queue so they are run in order
+        # the lambda function used appends the passed function and its args to the MaxSizeList Queue so they are run in order
         self.topics = (
             [
                 ("wheel_motor_currents", Currents,
@@ -112,19 +115,19 @@ if __name__ == '__main__':
     controller_tab = QtWidgets.QWidget()
     arm_tab = QtWidgets.QWidget()
     pds_tab = QtWidgets.QWidget()
-    science_tab = QtWidgets.QWidget()
+    # science_tab = QtWidgets.QWidget()
 
     controller = Controller(width, height, controller_tab, MainWindow)
     arm = Arm(width, height, arm_tab, MainWindow)
     pds = Pds(width, height, pds_tab, MainWindow)
-    science = Science(width, height, science_tab, MainWindow)
+    # science = Science(width, height, science_tab, MainWindow)
 
     global tabs
     tabs = {
         "controller": controller,
         "arm": arm,
         "pds": pds,
-        "science": science,
+        # "science": science,
     }
 
     header = Header(width, height, MainWindow)
@@ -137,12 +140,12 @@ if __name__ == '__main__':
     controller_tab.setObjectName("controller")
     arm_tab.setObjectName("arm")
     pds_tab.setObjectName("pds")
-    science_tab.setObjectName("science")
+    # science_tab.setObjectName("science")
 
     tab_widget.addTab(controller_tab, "Controller")
     tab_widget.addTab(arm_tab, "Arm")
     tab_widget.addTab(pds_tab, "PDS")
-    tab_widget.addTab(science_tab, "Science")
+    # tab_widget.addTab(science_tab, "Science")
 
     ros_thread = Ros_thread(2, "ros-thread")
     ros_thread.start()

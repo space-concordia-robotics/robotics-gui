@@ -1,23 +1,53 @@
 import os
+from datetime import datetime
 
-from ping_acknowledgment.srv._PingResponse import PingResponse
+import rospy
+from ping_acknowledgment.srv import PingResponse
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 def ping_mcu(tab_name: str):
     print(f"ping rover in mcu {tab_name}")
 
-    print(dir(PingResponse))
+
+def ping():
+    try:
+        ping_response = rospy.ServiceProxy('ping_response', PingResponse)
+        resp1 = ping_response("")
+        return resp1.response
+    except rospy.ServiceException as e:
+        return "Service call failed: " + str(e)
 
 
-def ping_odroid(tab_name: str):
-    print(f"ping odroid {tab_name}")
+def ping_odroid(tab):
+    browser_append = tab.log_browser.append_to_browser
+
+    browser_append("pinging odroid\n")
+
+    sent = datetime.now()
+    sent_ts = sent.strftime('%Y-%m-%dT%H:%M:%S') + \
+        ('-%02d' % (sent.microsecond / 10000))
+
+    ping()
+    received = datetime.now()
+    received_st = sent.strftime('%Y-%m-%dT%H:%M:%S') + \
+        ('-%02d' % (received.microsecond / 10000))
+
+    browser_append("Pinging server with ping_acknowledgment service")
+    browser_append(sent_ts)
+    browser_append("---")
+
+    browser_append("Received Response")
+    browser_append(received_st)
+
+    diff = received - sent
+    browser_append(f"Latency: {str(diff.total_seconds() * 1000)} ms\n")
 
 
-def emergency_stop(tab_name: str):
+def emergency_stop(tab):
     """Emergency stops the respective motor(s)"""
 
-    print(f"emergency stop {tab_name}")
+    print(f"emergency stop {tab}")
 
 
 class Queue(object):
@@ -126,15 +156,17 @@ class Log_browser(QtWidgets.QWidget):
         self.send_command_button = QtWidgets.QPushButton(self.layoutWidget)
         self.send_command_button.setObjectName("send_command_button")
         self.send_command_button.setText("Send")
-        self.send_command_button.pressed.connect(self.submit)
         self.clear_browser_button = QtWidgets.QPushButton()
         self.log_input.addWidget(self.clear_browser_button)
         self.clear_browser_button.setText("Clear")
         self.clear_browser_button.setObjectName("clear_browser_button")
-        self.clear_browser_button.pressed.connect(self.text_browser.clear)
         self.log_input.addWidget(self.send_command_button)
         self.verticalLayout.addLayout(self.log_input)
         self.log.addLayout(self.verticalLayout)
+
+        self.line_edit.returnPressed.connect(self.run_command)
+        self.clear_browser_button.pressed.connect(self.text_browser.clear)
+        self.send_command_button.pressed.connect(self.submit)
 
 
 # This is currently a place holder for the Stream component

@@ -68,22 +68,19 @@ class Arm(Arm_Ui):
         self.manual_controls_button.toggled.connect(self.switch_controls)
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(lambda: emergency_stop("arm"))
+        self.stop_button.clicked.connect(lambda: emergency_stop(self))
         self.reset_angles_button.clicked.connect(self.reset_angles)
         self.homing_button.clicked.connect(self.homing)
         self.send_speed_multiplier_button.clicked.connect(
             self.send_speed_multiplier)
 
         self.ping_odroid_sequence = QShortcut(QKeySequence("Alt+P"), self)
-        self.ping_odroid_sequence.activated.connect(lambda: ping_odroid("arm"))
+        self.ping_odroid_sequence.activated.connect(lambda: ping_odroid(self))
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("arm"))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(
-            lambda: emergency_stop("arm"))
-
-        self.log_browser.line_edit.returnPressed.connect(
-            self.log_browser.run_command)
+            lambda: emergency_stop(self))
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)
