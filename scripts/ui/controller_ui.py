@@ -124,9 +124,13 @@ class Controller_Ui(QtWidgets.QWidget):
         self.controller_right.setGeometry(
             QtCore.QRect(self.width / 6.62, self.height / 5.4,
                          self.width / 21.3, self.height / 12))
-        self.controller_right.setCheckable(False)
-        self.controller_right.setChecked(False)
         self.controller_right.setObjectName("controller_right")
+
+        self.controller_up.setDisabled(True)
+        self.controller_right.setDisabled(True)
+        self.controller_left.setDisabled(True)
+        self.controller_down.setDisabled(True)
+
         self.stream_screen = Stream(self.width, self.height, self.parent)
         self.stream_screen.setup()
 
@@ -139,9 +143,10 @@ class Controller_Ui(QtWidgets.QWidget):
             _translate("MainWindow", "List Commands (L) "))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
 
-        self.controller_left.setText(_translate("MainWindow", "Left"))
-        self.controller_down.setText(_translate("MainWindow", "Down"))
-        self.controller_up.setText(_translate("MainWindow", "Up"))
+        self.controller_left.setText(_translate("MainWindow", "Left\nA"))
+        self.controller_down.setText(_translate("MainWindow", "Down\nS"))
+        self.controller_up.setText(_translate("MainWindow", "Up\nW"))
+        self.controller_right.setText(_translate("MainWindow", "Right\nD"))
         self.throttle_label.setText(
             _translate("MainWindow", "Throttle (U: Increase, I: Decrease)"))
         self.throttle_value.setText(_translate("MainWindow", "0.5"))
@@ -151,4 +156,3 @@ class Controller_Ui(QtWidgets.QWidget):
         self.closed_loop.setText(_translate("MainWindow", "Closed Loop"))
         self.command_listener_button.setText(
             _translate("MainWindow", "Command Listener"))
-        self.controller_right.setText(_translate("MainWindow", "Right"))

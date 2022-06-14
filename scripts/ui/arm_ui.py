@@ -256,6 +256,19 @@ class Arm_Ui(QtWidgets.QWidget):
         self.stop_button.raise_()
         self.speed_multiplier_input.raise_()
 
+        self.m1_shoulder_right_button.setDisabled(True)
+        self.m1_shoulder_left_button.setDisabled(True)
+        self.m2_shoulder_up_button.setDisabled(True)
+        self.m2_shoulder_down_button.setDisabled(True)
+        self.m3_elbow_up_button.setDisabled(True)
+        self.m3_elbow_down_button.setDisabled(True)
+        self.m4_wrist_up_button.setDisabled(True)
+        self.m4_wrist_down_button.setDisabled(True)
+        self.m5_wrist_in_button.setDisabled(True)
+        self.m5_wrist_out_button.setDisabled(True)
+        self.m6_claw_open_button.setDisabled(True)
+        self.m6_claw_close_button.setDisabled(True)
+
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 

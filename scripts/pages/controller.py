@@ -12,7 +12,7 @@ class Controller(Controller_Ui):
         super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
         self.throttle = 0.50
         self.currents = (0, 0, 0, 0, 0, 0)
-        self.velocity = [0, 0, 0, 0]
+        self.velocity = [0, 0]
         self.commands = {
             'ctrl-p': "'ping rover mcu'",
             'alt-p': "'ping odroid'",
@@ -24,11 +24,8 @@ class Controller(Controller_Ui):
 
         self.start_handling_clicks()
 
-    def set_velocity(self, index: int):
-        self.velocity[index] = self.throttle
-
-    def reset_velocity(self, index: int):
-        self.velocity[index] = 0
+    def send_velocity(self):
+        print(self.velocity)
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
@@ -50,9 +47,8 @@ class Controller(Controller_Ui):
         self.throttle_value.setText(f"{self.throttle}")
 
     def display_currents(self, data: Currents):
-        if tuple(data.effort) != self.currents:
-            self.currents = tuple(data.effort)
-            self.controller_table.display_currents(self.currents)
+        self.currents = tuple(data.effort)
+        self.controller_table.display_currents(self.currents)
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for
@@ -60,18 +56,6 @@ class Controller(Controller_Ui):
 
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(lambda: emergency_stop(self))
-
-        self.controller_up.pressed.connect(lambda: self.set_velocity(0))
-        self.controller_up.released.connect(lambda: self.reset_velocity(0))
-
-        self.controller_right.pressed.connect(lambda: self.set_velocity(1))
-        self.controller_right.released.connect(lambda: self.reset_velocity(1))
-
-        self.controller_down.pressed.connect(lambda: self.set_velocity(2))
-        self.controller_down.released.connect(lambda: self.reset_velocity(2))
-
-        self.controller_left.pressed.connect(lambda: self.set_velocity(3))
-        self.controller_left.released.connect(lambda: self.reset_velocity(3))
 
         self.ping_odroid_sequence = QShortcut(QKeySequence("Alt+P"), self)
         self.ping_odroid_sequence.activated.connect(
@@ -93,8 +77,3 @@ class Controller(Controller_Ui):
         self.dec_throttle_sequence = QShortcut(Qt.Key_I, self)
         self.dec_throttle_sequence.activated.connect(
             lambda: self.change_throttle("-"))
-
-        self.controller_up.setShortcut("W")
-        self.controller_down.setShortcut("S")
-        self.controller_right.setShortcut("D")
-        self.controller_left.setShortcut("A")

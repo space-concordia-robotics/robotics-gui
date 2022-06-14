@@ -7,7 +7,7 @@ import rospy
 from mcu_control.msg._Currents import Currents
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Voltage import Voltage
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 
 from pages.arm import Arm
 from pages.controller import Controller
@@ -68,7 +68,7 @@ class Ros_thread(threading.Thread):
             [],  # science topics
         )
 
-    def subscribe_to_topics(self, page_index: int):
+    def handle_tab_change(self, page_index: int):
         """Called on tab change to unsub to old topics and
         replace them with the ones needed for the new tab"""
 
@@ -87,9 +87,64 @@ class Ros_thread(threading.Thread):
         self.battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
                                                 lambda data: worker.commands.append([header.update_voltage, [data]]), queue_size=1)
 
-        self.subscribe_to_topics(
+        self.handle_tab_change(
             0  # 0 just signifies the topics of the first tab since this is the first tab displayed
         )
+
+
+class MainWindowClass(QtWidgets.QWidget):
+    def __init__(self) -> None:
+        super().__init__()
+        self.pressed_keys = []
+        self.page = ""
+
+    def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
+        if event.isAutoRepeat():
+            return  # this prevents the press and release events from continuously firing
+
+        self.page = tab_widget.currentWidget().objectName()
+
+        if self.page == "controller":
+            if event.text() in ['w', 'a', 's', 'd']:
+                if event.text() == 'w':
+                    controller.velocity[1] += controller.throttle
+                elif event.text() == 'a':
+                    controller.velocity[0] -= controller.throttle
+                elif event.text() == 's':
+                    controller.velocity[1] -= controller.throttle
+                elif event.text() == 'd':
+                    controller.velocity[0] += controller.throttle
+                controller.send_velocity()
+        elif self.page == "arm":
+            if event.text() in ['w', 'e', 'r', 't', 'y', 'u', 's', 'd', 'f', 'g', 'h', 'j']:
+                arm.manual_controls_button.setChecked(True)
+                self.pressed_keys.append(event.text())
+
+        return super().keyPressEvent(event)
+
+    def keyReleaseEvent(self, event: QtGui.QKeyEvent) -> None:
+        if event.isAutoRepeat():
+            return
+
+        try:
+            if self.page == "controller":
+                if event.text() in ['w', 'a', 's', 'd']:
+                    if event.text() == 'w':
+                        controller.velocity[1] -= controller.throttle
+                    elif event.text() == 'a':
+                        controller.velocity[0] += controller.throttle
+                    elif event.text() == 's':
+                        controller.velocity[1] += controller.throttle
+                    elif event.text() == 'd':
+                        controller.velocity[0] -= controller.throttle
+                    controller.send_velocity()
+            elif self.page == "arm":
+                if event.text() in ['w', 'e', 'r', 't', 'y', 'u', 's', 'd', 'f', 'g', 'h', 'j']:
+                    self.pressed_keys.remove(event.text())
+        except ValueError:
+            pass
+
+        return super().keyReleaseEvent(event)
 
 
 if __name__ == '__main__':
@@ -101,7 +156,7 @@ if __name__ == '__main__':
     worker.start()
 
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QWidget()
+    MainWindow = MainWindowClass()
     MainWindow.setObjectName("MainWindow")
 
     # used for adaptive window size, gets the screen size of the current display
@@ -149,7 +204,7 @@ if __name__ == '__main__':
 
     ros_thread = Ros_thread(2, "ros-thread")
     ros_thread.start()
-    tab_widget.currentChanged.connect(ros_thread.subscribe_to_topics)
+    tab_widget.currentChanged.connect(ros_thread.handle_tab_change)
 
     MainWindow.setWindowTitle("Rover Controller")
     MainWindow.show()
