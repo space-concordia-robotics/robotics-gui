@@ -13,11 +13,11 @@ class Pds(Pds_Ui):
         self.fan1_speed = 100.0
         self.fan2_speed = 100.0
         self.commands = {
-            'ctrl-p': "ping rover mcu",
-            'alt-p': "ping odroid",
-            'q': "cut power to all motors",
-            'l': "view key commands",
-            'ctrl-shift-r': "turn on / off all motors"
+            'ctrl-p': "'ping rover mcu'",
+            'alt-p': "'ping odroid'",
+            'q': "'cut power to all motors'",
+            'l': "'view key commands'",
+            'ctrl-shift-r': "'turn on / off all motors'\n"
         }
 
         self.start_handling_clicks()
@@ -28,8 +28,7 @@ class Pds(Pds_Ui):
 
         for command in self.commands:
             self.log_browser.append_to_browser(
-                f"'{command}': '{self.commands[command]}'")
-        self.log_browser.append_to_browser("\n")
+                f"'{command}': {self.commands[command]}")
 
     def display_wheel_currents(self, data: Currents):
         self.wheel_currents = tuple(data.effort)

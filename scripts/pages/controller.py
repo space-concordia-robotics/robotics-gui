@@ -1,4 +1,3 @@
-from time import sleep
 from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -15,12 +14,12 @@ class Controller(Controller_Ui):
         self.currents = (0, 0, 0, 0, 0, 0)
         self.velocity = [0, 0, 0, 0]
         self.commands = {
-            'ctrl-p': "ping rover mcu",
-            'alt-p': "ping odroid",
-            'q': "emergency stop all motors",
-            'l': "view key commands",
-            'u': "increase throttle value",
-            'i': "decrease throttle value",
+            'ctrl-p': "'ping rover mcu'",
+            'alt-p': "'ping odroid'",
+            'q': "'emergency stop all motors'",
+            'l': "'view key commands'",
+            'u': "'increase throttle value'",
+            'i': "'decrease throttle value'\n",
         }
 
         self.start_handling_clicks()
@@ -37,8 +36,7 @@ class Controller(Controller_Ui):
 
         for command in self.commands:
             self.log_browser.append_to_browser(
-                f"'{command}': '{self.commands[command]}'")
-        self.log_browser.append_to_browser("\n")
+                f"'{command}': {self.commands[command]}")
 
     def change_throttle(self, change: str):
         """Changes the current throttle value either increasing or
@@ -97,7 +95,6 @@ class Controller(Controller_Ui):
             lambda: self.change_throttle("-"))
 
         self.controller_up.setShortcut("W")
-        self.controller_up.setAutoRepeatDelay(0)
         self.controller_down.setShortcut("S")
         self.controller_right.setShortcut("D")
         self.controller_left.setShortcut("A")

@@ -13,13 +13,13 @@ class Arm(Arm_Ui):
         self.speed_multiplier = 1
         self.currents = (0, 0, 0, 0, 0, 0)
         self.commands = {
-            'ctrl-p': "ping arm mcu",
-            'alt-p': "ping odroid",
-            'q': "emergency stop all motors",
-            'o': "reset memorized angle values",
-            'l': "view key commands",
-            "Keys 'w' to 'u'": "move motors 1-6 forwards",
-            "Keys 's' to 'j'": "move motors 1-6 backwards"
+            'ctrl-p': "'ping arm mcu'",
+            'alt-p': "'ping odroid'",
+            'q': "'emergency stop all motors'",
+            'o': "'reset memorized angle values'",
+            'l': "'view key commands'",
+            "Keys 'w' to 'u'": "'move motors 1-6 forwards'",
+            "Keys 's' to 'j'": "'move motors 1-6 backwards'\n"
         }
 
         self.start_handling_clicks()
@@ -30,8 +30,7 @@ class Arm(Arm_Ui):
 
         for command in self.commands:
             self.log_browser.append_to_browser(
-                f"'{command}': '{self.commands[command]}'")
-        self.log_browser.append_to_browser("\n")
+                f"'{command}': {self.commands[command]}")
 
     def display_currents(self, data: Currents):
         self.currents = tuple(data.effort)

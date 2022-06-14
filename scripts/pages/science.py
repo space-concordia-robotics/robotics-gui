@@ -9,7 +9,7 @@ class Science(Science_Ui):
         super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
         self.used_vials = 0
         self.vials = {}  # template: ( [ number, status, CCD, Ramen ] )
-        self.commands = {"test": "test"}
+        self.commands = {"test": "'test'"}
 
         self.start_handling_clicks()
 
@@ -19,8 +19,7 @@ class Science(Science_Ui):
 
         for command in self.commands:
             self.log_browser.append_to_browser(
-                f"'{command}': '{self.commands[command]}'")
-        self.log_browser.append_to_browser("\n")
+                f"'{command}': {self.commands[command]}")
 
     def collect_analyse(self):
         print("Collect and analyse next sample")

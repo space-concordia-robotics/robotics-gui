@@ -10,15 +10,6 @@ def ping_mcu(tab_name: str):
     print(f"ping rover in mcu {tab_name}")
 
 
-def ping():
-    try:
-        ping_response = rospy.ServiceProxy('ping_response', PingResponse)
-        resp1 = ping_response("")
-        return resp1.response
-    except rospy.ServiceException as e:
-        return "Service call failed: " + str(e)
-
-
 def ping_odroid(tab):
     browser_append = tab.log_browser.append_to_browser
 
@@ -28,20 +19,25 @@ def ping_odroid(tab):
     sent_ts = sent.strftime('%Y-%m-%dT%H:%M:%S') + \
         ('-%02d' % (sent.microsecond / 10000))
 
-    ping()
-    received = datetime.now()
-    received_st = sent.strftime('%Y-%m-%dT%H:%M:%S') + \
-        ('-%02d' % (received.microsecond / 10000))
+    try:
+        ping_response = rospy.ServiceProxy('ping_response', PingResponse)
+        resp1 = ping_response("")
+        received = datetime.now()
+        received_st = sent.strftime('%Y-%m-%dT%H:%M:%S') + \
+            ('-%02d' % (received.microsecond / 10000))
 
-    browser_append("Pinging server with ping_acknowledgment service")
-    browser_append(sent_ts)
-    browser_append("---")
+        browser_append("Pinging server with ping_acknowledgment service")
+        browser_append(sent_ts)
+        browser_append("---")
 
-    browser_append("Received Response")
-    browser_append(received_st)
+        browser_append("Received Response")
+        browser_append(received_st)
 
-    diff = received - sent
-    browser_append(f"Latency: {str(diff.total_seconds() * 1000)} ms\n")
+        diff = received - sent
+        browser_append(f"Latency: {str(diff.total_seconds() * 1000)} ms\n")
+        browser_append(resp1.response)
+    except rospy.ServiceException as e:
+        browser_append(f"Service call failed: {str(e)}\n")
 
 
 def emergency_stop(tab):
