@@ -39,12 +39,13 @@ class Controller(Controller_Ui):
         """Changes the current throttle value either increasing or
         decreasing and outputs the new value to the throttle label"""
 
-        if change == "+" and not self.throttle >= 1:
-            # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
-            self.throttle = (self.throttle * 10 + 0.50) / 10
-        elif change == "-" and not self.throttle <= 0:
-            self.throttle = (self.throttle * 10 - 0.50) / 10
-        self.throttle_value.setText(f"{self.throttle}")
+        if not any(self.velocity):
+            if change == "+" and not self.throttle >= 1:
+                # This weird sum is done to avoid arithmetic errors when it comes to decimals in python
+                self.throttle = (self.throttle * 10 + 0.50) / 10
+            elif change == "-" and not self.throttle <= 0:
+                self.throttle = (self.throttle * 10 - 0.50) / 10
+            self.throttle_value.setText(f"{self.throttle}")
 
     def display_currents(self, data: Currents):
         self.currents = tuple(data.effort)

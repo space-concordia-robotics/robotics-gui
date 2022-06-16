@@ -14,10 +14,11 @@ from tables import Controller_table
 
 class Science_Ui(QtWidgets.QWidget):
 
-    def __init__(self, width: float, height: float, MainWindow=None):
+    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
         super().__init__()
         self.width = width
         self.height = height
+        self.parent = parent
 
         self.setupUi(MainWindow)
 

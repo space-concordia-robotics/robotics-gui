@@ -12,6 +12,7 @@ class Arm(Arm_Ui):
         super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
         self.speed_multiplier = 1
         self.currents = (0, 0, 0, 0, 0, 0)
+        self.speeds = [0] * 6
         self.commands = {
             'ctrl-p': "'ping arm mcu'",
             'alt-p': "'ping odroid'",
@@ -23,6 +24,9 @@ class Arm(Arm_Ui):
         }
 
         self.start_handling_clicks()
+
+    def send_speeds(self):
+        print(self.speeds)
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
