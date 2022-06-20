@@ -105,44 +105,26 @@ class MainWindowClass(QtWidgets.QWidget):
         key = event.text()
 
         if self.page == "controller":
-            if key in ['w', 'a', 's', 'd']:
-                if key == 'w':
-                    controller.velocity[1] += controller.throttle
-                elif key == 'a':
-                    controller.velocity[0] -= controller.throttle
-                elif key == 's':
-                    controller.velocity[1] -= controller.throttle
-                elif key == 'd':
-                    controller.velocity[0] += controller.throttle
+            keys = ['d', 'w', 'a', 's']
+            if key in keys:
+                for i in range(int(len(keys) / 2)):
+                    if key == keys[i]:
+                        controller.velocity[i] += controller.throttle
+                    elif key == keys[i + int(len(keys) / 2)]:
+                        controller.velocity[i] -= controller.throttle
                 controller.send_velocity()
         elif self.page == "arm":
-            if key in ['w', 'e', 'r', 't', 'y', 'u', 's', 'd', 'f', 'g', 'h', 'j']:
+            keys = ['w', 'e', 'r', 't', 'y', 'u',
+                    's', 'd', 'f', 'g', 'h', 'j']
+            if key in keys:
                 arm.manual_controls_button.setChecked(True)
-                arm.send_speed_multiplier.setEnabled(False)
-                if key == 'w':
-                    arm.speeds[0] += arm.speed_multiplier
-                elif key == 'e':
-                    arm.speeds[1] += arm.speed_multiplier
-                elif key == 'r':
-                    arm.speeds[2] += arm.speed_multiplier
-                elif key == 't':
-                    arm.speeds[3] += arm.speed_multiplier
-                elif key == 'y':
-                    arm.speeds[4] += arm.speed_multiplier
-                elif key == 'u':
-                    arm.speeds[5] += arm.speed_multiplier
-                elif key == 's':
-                    arm.speeds[0] -= arm.speed_multiplier
-                elif key == 'd':
-                    arm.speeds[1] -= arm.speed_multiplier
-                elif key == 'f':
-                    arm.speeds[2] -= arm.speed_multiplier
-                elif key == 'g':
-                    arm.speeds[3] -= arm.speed_multiplier
-                elif key == 'h':
-                    arm.speeds[4] -= arm.speed_multiplier
-                elif key == 'j':
-                    arm.speeds[5] -= arm.speed_multiplier
+                arm.send_speed_multiplier_button.setEnabled(False)
+                arm.speed_multiplier_input.setEnabled(False)
+                for i in range(int(len(keys) / 2)):
+                    if key == keys[i]:
+                        arm.speeds[i] += arm.speed_multiplier
+                    elif key == keys[i + int(len(keys) / 2)]:
+                        arm.speeds[i] -= arm.speed_multiplier
                 arm.send_speeds()
 
         return super().keyPressEvent(event)
@@ -155,46 +137,28 @@ class MainWindowClass(QtWidgets.QWidget):
 
         try:
             if self.page == "controller":
-                if key in ['w', 'a', 's', 'd']:
-                    if key == 'w':
-                        controller.velocity[1] -= controller.throttle
-                    elif key == 'a':
-                        controller.velocity[0] += controller.throttle
-                    elif key == 's':
-                        controller.velocity[1] += controller.throttle
-                    elif key == 'd':
-                        controller.velocity[0] -= controller.throttle
+                keys = ['d', 'w', 'a', 's']
+                if key in keys:
+                    for i in range(int(len(keys) / 2)):
+                        if key == keys[i]:
+                            controller.velocity[i] -= controller.throttle
+                        elif key == keys[i + 2]:
+                            controller.velocity[i] += controller.throttle
                     controller.send_velocity()
             elif self.page == "arm":
-                if key in ['w', 'e', 'r', 't', 'y', 'u', 's', 'd', 'f', 'g', 'h', 'j']:
-                    if key == 'w':
-                        arm.speeds[0] -= arm.speed_multiplier
-                    elif key == 'e':
-                        arm.speeds[1] -= arm.speed_multiplier
-                    elif key == 'r':
-                        arm.speeds[2] -= arm.speed_multiplier
-                    elif key == 't':
-                        arm.speeds[3] -= arm.speed_multiplier
-                    elif key == 'y':
-                        arm.speeds[4] -= arm.speed_multiplier
-                    elif key == 'u':
-                        arm.speeds[5] -= arm.speed_multiplier
-                    elif key == 's':
-                        arm.speeds[0] += arm.speed_multiplier
-                    elif key == 'd':
-                        arm.speeds[1] += arm.speed_multiplier
-                    elif key == 'f':
-                        arm.speeds[2] += arm.speed_multiplier
-                    elif key == 'g':
-                        arm.speeds[3] += arm.speed_multiplier
-                    elif key == 'h':
-                        arm.speeds[4] += arm.speed_multiplier
-                    elif key == 'j':
-                        arm.speeds[5] += arm.speed_multiplier
+                keys = ['w', 'e', 'r', 't', 'y', 'u',
+                        's', 'd', 'f', 'g', 'h', 'j']
+                if key in keys:
+                    for i in range(int(len(keys) / 2)):
+                        if key == keys[i]:
+                            arm.speeds[i] -= arm.speed_multiplier
+                        elif key == keys[i + 6]:
+                            arm.speeds[i] += arm.speed_multiplier
                     arm.send_speeds()
 
                     if not any(arm.speeds):
-                        arm.send_speed_multiplier_bu.setEnabled(True)
+                        arm.speed_multiplier_input.setEnabled(True)
+                        arm.send_speed_multiplier_button.setEnabled(True)
         except ValueError:
             pass
 
