@@ -12,6 +12,7 @@ class Controller(Controller_Ui):
         super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
         self.throttle = 0.50
         self.currents = (0, 0, 0, 0, 0, 0)
+        # first element of the velocity is right (+) / left (-) and second is front (+) / back (-)
         self.velocity = [0, 0]
         self.commands = {
             'ctrl-p': "'ping rover mcu'",
@@ -24,12 +25,19 @@ class Controller(Controller_Ui):
 
         self.start_handling_clicks()
 
+    def set_page_buttons(self, value: bool):
+        self.list_commands_button.setEnabled(value)
+        self.stop_button.setEnabled(value)
+        self.log_browser.line_edit.setEnabled(value)
+        self.log_browser.clear_browser_button.setEnabled(value)
+        self.log_browser.send_command_button.setEnabled(value)
+
     def send_velocity(self):
         print(self.velocity)
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
-        to the UI's text browser then leaves and new-line character"""
+        to the UI's text browser"""
 
         for command in self.commands:
             self.log_browser.append_to_browser(

@@ -25,6 +25,17 @@ class Arm(Arm_Ui):
 
         self.start_handling_clicks()
 
+    def set_page_buttons(self, value: bool):
+        self.reset_angles_button.setEnabled(value)
+        self.stop_button.setEnabled(value)
+        self.list_commands_button.setEnabled(value)
+        self.log_browser.line_edit.setEnabled(value)
+        self.log_browser.clear_browser_button.setEnabled(value)
+        self.log_browser.send_command_button.setEnabled(value)
+        self.speed_multiplier_input.setEnabled(value)
+        self.send_speed_multiplier_button.setEnabled(value)
+        self.homing_button.setEnabled(value)
+
     def send_speeds(self):
         print(self.speeds)
 

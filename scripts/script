@@ -33,7 +33,7 @@ class Worker(threading.Thread):
                         *self.command_queue.get_list()[0][1]) if self.command_queue.get_list()[0][1] else self.command_queue.get_list()[0][0]()
                     self.command_queue.get_list().pop(0)
                     sleep(0.01)
-            except RuntimeError:
+            except:
                 pass
 
 
@@ -104,22 +104,24 @@ class MainWindowClass(QtWidgets.QWidget):
         self.page = tab_widget.currentWidget().objectName()
         key = event.text()
 
-        if self.page == "controller":
+        if self.page == "controller" and not controller.log_browser.line_edit.hasFocus():
             keys = ['d', 'w', 'a', 's']
             if key in keys:
+                self.pressed_keys.append(key)
+                controller.set_page_buttons(False)
                 for i in range(int(len(keys) / 2)):
                     if key == keys[i]:
                         controller.velocity[i] += controller.throttle
                     elif key == keys[i + int(len(keys) / 2)]:
                         controller.velocity[i] -= controller.throttle
                 controller.send_velocity()
-        elif self.page == "arm":
+        elif self.page == "arm" and not arm.log_browser.line_edit.hasFocus():
             keys = ['w', 'e', 'r', 't', 'y', 'u',
                     's', 'd', 'f', 'g', 'h', 'j']
             if key in keys:
+                self.pressed_keys.append(key)
                 arm.manual_controls_button.setChecked(True)
-                arm.send_speed_multiplier_button.setEnabled(False)
-                arm.speed_multiplier_input.setEnabled(False)
+                arm.set_page_buttons(False)
                 for i in range(int(len(keys) / 2)):
                     if key == keys[i]:
                         arm.speeds[i] += arm.speed_multiplier
@@ -136,29 +138,33 @@ class MainWindowClass(QtWidgets.QWidget):
         key = event.text()
 
         try:
-            if self.page == "controller":
+            if self.page == "controller" and not controller.log_browser.line_edit.hasFocus():
                 keys = ['d', 'w', 'a', 's']
                 if key in keys:
+                    self.pressed_keys.remove(key)
                     for i in range(int(len(keys) / 2)):
                         if key == keys[i]:
                             controller.velocity[i] -= controller.throttle
-                        elif key == keys[i + 2]:
+                        elif key == keys[i + int(len(keys) / 2)]:
                             controller.velocity[i] += controller.throttle
                     controller.send_velocity()
-            elif self.page == "arm":
+
+                    if not any(self.pressed_keys):
+                        controller.set_page_buttons(True)
+            elif self.page == "arm" and not arm.log_browser.line_edit.hasFocus():
                 keys = ['w', 'e', 'r', 't', 'y', 'u',
                         's', 'd', 'f', 'g', 'h', 'j']
                 if key in keys:
+                    self.pressed_keys.remove(key)
                     for i in range(int(len(keys) / 2)):
                         if key == keys[i]:
                             arm.speeds[i] -= arm.speed_multiplier
-                        elif key == keys[i + 6]:
+                        elif key == keys[i + int(len(keys) / 2)]:
                             arm.speeds[i] += arm.speed_multiplier
                     arm.send_speeds()
 
-                    if not any(arm.speeds):
-                        arm.speed_multiplier_input.setEnabled(True)
-                        arm.send_speed_multiplier_button.setEnabled(True)
+                    if not any(self.pressed_keys):
+                        arm.set_page_buttons(True)
         except ValueError:
             pass
 
