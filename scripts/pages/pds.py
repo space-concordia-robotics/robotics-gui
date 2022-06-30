@@ -9,13 +9,14 @@ from useful import emergency_stop, ping_mcu, ping_odroid
 class Pds(Pds_Ui):
     def __init__(self, width: float, height: float, parent=None, MainWindow=None):
         super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
-        self.fan1_speed = 100.0
-        self.fan2_speed = 100.0
+        self.fan1_speed: float = 100.0
+        self.fan2_speed: float = 100.0
         self.commands = {
             "ctrl-p": "'ping rover mcu'",
             "alt-p": "'ping odroid'",
             "q": "'cut power to all motors'",
             "l": "'view key commands'",
+            "ctrl-shift-# (1-6)": "'turn on / off motor #'",
             "ctrl-shift-r": "'turn on / off all motors'\n",
         }
 
@@ -43,6 +44,9 @@ class Pds(Pds_Ui):
         print("reset curr flags")
 
     def set_fan_speed(self, fan_number: int):
+        """Gets the fan speed from the speed input and sets it to the
+        fan with the passed ID number"""
+
         if fan_number == 1:
             self.fan1_speed = self.fan1_speed_input.value()
             self.fan1_speed_input.clearFocus()
@@ -55,6 +59,8 @@ class Pds(Pds_Ui):
         exec(f"print(self.motor{index}.isChecked())")
 
     def check_on_motors(self) -> bool:
+        """Check if any of the motors is toggled on"""
+
         return (
             self.motor1.isChecked()
             or self.motor2.isChecked()
@@ -65,6 +71,9 @@ class Pds(Pds_Ui):
         )
 
     def toggle_all_motors(self):
+        """If one of the motors in on, turns all of them off,
+        otherwise, turns all of them on"""
+
         if self.check_on_motors():
             for i in range(1, 7):
                 exec(f"self.motor{i}.setChecked(False)")
@@ -103,3 +112,8 @@ class Pds(Pds_Ui):
 
         self.toggle_all_motors_sequence = QShortcut(QKeySequence("Ctrl+Shift+R"), self)
         self.toggle_all_motors_sequence.activated.connect(self.toggle_all_motors)
+
+        self.motor_list_sequence = []
+        for i in range(1, 7):
+            exec(f"self.motor_list_sequence.append(QShortcut(QKeySequence('Ctrl+Shift+{i}'), self))")
+            exec(f"self.motor_list_sequence[i - 1].activated.connect(self.motor{i}.toggle)")

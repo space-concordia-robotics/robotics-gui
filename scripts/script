@@ -112,7 +112,7 @@ class Ros_thread(threading.Thread):
 class MainWindowClass(QtWidgets.QWidget):
     def __init__(self) -> None:
         super().__init__()
-        self.pressed_keys = []
+        self.pressed_keys: list = []
         self.page: str = ""
 
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
@@ -120,7 +120,7 @@ class MainWindowClass(QtWidgets.QWidget):
             return  # this prevents the press and release events from continuously firing
 
         self.page = tab_widget.currentWidget().objectName()
-        key = event.text()
+        key: str = event.text()
 
         if self.page == "controller" and not controller.log_browser.line_edit.hasFocus():
             keys = ["d", "w", "a", "s"]
@@ -152,7 +152,7 @@ class MainWindowClass(QtWidgets.QWidget):
         if event.isAutoRepeat():
             return
 
-        key = event.text()
+        key: str = event.text()
 
         try:
             if self.page == "controller" and not controller.log_browser.line_edit.hasFocus():

@@ -1,10 +1,8 @@
 import os
-from datetime import datetime
+import subprocess
 
-import rospy
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Voltage import Voltage
-from ping_acknowledgment.srv import PingResponse
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -13,31 +11,10 @@ def ping_mcu(tab_name: str):
 
 
 def ping_odroid(tab):
-    browser_append = tab.log_browser.append_to_browser
-
-    browser_append("pinging odroid\n")
-
-    sent = datetime.now()
-    sent_ts = sent.strftime("%Y-%m-%dT%H:%M:%S") + ("-%02d" % (sent.microsecond / 10000))
-
-    try:
-        ping_response = rospy.ServiceProxy("ping_response", PingResponse)
-        resp1 = ping_response("")
-        received = datetime.now()
-        received_st = sent.strftime("%Y-%m-%dT%H:%M:%S") + ("-%02d" % (received.microsecond / 10000))
-
-        browser_append("Pinging server with ping_acknowledgment service")
-        browser_append(sent_ts)
-        browser_append("---")
-
-        browser_append("Received Response")
-        browser_append(received_st)
-
-        diff = received - sent
-        browser_append(f"Latency: {str(diff.total_seconds() * 1000)} ms\n")
-        browser_append(resp1.response)
-    except rospy.ServiceException as e:
-        browser_append(f"Service call failed: {str(e)}\n")
+    output = subprocess.run(
+        ["rosrun", "ping_acknowledgment", "ping_response_client.py"], stdout=subprocess.PIPE
+    ).stdout.decode("utf-8")
+    tab.log_browser.append_to_browser(output)
 
 
 def emergency_stop(tab):
@@ -48,8 +25,8 @@ def emergency_stop(tab):
 
 class Queue(object):
     def __init__(self, queue_size: int) -> None:
-        self.queue_size = queue_size
-        self.queue = []
+        self.queue_size: int = queue_size
+        self.queue: list = []
 
     def get_list(self) -> list:
         return self.queue

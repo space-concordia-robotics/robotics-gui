@@ -25,6 +25,8 @@ class Arm(Arm_Ui):
         self.start_handling_clicks()
 
     def set_page_buttons(self, value: bool):
+        """Enables / Disables all buttons on the page"""
+
         self.reset_angles_button.setEnabled(value)
         self.stop_button.setEnabled(value)
         self.list_commands_button.setEnabled(value)
@@ -59,7 +61,7 @@ class Arm(Arm_Ui):
         self.speed_multiplier = self.speed_multiplier_input.value()
 
     def switch_controls(self):
-        """Switches betwee manual controls (keyboard) and regular controls (mouse)"""
+        """Switches between manual controls (keyboard) and regular controls (mouse)"""
 
         if self.manual_controls_button.isChecked():
             self.manual_arm_controls.show()

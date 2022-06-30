@@ -9,10 +9,10 @@ from useful import emergency_stop, ping_mcu, ping_odroid
 class Controller(Controller_Ui):
     def __init__(self, width: float, height: float, parent=None, MainWindow=None):
         super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
-        self.throttle = 0.50
-        self.currents = (0,) * 6
+        self.throttle: float = 0.50
+        self.currents: tuple = (0,) * 6
         # first element of the velocity is right (+) / left (-) and second is front (+) / back (-)
-        self.velocity = [0] * 2
+        self.velocity: list = [0] * 2
         self.commands = {
             "ctrl-p": "'ping rover mcu'",
             "alt-p": "'ping odroid'",
@@ -25,6 +25,8 @@ class Controller(Controller_Ui):
         self.start_handling_clicks()
 
     def set_page_buttons(self, value: bool):
+        """Enables / Disables all the buttons of the page"""
+
         self.list_commands_button.setEnabled(value)
         self.stop_button.setEnabled(value)
         self.log_browser.line_edit.setEnabled(value)

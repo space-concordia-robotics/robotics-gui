@@ -1,8 +1,12 @@
+from typing import Optional
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Controller_table(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent=None, x: float = 0, y: float = 0):
+    def __init__(
+        self, width: float, height: float, parent=None, x: Optional[float] = 0, y: Optional[float] = 0
+    ):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -10,7 +14,7 @@ class Controller_table(QtWidgets.QWidget):
         self.x = x or 5 * self.width / 16
         self.y = y or self.height / 15
 
-    def display_currents(self, currents):
+    def display_currents(self, currents: list):
         self.r_front_current.setText(f"{currents[0]}")
         self.r_mid_current.setText(f"{currents[1]}")
         self.r_back_current.setText(f"{currents[2]}")
@@ -399,7 +403,9 @@ class Controller_table(QtWidgets.QWidget):
 
 
 class Arm_table(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent=None, x: float = 0, y: float = 0):
+    def __init__(
+        self, width: float, height: float, parent=None, x: Optional[float] = 0, y: Optional[float] = 0
+    ):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -407,7 +413,7 @@ class Arm_table(QtWidgets.QWidget):
         self.x = x or 5 * self.width / 16
         self.y = y or self.height / 15
 
-    def display_currents(self, currents):
+    def display_currents(self, currents: list):
         self.m1_current.setText(f"{currents[0]}")
         self.m2_current.setText(f"{currents[1]}")
         self.m3_current.setText(f"{currents[2]}")
@@ -796,7 +802,9 @@ class Arm_table(QtWidgets.QWidget):
 
 
 class Pds_table(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent=None, x: float = 0, y: float = 0):
+    def __init__(
+        self, width: float, height: float, parent=None, x: Optional[float] = 0, y: Optional[float] = 0
+    ):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
