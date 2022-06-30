@@ -2,13 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Controller_table(QtWidgets.QWidget):
-
-    def __init__(self,
-                 width: float,
-                 height: float,
-                 parent=None,
-                 x: float = 0,
-                 y: float = 0):
+    def __init__(self, width: float, height: float, parent=None, x: float = 0, y: float = 0):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -26,17 +20,15 @@ class Controller_table(QtWidgets.QWidget):
 
     def setup(self):
         self.table_frame = QtWidgets.QFrame(self.parent)
-        self.table_frame.setGeometry(
-            QtCore.QRect(self.x, self.y, 7 * self.width / 24,
-                         self.height / 2.16))
+        self.table_frame.setGeometry(QtCore.QRect(self.x, self.y, 7 * self.width / 24, self.height / 2.16))
         self.table_frame.setStyleSheet("")
         self.table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.table_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.table_frame.setObjectName("table_frame")
         self.wheel_motor_table_label = QtWidgets.QLabel(self.table_frame)
         self.wheel_motor_table_label.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 108,
-                         self.width / 3.56, self.height / 45))
+            QtCore.QRect(self.width / 192, self.height / 108, self.width / 3.56, self.height / 45)
+        )
         font = QtGui.QFont()
         font.setPointSize(self.width / 128)
         self.wheel_motor_table_label.setFont(font)
@@ -44,8 +36,8 @@ class Controller_table(QtWidgets.QWidget):
         self.wheel_motor_table_label.setObjectName("wheel_motor_table_label")
         self.layoutWidget = QtWidgets.QWidget(self.table_frame)
         self.layoutWidget.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56,
-                         self.height / 2.4))
+            QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56, self.height / 2.4)
+        )
         self.layoutWidget.setObjectName("layoutWidget")
         self.wheel_motor_table = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.wheel_motor_table.setContentsMargins(0, 0, 0, 0)
@@ -355,28 +347,31 @@ class Controller_table(QtWidgets.QWidget):
         self.wheel_motor_table.addLayout(self.l_back_row)
 
         _translate = QtCore.QCoreApplication.translate
-        self.wheel_motor_table_label.setText(
-            _translate("MainWindow", "Wheel Motor Table"))
+        self.wheel_motor_table_label.setText(_translate("MainWindow", "Wheel Motor Table"))
         self.motor_title.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Motor</p><p align=\"center\">(Number)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">Motor</p><p align="center">(Number)</p></body></html>',
+            )
+        )
         self.status_title.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Status</p><p align=\"center\">(Alive / Dead)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">Status</p><p align="center">(Alive / Dead)</p></body></html>',
+            )
+        )
         self.speed_title.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Speed</p><p align=\"center\">(RPM)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">Speed</p><p align="center">(RPM)</p></body></html>',
+            )
+        )
         self.current_title.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Current</p><p align=\"center\">(A)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">Current</p><p align="center">(A)</p></body></html>',
+            )
+        )
         self.r_front_label.setText("R Front")
         self.r_front_status.setText(_translate("MainWindow", "N/A"))
         self.r_front_speed.setText(_translate("MainWindow", "-"))
@@ -404,13 +399,7 @@ class Controller_table(QtWidgets.QWidget):
 
 
 class Arm_table(QtWidgets.QWidget):
-
-    def __init__(self,
-                 width: float,
-                 height: float,
-                 parent=None,
-                 x: float = 0,
-                 y: float = 0):
+    def __init__(self, width: float, height: float, parent=None, x: float = 0, y: float = 0):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -428,16 +417,15 @@ class Arm_table(QtWidgets.QWidget):
 
     def setup(self):
         self.table_frame_3 = QtWidgets.QFrame(self.parent)
-        self.table_frame_3.setGeometry(
-            QtCore.QRect(self.x, self.y, self.width / 3.4, self.height / 2.16))
+        self.table_frame_3.setGeometry(QtCore.QRect(self.x, self.y, self.width / 3.4, self.height / 2.16))
         self.table_frame_3.setStyleSheet("")
         self.table_frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.table_frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.table_frame_3.setObjectName("table_frame_3")
         self.arm_motor_table_title = QtWidgets.QLabel(self.table_frame_3)
         self.arm_motor_table_title.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 108,
-                         0.28 * self.width, self.height / 54))
+            QtCore.QRect(self.width / 192, self.height / 108, 0.28 * self.width, self.height / 54)
+        )
         font = QtGui.QFont()
         font.setPointSize(self.width / 128)
         self.arm_motor_table_title.setFont(font)
@@ -445,8 +433,8 @@ class Arm_table(QtWidgets.QWidget):
         self.arm_motor_table_title.setObjectName("arm_motor_table_title")
         self.layoutWidget_4 = QtWidgets.QWidget(self.table_frame_3)
         self.layoutWidget_4.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56,
-                         self.height / 2.4))
+            QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56, self.height / 2.4)
+        )
         self.layoutWidget_4.setObjectName("layoutWidget_4")
         self.arm_motor_table = QtWidgets.QVBoxLayout(self.layoutWidget_4)
         self.arm_motor_table.setContentsMargins(0, 0, 0, 0)
@@ -756,70 +744,59 @@ class Arm_table(QtWidgets.QWidget):
         self.arm_motor_table.addLayout(self.m6_row)
 
         _translate = QtCore.QCoreApplication.translate
-        self.arm_motor_table_title.setText(
-            _translate("MainWindow", "Arm Motor Table"))
+        self.arm_motor_table_title.setText(_translate("MainWindow", "Arm Motor Table"))
         self.motor_title_3.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Motor</p><p align=\"center\">(Number)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">Motor</p><p align="center">(Number)</p></body></html>',
+            )
+        )
         self.status_title_3.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Status</p><p align=\"center\">(Alive / Dead)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">Status</p><p align="center">(Alive / Dead)</p></body></html>',
+            )
+        )
         self.position_title.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Position</p><p align=\"center\">(Degrees)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">Position</p><p align="center">(Degrees)</p></body></html>',
+            )
+        )
         self.current_title_3.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Current</p><p align=\"center\">(A)</p></body></html>"
-            ))
-        self.m1_label.setText(
-            _translate("MainWindow", "M1\n"
-                       "(Shoulder Swivel)"))
+                '<html><head/><body><p align="center">Current</p><p align="center">(A)</p></body></html>',
+            )
+        )
+        self.m1_label.setText(_translate("MainWindow", "M1\n" "(Shoulder Swivel)"))
         self.m1_status.setText(_translate("MainWindow", "N/A"))
         self.m1_position.setText(_translate("MainWindow", "-"))
         self.m1_current.setText(_translate("MainWindow", "N/A"))
-        self.m2_label.setText(
-            _translate("MainWindow", "M2\n"
-                       "(Shoulder Flex)"))
+        self.m2_label.setText(_translate("MainWindow", "M2\n" "(Shoulder Flex)"))
         self.m2_status.setText(_translate("MainWindow", "N/A"))
         self.m2_position.setText(_translate("MainWindow", "-"))
         self.m2_current.setText(_translate("MainWindow", "N/A"))
-        self.m3_label.setText(_translate("MainWindow", "M3\n"
-                                         "(Elbow Flex)"))
+        self.m3_label.setText(_translate("MainWindow", "M3\n" "(Elbow Flex)"))
         self.m3_status.setText(_translate("MainWindow", "N/A"))
         self.m3_position.setText(_translate("MainWindow", "-"))
         self.m3_current.setText(_translate("MainWindow", "N/A"))
-        self.m4_label.setText(_translate("MainWindow", "M4\n"
-                                         "(Wrist Flex)"))
+        self.m4_label.setText(_translate("MainWindow", "M4\n" "(Wrist Flex)"))
         self.m4_status.setText(_translate("MainWindow", "N/A"))
         self.m4_position.setText(_translate("MainWindow", "-"))
         self.m4_current.setText(_translate("MainWindow", "N/A"))
-        self.m5_label.setText(_translate("MainWindow", "M5\n"
-                                         "(Wrist Twist)"))
+        self.m5_label.setText(_translate("MainWindow", "M5\n" "(Wrist Twist)"))
         self.m5_status.setText(_translate("MainWindow", "N/A"))
         self.m5_position.setText(_translate("MainWindow", "-"))
         self.m5_current.setText(_translate("MainWindow", "N/A"))
-        self.m6_label.setText(_translate("MainWindow", "M6\n"
-                                         "(Gripper)"))
+        self.m6_label.setText(_translate("MainWindow", "M6\n" "(Gripper)"))
         self.m6_status.setText(_translate("MainWindow", "N/A"))
         self.m6_position.setText(_translate("MainWindow", "-"))
         self.m6_current.setText(_translate("MainWindow", "N/A"))
 
 
 class Pds_table(QtWidgets.QWidget):
-
-    def __init__(self,
-                 width: float,
-                 height: float,
-                 parent=None,
-                 x: float = 0,
-                 y: float = 0):
+    def __init__(self, width: float, height: float, parent=None, x: float = 0, y: float = 0):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -829,17 +806,20 @@ class Pds_table(QtWidgets.QWidget):
 
     def setup(self):
         self.pds_table_frame = QtWidgets.QFrame(self.parent)
-        self.pds_table_frame.setGeometry(
-            QtCore.QRect(self.x, self.y, self.width / 3.43,
-                         self.height / 2.16))
+        self.pds_table_frame.setGeometry(QtCore.QRect(self.x, self.y, self.width / 3.43, self.height / 2.16))
         self.pds_table_frame.setStyleSheet("")
         self.pds_table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.pds_table_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.pds_table_frame.setObjectName("pds_table_frame")
         self.pds_table_title = QtWidgets.QLabel(self.pds_table_frame)
         self.pds_table_title.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 108,
-                         self.width / 3.56, self.height / 46.96))
+            QtCore.QRect(
+                self.width / 192,
+                self.height / 108,
+                self.width / 3.56,
+                self.height / 46.96,
+            )
+        )
         font = QtGui.QFont()
         font.setPointSize(self.width / 128)
         self.pds_table_title.setFont(font)
@@ -847,8 +827,8 @@ class Pds_table(QtWidgets.QWidget):
         self.pds_table_title.setObjectName("pds_table_title")
         self.layoutWidget_19 = QtWidgets.QWidget(self.pds_table_frame)
         self.layoutWidget_19.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56,
-                         self.height / 2.4))
+            QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56, self.height / 2.4)
+        )
         self.layoutWidget_19.setObjectName("layoutWidget_19")
         self.pds_table = QtWidgets.QVBoxLayout(self.layoutWidget_19)
         self.pds_table.setContentsMargins(11, 11, 11, 11)
@@ -1011,32 +991,34 @@ class Pds_table(QtWidgets.QWidget):
         self.flag_title.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Flag</p><p align=\"center\">(Error)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">Flag</p><p align="center">(Error)</p></body></html>',
+            )
+        )
         self.state_title.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">State</p><p align=\"center\">(On / Off)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">State</p><p align="center">(On / Off)</p></body></html>',
+            )
+        )
         self.fan_title.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Fan</p><p align=\"center\">(Number)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">Fan</p><p align="center">(Number)</p></body></html>',
+            )
+        )
         self.speed_title_15.setText(
             _translate(
                 "MainWindow",
-                "<html><head/><body><p align=\"center\">Speed</p><p align=\"center\">(%)</p></body></html>"
-            ))
+                '<html><head/><body><p align="center">Speed</p><p align="center">(%)</p></body></html>',
+            )
+        )
         self.overvoltage_label.setText(_translate("MainWindow", "Overvoltage"))
         self.overvoltage_state.setText(_translate("MainWindow", "-"))
         self.bigfan_label.setText(_translate("MainWindow", "Big Fan"))
         self.bigfan_speed.setText(_translate("MainWindow", "-"))
-        self.undervoltage_label.setText(
-            _translate("MainWindow", "Undervoltage"))
+        self.undervoltage_label.setText(_translate("MainWindow", "Undervoltage"))
         self.undervoltage_state.setText(_translate("MainWindow", "-"))
         self.littlefan_label.setText(_translate("MainWindow", "Little Fan"))
         self.littlefan_speed.setText(_translate("MainWindow", "-"))
-        self.critical_error_label.setText(
-            _translate("MainWindow", "Critical Error"))
+        self.critical_error_label.setText(_translate("MainWindow", "Critical Error"))
         self.critical_error_state.setText(_translate("MainWindow", "-"))

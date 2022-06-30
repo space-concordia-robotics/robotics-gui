@@ -17,12 +17,11 @@ from useful import Header, Queue
 
 
 class Worker(threading.Thread):
-
     def __init__(self, threadID: int, name: str):
         threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-        self.daemon = True  # close with parent
+        self.threadID: int = threadID
+        self.name: str = name
+        self.daemon: bool = True  # close with parent
         self.command_queue = Queue(10)
 
     def run(self):
@@ -30,7 +29,8 @@ class Worker(threading.Thread):
             try:
                 if self.command_queue.get_list():
                     self.command_queue.get_list()[0][0](
-                        *self.command_queue.get_list()[0][1]) if self.command_queue.get_list()[0][1] else self.command_queue.get_list()[0][0]()
+                        *self.command_queue.get_list()[0][1]
+                    ) if self.command_queue.get_list()[0][1] else self.command_queue.get_list()[0][0]()
                     self.command_queue.get_list().pop(0)
                     sleep(0.01)
             except:
@@ -38,12 +38,11 @@ class Worker(threading.Thread):
 
 
 class Ros_thread(threading.Thread):
-
     def __init__(self, threadID: int, name: str):
         threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-        self.daemon = True
+        self.threadID: int = threadID
+        self.name: str = name
+        self.daemon: bool = True
         self.subbed_topics = []
 
         # each item in this tuple is a collection of all topics needed for the according page
@@ -51,18 +50,30 @@ class Ros_thread(threading.Thread):
         # the lambda function used appends the passed function and its args to the Worker thread's Queue so they are run in order
         self.topics = (
             [
-                ("wheel_motor_currents", Currents,
-                 lambda data: worker.command_queue.append((controller.display_currents, [data]))),
+                (
+                    "wheel_motor_currents",
+                    Currents,
+                    lambda data: worker.command_queue.append((controller.display_currents, [data])),
+                ),
             ],  # wheel topics
             [
-                ("arm_motor_currents", Currents, lambda data: worker.command_queue.append(
-                    (arm.display_currents, [data]))),
+                (
+                    "arm_motor_currents",
+                    Currents,
+                    lambda data: worker.command_queue.append((arm.display_currents, [data])),
+                ),
             ],  # arm topics
             [
-                ("wheel_motor_currents", Currents,
-                 lambda data: worker.command_queue.append((pds.display_wheel_currents, [data]))),
-                ("arm_motor_currents", Currents, lambda data: worker.command_queue.append(
-                    (pds.display_arm_currents, [data]))),
+                (
+                    "wheel_motor_currents",
+                    Currents,
+                    lambda data: worker.command_queue.append((pds.display_wheel_currents, [data])),
+                ),
+                (
+                    "arm_motor_currents",
+                    Currents,
+                    lambda data: worker.command_queue.append((pds.display_arm_currents, [data])),
+                ),
             ],  # pds topics
             [],  # science topics
         )
@@ -76,26 +87,33 @@ class Ros_thread(threading.Thread):
             self.subbed_topics.pop()
         worker.command_queue.clear()
         for topic in self.topics[page_index]:
-            self.subbed_topics.append(
-                rospy.Subscriber(*topic, queue_size=1))  # subs to new page topics
+            self.subbed_topics.append(rospy.Subscriber(*topic, queue_size=1))  # subs to new page topics
 
     def run(self):
         # these 2 topics are needed for all tabs since they are used outside the tab widget
-        self.battery_temps = rospy.Subscriber("battery_temps", ThermistorTemps,
-                                              lambda data: worker.command_queue.append([header.update_temps, [data]]), queue_size=1)
-        self.battery_voltage = rospy.Subscriber("battery_voltage", Voltage,
-                                                lambda data: worker.command_queue.append([header.update_voltage, [data]]), queue_size=1)
+        self.battery_temps = rospy.Subscriber(
+            "battery_temps",
+            ThermistorTemps,
+            lambda data: worker.command_queue.append([header.update_temps, [data]]),
+            queue_size=1,
+        )
+        self.battery_voltage = rospy.Subscriber(
+            "battery_voltage",
+            Voltage,
+            lambda data: worker.command_queue.append([header.update_voltage, [data]]),
+            queue_size=1,
+        )
 
         self.handle_tab_change(
-            0  # 0 just signifies the topics of the first tab since this is the first tab displayed
-        )
+            0
+        )  # 0 just signifies the topics of the first tab since this is the first tab displayed
 
 
 class MainWindowClass(QtWidgets.QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.pressed_keys = []
-        self.page = ""
+        self.page: str = ""
 
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
         if event.isAutoRepeat():
@@ -105,7 +123,7 @@ class MainWindowClass(QtWidgets.QWidget):
         key = event.text()
 
         if self.page == "controller" and not controller.log_browser.line_edit.hasFocus():
-            keys = ['d', 'w', 'a', 's']
+            keys = ["d", "w", "a", "s"]
             if key in keys:
                 self.pressed_keys.append(key)
                 controller.set_page_buttons(False)
@@ -116,8 +134,7 @@ class MainWindowClass(QtWidgets.QWidget):
                         controller.velocity[i] -= controller.throttle
                 controller.send_velocity()
         elif self.page == "arm" and not arm.log_browser.line_edit.hasFocus():
-            keys = ['w', 'e', 'r', 't', 'y', 'u',
-                    's', 'd', 'f', 'g', 'h', 'j']
+            keys = ["w", "e", "r", "t", "y", "u", "s", "d", "f", "g", "h", "j"]
             if key in keys:
                 self.pressed_keys.append(key)
                 arm.manual_controls_button.setChecked(True)
@@ -139,7 +156,7 @@ class MainWindowClass(QtWidgets.QWidget):
 
         try:
             if self.page == "controller" and not controller.log_browser.line_edit.hasFocus():
-                keys = ['d', 'w', 'a', 's']
+                keys = ["d", "w", "a", "s"]
                 if key in keys:
                     self.pressed_keys.remove(key)
                     for i in range(int(len(keys) / 2)):
@@ -152,8 +169,7 @@ class MainWindowClass(QtWidgets.QWidget):
                     if not any(self.pressed_keys):
                         controller.set_page_buttons(True)
             elif self.page == "arm" and not arm.log_browser.line_edit.hasFocus():
-                keys = ['w', 'e', 'r', 't', 'y', 'u',
-                        's', 'd', 'f', 'g', 'h', 'j']
+                keys = ["w", "e", "r", "t", "y", "u", "s", "d", "f", "g", "h", "j"]
                 if key in keys:
                     self.pressed_keys.remove(key)
                     for i in range(int(len(keys) / 2)):
@@ -171,7 +187,7 @@ class MainWindowClass(QtWidgets.QWidget):
         return super().keyReleaseEvent(event)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     rospy.init_node("gui_controller")
@@ -187,8 +203,7 @@ if __name__ == '__main__':
     width: int = screen.width()  # 1920 x 1080 for me
     height: int = screen.height()
     MainWindow.resize(width, height)
-    MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n"
-                             "color: rgb(238, 238, 236);")
+    MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n" "color: rgb(238, 238, 236);")
 
     controller_tab = QtWidgets.QWidget()
     arm_tab = QtWidgets.QWidget()
@@ -204,8 +219,7 @@ if __name__ == '__main__':
     header.setup()
 
     tab_widget = QtWidgets.QTabWidget(MainWindow)
-    tab_widget.setGeometry(QtCore.QRect(
-        0, height / 15.43, width, 0.87 * height))
+    tab_widget.setGeometry(QtCore.QRect(0, height / 15.43, width, 0.87 * height))
 
     controller_tab.setObjectName("controller")
     arm_tab.setObjectName("arm")

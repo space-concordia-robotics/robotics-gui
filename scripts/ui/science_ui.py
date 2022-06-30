@@ -13,7 +13,6 @@ from tables import Controller_table
 
 
 class Science_Ui(QtWidgets.QWidget):
-
     def __init__(self, width: float, height: float, parent=None, MainWindow=None):
         super().__init__()
         self.width = width
@@ -25,57 +24,86 @@ class Science_Ui(QtWidgets.QWidget):
     def setupUi(self, MainWindow):
         self.list_commands_button = QtWidgets.QPushButton(self.parent)
         self.list_commands_button.setGeometry(
-            QtCore.QRect(4.75 * self.width / 6, 4 * self.height / 7,
-                         self.width / 10, 2 * self.height / 25))
+            QtCore.QRect(
+                4.75 * self.width / 6,
+                4 * self.height / 7,
+                self.width / 10,
+                2 * self.height / 25,
+            )
+        )
         self.list_commands_button.setObjectName("list_commands_button")
         self.stop_button = QtWidgets.QPushButton(self.parent)
         self.stop_button.setGeometry(
-            QtCore.QRect(4.75 * self.width / 6, 4.6 * self.height / 7,
-                         self.width / 10, 2 * self.height / 25))
+            QtCore.QRect(
+                4.75 * self.width / 6,
+                4.6 * self.height / 7,
+                self.width / 10,
+                2 * self.height / 25,
+            )
+        )
         self.stop_button.setObjectName("stop_button")
         self.collect_analyse_button = QtWidgets.QPushButton(self.parent)
         self.collect_analyse_button.setGeometry(
-            QtCore.QRect(4.75 * self.width / 6, 5.2 * self.height / 7,
-                         self.width / 10, 2 * self.height / 25))
+            QtCore.QRect(
+                4.75 * self.width / 6,
+                5.2 * self.height / 7,
+                self.width / 10,
+                2 * self.height / 25,
+            )
+        )
         self.collect_analyse_button.setObjectName("collect_analyse_button")
         self.collect_analyse_button.setText("collect and analyse")
-        self.controller_table = Controller_table(self.width, self.height,
-                                                 self.parent)
+        self.controller_table = Controller_table(self.width, self.height, self.parent)
         self.controller_table.setup()
         self.log_browser = Log_browser(self.width, self.height, self.parent)
         self.log_browser.setup()
         self.controls_frame = QtWidgets.QFrame(self.parent)
         self.controls_frame.setGeometry(
-            QtCore.QRect(self.width / 48, self.height / 2.2, self.width / 3.76,
-                         self.height / 3.18))
+            QtCore.QRect(
+                self.width / 48,
+                self.height / 2.2,
+                self.width / 3.76,
+                self.height / 3.18,
+            )
+        )
         self.controls_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.controls_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.controls_frame.setObjectName("controls_frame")
         self.controller_left = QtWidgets.QPushButton(self.controls_frame)
         self.controller_left.setGeometry(
-            QtCore.QRect(self.width / 21.3, self.height / 5.4,
-                         self.width / 21.3, self.height / 12))
+            QtCore.QRect(
+                self.width / 21.3,
+                self.height / 5.4,
+                self.width / 21.3,
+                self.height / 12,
+            )
+        )
         self.controller_left.setCheckable(False)
         self.controller_left.setChecked(False)
         self.controller_left.setObjectName("controller_left")
         self.controller_down = QtWidgets.QPushButton(self.controls_frame)
         self.controller_down.setGeometry(
-            QtCore.QRect(self.width / 10, self.height / 5.4, self.width / 21.3,
-                         self.height / 12))
+            QtCore.QRect(self.width / 10, self.height / 5.4, self.width / 21.3, self.height / 12)
+        )
         self.controller_down.setCheckable(False)
         self.controller_down.setChecked(False)
         self.controller_down.setObjectName("controller_down")
         self.controller_up = QtWidgets.QPushButton(self.controls_frame)
         self.controller_up.setGeometry(
-            QtCore.QRect(self.width / 10, self.height / 10.75,
-                         self.width / 21.3, self.height / 12))
+            QtCore.QRect(
+                self.width / 10,
+                self.height / 10.75,
+                self.width / 21.3,
+                self.height / 12,
+            )
+        )
         self.controller_up.setCheckable(False)
         self.controller_up.setChecked(False)
         self.controller_up.setObjectName("controller_up")
         self.layoutWidget2 = QtWidgets.QWidget(self.controls_frame)
         self.layoutWidget2.setGeometry(
-            QtCore.QRect(self.width / 96, self.height / 3.43,
-                         self.width / 4.68, self.height / 54))
+            QtCore.QRect(self.width / 96, self.height / 3.43, self.width / 4.68, self.height / 54)
+        )
         self.layoutWidget2.setObjectName("layoutWidget2")
         self.throttle_container = QtWidgets.QHBoxLayout(self.layoutWidget2)
         self.throttle_container.setContentsMargins(0, 0, 0, 0)
@@ -90,15 +118,15 @@ class Science_Ui(QtWidgets.QWidget):
         font = QtGui.QFont()
         font.setPointSize(self.width / 160)
         self.throttle_value.setFont(font)
-        self.throttle_value.setAlignment(QtCore.Qt.AlignRight
-                                         | QtCore.Qt.AlignTrailing
-                                         | QtCore.Qt.AlignVCenter)
+        self.throttle_value.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
+        )
         self.throttle_value.setObjectName("throttle_value")
         self.throttle_container.addWidget(self.throttle_value)
         self.layoutWidget3 = QtWidgets.QWidget(self.controls_frame)
         self.layoutWidget3.setGeometry(
-            QtCore.QRect(self.height / 96, self.height / 120,
-                         self.width / 4.09, self.height / 15))
+            QtCore.QRect(self.height / 96, self.height / 120, self.width / 4.09, self.height / 15)
+        )
         self.layoutWidget3.setObjectName("layoutWidget3")
         self.motor_controls = QtWidgets.QVBoxLayout(self.layoutWidget3)
         self.motor_controls.setContentsMargins(0, 0, 0, 0)
@@ -128,8 +156,13 @@ class Science_Ui(QtWidgets.QWidget):
         self.motor_controls.addWidget(self.rover_settings)
         self.controller_right = QtWidgets.QPushButton(self.controls_frame)
         self.controller_right.setGeometry(
-            QtCore.QRect(self.width / 6.62, self.height / 5.4,
-                         self.width / 21.3, self.height / 12))
+            QtCore.QRect(
+                self.width / 6.62,
+                self.height / 5.4,
+                self.width / 21.3,
+                self.height / 12,
+            )
+        )
         self.controller_right.setCheckable(False)
         self.controller_right.setChecked(False)
         self.controller_right.setObjectName("controller_right")
@@ -141,20 +174,16 @@ class Science_Ui(QtWidgets.QWidget):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.list_commands_button.setText(
-            _translate("MainWindow", "List Commands (L) "))
+        self.list_commands_button.setText(_translate("MainWindow", "List Commands (L) "))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
 
         self.controller_left.setText(_translate("MainWindow", "Left"))
         self.controller_down.setText(_translate("MainWindow", "Down"))
         self.controller_up.setText(_translate("MainWindow", "Up"))
-        self.throttle_label.setText(
-            _translate("MainWindow", "Throttle (U: Increase, I: Decrease)"))
+        self.throttle_label.setText(_translate("MainWindow", "Throttle (U: Increase, I: Decrease)"))
         self.throttle_value.setText(_translate("MainWindow", "0.5"))
-        self.motor_controls_label.setText(
-            _translate("MainWindow", "Motor Controls"))
+        self.motor_controls_label.setText(_translate("MainWindow", "Motor Controls"))
         self.activate_rover.setText(_translate("MainWindow", "Activate Rover"))
         self.closed_loop.setText(_translate("MainWindow", "Closed Loop"))
-        self.command_listener.setText(
-            _translate("MainWindow", "Command Listener"))
+        self.command_listener.setText(_translate("MainWindow", "Command Listener"))
         self.controller_right.setText(_translate("MainWindow", "Right"))

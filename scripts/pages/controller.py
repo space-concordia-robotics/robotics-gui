@@ -7,20 +7,19 @@ from useful import emergency_stop, ping_mcu, ping_odroid
 
 
 class Controller(Controller_Ui):
-
     def __init__(self, width: float, height: float, parent=None, MainWindow=None):
         super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
         self.throttle = 0.50
-        self.currents = (0, 0, 0, 0, 0, 0)
+        self.currents = (0,) * 6
         # first element of the velocity is right (+) / left (-) and second is front (+) / back (-)
-        self.velocity = [0, 0]
+        self.velocity = [0] * 2
         self.commands = {
-            'ctrl-p': "'ping rover mcu'",
-            'alt-p': "'ping odroid'",
-            'q': "'emergency stop all motors'",
-            'l': "'view key commands'",
-            'u': "'increase throttle value'",
-            'i': "'decrease throttle value'\n",
+            "ctrl-p": "'ping rover mcu'",
+            "alt-p": "'ping odroid'",
+            "q": "'emergency stop all motors'",
+            "l": "'view key commands'",
+            "u": "'increase throttle value'",
+            "i": "'decrease throttle value'\n",
         }
 
         self.start_handling_clicks()
@@ -40,8 +39,7 @@ class Controller(Controller_Ui):
         to the UI's text browser"""
 
         for command in self.commands:
-            self.log_browser.append_to_browser(
-                f"'{command}': {self.commands[command]}")
+            self.log_browser.append_to_browser(f"'{command}': {self.commands[command]}")
 
     def change_throttle(self, change: str):
         """Changes the current throttle value either increasing or
@@ -67,22 +65,17 @@ class Controller(Controller_Ui):
         self.stop_button.clicked.connect(lambda: emergency_stop(self))
 
         self.ping_odroid_sequence = QShortcut(QKeySequence("Alt+P"), self)
-        self.ping_odroid_sequence.activated.connect(
-            lambda: ping_odroid(self))
+        self.ping_odroid_sequence.activated.connect(lambda: ping_odroid(self))
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
-        self.ping_mcu_sequence.activated.connect(
-            lambda: ping_mcu("controller"))
+        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("controller"))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
-        self.emergency_stop_sequence.activated.connect(
-            lambda: emergency_stop(self))
+        self.emergency_stop_sequence.activated.connect(lambda: emergency_stop(self))
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)
 
         self.inc_throttle_sequence = QShortcut(Qt.Key_U, self)
-        self.inc_throttle_sequence.activated.connect(
-            lambda: self.change_throttle("+"))
+        self.inc_throttle_sequence.activated.connect(lambda: self.change_throttle("+"))
 
         self.dec_throttle_sequence = QShortcut(Qt.Key_I, self)
-        self.dec_throttle_sequence.activated.connect(
-            lambda: self.change_throttle("-"))
+        self.dec_throttle_sequence.activated.connect(lambda: self.change_throttle("-"))
