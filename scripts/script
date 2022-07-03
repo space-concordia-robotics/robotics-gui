@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import subprocess
 import threading
 from time import sleep
 
@@ -14,6 +15,16 @@ from pages.controller import Controller
 from pages.pds import Pds
 from pages.science import Science
 from useful import Header, Queue
+
+
+def ping_odroid():
+    tab: QtWidgets.QWidget = tab_widget.currentWidget().objectName()
+    output: str = (
+        subprocess.Popen(["rosrun", "ping_acknowledgment", "ping_response_client.py"], stdout=subprocess.PIPE)
+        .stdout.read()
+        .decode("utf-8")
+    )
+    exec(f"{tab}.log_browser.append_to_browser(output)")
 
 
 class Worker(threading.Thread):
@@ -114,6 +125,18 @@ class MainWindowClass(QtWidgets.QWidget):
         super().__init__()
         self.pressed_keys: list = []
         self.page: str = ""
+
+        self.ping_odroid_sequence = QtWidgets.QShortcut(QtGui.QKeySequence("alt+p"), self)
+
+        self.ping_odroid_sequence.activated.connect(ping_odroid)
+        self.setFocus()
+
+    def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
+        self.pressed_keys.clear()  # clears all velocity and speed values that keyReleaseEvent didnt catch because of the window change
+        controller.velocity = [0] * 2
+        arm.speeds = [0] * 6
+        print("focus out")
+        return super().focusOutEvent(event)
 
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
         if event.isAutoRepeat():

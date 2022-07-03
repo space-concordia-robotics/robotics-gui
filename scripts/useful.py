@@ -1,5 +1,4 @@
 import os
-import subprocess
 
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Voltage import Voltage
@@ -8,13 +7,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 def ping_mcu(tab_name: str):
     print(f"ping rover in mcu {tab_name}")
-
-
-def ping_odroid(tab):
-    output = subprocess.run(
-        ["rosrun", "ping_acknowledgment", "ping_response_client.py"], stdout=subprocess.PIPE
-    ).stdout.decode("utf-8")
-    tab.log_browser.append_to_browser(output)
 
 
 def emergency_stop(tab):

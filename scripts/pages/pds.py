@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from ui.pds_ui import Pds_Ui
-from useful import emergency_stop, ping_mcu, ping_odroid
+from useful import emergency_stop, ping_mcu
 
 
 class Pds(Pds_Ui):
@@ -100,8 +100,6 @@ class Pds(Pds_Ui):
         self.fan1_speed_input.editingFinished.connect(lambda: self.set_fan_speed(1))
         self.fan2_speed_input.editingFinished.connect(lambda: self.set_fan_speed(2))
 
-        self.ping_odroid_sequence = QShortcut(QKeySequence("Alt+P"), self)
-        self.ping_odroid_sequence.activated.connect(lambda: ping_odroid(self))
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("pds"))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)

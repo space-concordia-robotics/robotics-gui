@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from ui.controller_ui import Controller_Ui
-from useful import emergency_stop, ping_mcu, ping_odroid
+from useful import emergency_stop, ping_mcu
 
 
 class Controller(Controller_Ui):
@@ -66,8 +66,6 @@ class Controller(Controller_Ui):
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(lambda: emergency_stop(self))
 
-        self.ping_odroid_sequence = QShortcut(QKeySequence("Alt+P"), self)
-        self.ping_odroid_sequence.activated.connect(lambda: ping_odroid(self))
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("controller"))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)

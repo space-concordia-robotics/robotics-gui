@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from ui.arm_ui import Arm_Ui
-from useful import emergency_stop, ping_mcu, ping_odroid
+from useful import emergency_stop, ping_mcu
 
 
 class Arm(Arm_Ui):
@@ -87,8 +87,6 @@ class Arm(Arm_Ui):
         self.homing_button.clicked.connect(self.homing)
         self.send_speed_multiplier_button.clicked.connect(self.send_speed_multiplier)
 
-        self.ping_odroid_sequence = QShortcut(QKeySequence("Alt+P"), self)
-        self.ping_odroid_sequence.activated.connect(lambda: ping_odroid(self))
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("arm"))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
