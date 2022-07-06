@@ -11,20 +11,10 @@ from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from pages.arm import Arm
-from pages.controller import Controller
+from pages.wheel import Wheel
 from pages.pds import Pds
 from pages.science import Science
 from useful import Header, Queue
-
-
-def ping_odroid():
-    tab: QtWidgets.QWidget = tab_widget.currentWidget().objectName()
-    output: str = (
-        subprocess.Popen(["rosrun", "ping_acknowledgment", "ping_response_client.py"], stdout=subprocess.PIPE)
-        .stdout.read()
-        .decode("utf-8")
-    )
-    exec(f"{tab}.log_browser.append_to_browser(output)")
 
 
 class Worker(threading.Thread):
@@ -54,7 +44,7 @@ class Ros_thread(threading.Thread):
         self.threadID: int = threadID
         self.name: str = name
         self.daemon: bool = True
-        self.subbed_topics = []
+        self.subbed_topics: list = []
 
         # each item in this tuple is a collection of all topics needed for the according page
         # each item (topic) in said collection is a tuple that contains the arguments needed for the Subscriber method
@@ -64,7 +54,7 @@ class Ros_thread(threading.Thread):
                 (
                     "wheel_motor_currents",
                     Currents,
-                    lambda data: worker.command_queue.append((controller.display_currents, [data])),
+                    lambda data: worker.command_queue.append((wheel.display_currents, [data])),
                 ),
             ],  # wheel topics
             [
@@ -121,41 +111,50 @@ class Ros_thread(threading.Thread):
 
 
 class MainWindowClass(QtWidgets.QWidget):
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__()
         self.pressed_keys: list = []
         self.page: str = ""
 
         self.ping_odroid_sequence = QtWidgets.QShortcut(QtGui.QKeySequence("alt+p"), self)
-
-        self.ping_odroid_sequence.activated.connect(ping_odroid)
+        self.ping_odroid_sequence.activated.connect(self.ping_odroid)
         self.setFocus()
+
+    def ping_odroid(self):
+        tab: QtWidgets.QWidget = tab_widget.currentWidget().objectName()
+        output: str = (
+            subprocess.Popen(
+                ["rosrun", "ping_acknowledgment", "ping_response_client.py"], stdout=subprocess.PIPE
+            )
+            .stdout.read()
+            .decode("utf-8")
+        )
+        exec(f"{tab}.log_browser.append_to_browser(output)")
 
     def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
         self.pressed_keys.clear()  # clears all velocity and speed values that keyReleaseEvent didnt catch because of the window change
-        controller.velocity = [0] * 2
+        wheel.velocity = [0] * 2
         arm.speeds = [0] * 6
-        print("focus out")
         return super().focusOutEvent(event)
 
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
         if event.isAutoRepeat():
             return  # this prevents the press and release events from continuously firing
 
-        self.page = tab_widget.currentWidget().objectName()
+        self.page: str = tab_widget.currentWidget().objectName()
         key: str = event.text()
 
-        if self.page == "controller" and not controller.log_browser.line_edit.hasFocus():
+        if self.page == "wheel" and not wheel.log_browser.line_edit.hasFocus():
             keys = ["d", "w", "a", "s"]
             if key in keys:
                 self.pressed_keys.append(key)
-                controller.set_page_buttons(False)
+                wheel.set_page_buttons(False)
                 for i in range(int(len(keys) / 2)):
                     if key == keys[i]:
-                        controller.velocity[i] += controller.throttle
+                        wheel.velocity[i] += wheel.throttle
                     elif key == keys[i + int(len(keys) / 2)]:
-                        controller.velocity[i] -= controller.throttle
-                controller.send_velocity()
+                        wheel.velocity[i] -= wheel.throttle
+                wheel.send_velocity()
         elif self.page == "arm" and not arm.log_browser.line_edit.hasFocus():
             keys = ["w", "e", "r", "t", "y", "u", "s", "d", "f", "g", "h", "j"]
             if key in keys:
@@ -178,19 +177,19 @@ class MainWindowClass(QtWidgets.QWidget):
         key: str = event.text()
 
         try:
-            if self.page == "controller" and not controller.log_browser.line_edit.hasFocus():
+            if self.page == "wheel" and not wheel.log_browser.line_edit.hasFocus():
                 keys = ["d", "w", "a", "s"]
                 if key in keys:
                     self.pressed_keys.remove(key)
                     for i in range(int(len(keys) / 2)):
                         if key == keys[i]:
-                            controller.velocity[i] -= controller.throttle
+                            wheel.velocity[i] -= wheel.throttle
                         elif key == keys[i + int(len(keys) / 2)]:
-                            controller.velocity[i] += controller.throttle
-                    controller.send_velocity()
+                            wheel.velocity[i] += wheel.throttle
+                    wheel.send_velocity()
 
                     if not any(self.pressed_keys):
-                        controller.set_page_buttons(True)
+                        wheel.set_page_buttons(True)
             elif self.page == "arm" and not arm.log_browser.line_edit.hasFocus():
                 keys = ["w", "e", "r", "t", "y", "u", "s", "d", "f", "g", "h", "j"]
                 if key in keys:
@@ -228,12 +227,12 @@ if __name__ == "__main__":
     MainWindow.resize(width, height)
     MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n" "color: rgb(238, 238, 236);")
 
-    controller_tab = QtWidgets.QWidget()
+    wheel_tab = QtWidgets.QWidget()
     arm_tab = QtWidgets.QWidget()
     pds_tab = QtWidgets.QWidget()
     science_tab = QtWidgets.QWidget()
 
-    controller = Controller(width, height, controller_tab, MainWindow)
+    wheel = Wheel(width, height, wheel_tab, MainWindow)
     arm = Arm(width, height, arm_tab, MainWindow)
     pds = Pds(width, height, pds_tab, MainWindow)
     science = Science(width, height, science_tab, MainWindow)
@@ -244,12 +243,12 @@ if __name__ == "__main__":
     tab_widget = QtWidgets.QTabWidget(MainWindow)
     tab_widget.setGeometry(QtCore.QRect(0, height / 15.43, width, 0.87 * height))
 
-    controller_tab.setObjectName("controller")
+    wheel_tab.setObjectName("wheel")
     arm_tab.setObjectName("arm")
     pds_tab.setObjectName("pds")
     science_tab.setObjectName("science")
 
-    tab_widget.addTab(controller_tab, "Controller")
+    tab_widget.addTab(wheel_tab, "Wheels")
     tab_widget.addTab(arm_tab, "Arm")
     tab_widget.addTab(pds_tab, "PDS")
     # tab_widget.addTab(science_tab, "Science")

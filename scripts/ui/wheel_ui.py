@@ -9,10 +9,10 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from useful import Log_browser, Stream
-from tables import Controller_table
+from tables import Wheel_table
 
 
-class Controller_Ui(QtWidgets.QWidget):
+class Wheel_Ui(QtWidgets.QWidget):
     def __init__(self, width: float, height: float, parent=None, MainWindow=None):
         super().__init__(parent=parent)
         self.width = width
@@ -42,8 +42,8 @@ class Controller_Ui(QtWidgets.QWidget):
             )
         )
         self.stop_button.setObjectName("stop_button")
-        self.controller_table = Controller_table(self.width, self.height, self.parent)
-        self.controller_table.setup()
+        self.wheel_table = Wheel_table(self.width, self.height, self.parent)
+        self.wheel_table.setup()
         self.log_browser = Log_browser(self.width, self.height, self.parent)
         self.log_browser.setup()
         self.controls_frame = QtWidgets.QFrame(self.parent)

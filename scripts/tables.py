@@ -3,7 +3,7 @@ from typing import Optional
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Controller_table(QtWidgets.QWidget):
+class Wheel_table(QtWidgets.QWidget):
     def __init__(
         self, width: float, height: float, parent=None, x: Optional[float] = 0, y: Optional[float] = 0
     ):

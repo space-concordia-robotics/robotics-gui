@@ -31,11 +31,11 @@ class Pds(Pds_Ui):
 
     def display_wheel_currents(self, data: Currents):
         self.wheel_currents = tuple(data.effort)
-        self.controller_table.display_currents(self.wheel_currents)
+        self.wheel_table.display_currents(self.wheel_currents)
 
     def display_arm_currents(self, data: Currents):
         self.arm_currents = tuple(data.effort)
-        self.arm_motor_table.display_currents(self.arm_currents)
+        self.arm_table.display_currents(self.arm_currents)
 
     def reset_general_flags(self):
         print("reset gen flags")

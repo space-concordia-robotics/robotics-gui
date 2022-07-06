@@ -2,11 +2,11 @@ from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
-from ui.controller_ui import Controller_Ui
+from ui.wheel_ui import Wheel_Ui
 from useful import emergency_stop, ping_mcu
 
 
-class Controller(Controller_Ui):
+class Wheel(Wheel_Ui):
     def __init__(self, width: float, height: float, parent=None, MainWindow=None):
         super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
         self.throttle: float = 0.50
@@ -57,7 +57,7 @@ class Controller(Controller_Ui):
 
     def display_currents(self, data: Currents):
         self.currents = tuple(data.effort)
-        self.controller_table.display_currents(self.currents)
+        self.wheel_table.display_currents(self.currents)
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for
@@ -67,7 +67,7 @@ class Controller(Controller_Ui):
         self.stop_button.clicked.connect(lambda: emergency_stop(self))
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
-        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("controller"))
+        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("wheel"))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(lambda: emergency_stop(self))
 

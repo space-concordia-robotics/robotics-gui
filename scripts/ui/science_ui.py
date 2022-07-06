@@ -9,7 +9,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from useful import Log_browser, Stream
-from tables import Controller_table
+from tables import Wheel_table
 
 
 class Science_Ui(QtWidgets.QWidget):
@@ -53,8 +53,8 @@ class Science_Ui(QtWidgets.QWidget):
         )
         self.collect_analyse_button.setObjectName("collect_analyse_button")
         self.collect_analyse_button.setText("collect and analyse")
-        self.controller_table = Controller_table(self.width, self.height, self.parent)
-        self.controller_table.setup()
+        self.wheel_table = Wheel_table(self.width, self.height, self.parent)
+        self.wheel_table.setup()
         self.log_browser = Log_browser(self.width, self.height, self.parent)
         self.log_browser.setup()
         self.controls_frame = QtWidgets.QFrame(self.parent)

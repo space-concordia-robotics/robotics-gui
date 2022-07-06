@@ -25,15 +25,22 @@ class Pds_Ui(QtWidgets.QWidget):
         self.log_browser = Log_browser(self.width, self.height, self.parent)
         self.log_browser.setup()
 
-        self.arm_motor_table = Arm_table(
-            self.width, self.height, self.parent, self.width / 1.55, self.height / 2.7
+        self.wheel_table = Wheel_table(
+            self.width, self.height, self.parent, self.width / 48, self.height / 2.7
         )
-        self.arm_motor_table.setup()
+        self.wheel_table.setup()
 
-        self.controller_table = Controller_table(
-            self.width, self.height, self.parent, self.width / 3.05, self.height / 2.7
+        self.arm_table = Arm_table(
+            self.width,
+            self.height,
+            self.parent,
+            self.width / 2.8,
+            self.height / 2.7,
         )
-        self.controller_table.setup()
+        self.arm_table.setup()
+
+        self.pds_table = Pds_table(self.width, self.height, self.parent, self.width / 1.45, self.height / 2.7)
+        self.pds_table.setup()
 
         self.list_commands_button = QtWidgets.QPushButton(self.parent)
         self.list_commands_button.setGeometry(
@@ -179,9 +186,6 @@ class Pds_Ui(QtWidgets.QWidget):
         self.label = QtWidgets.QLabel(self.layoutWidget4)
         self.label.setObjectName("label")
         self.formLayout_2.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label)
-
-        self.pds_table = Pds_table(self.width, self.height, self.parent, self.width / 48, self.height / 2.7)
-        self.pds_table.setup()
 
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
