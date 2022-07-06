@@ -9,9 +9,9 @@ from useful import emergency_stop, ping_mcu
 class Arm(Arm_Ui):
     def __init__(self, width: float, height: float, parent=None, MainWindow=None):
         super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
-        self.speed_multiplier = 1
-        self.currents = (0,) * 6
-        self.speeds = [0] * 6
+        self.speed_multiplier: float = 1
+        self.currents: tuple[float] = (0,) * 6
+        self.speeds: list[float] = [0] * 6
         self.commands = {
             "ctrl-p": "'ping arm mcu'",
             "alt-p": "'ping odroid'",
