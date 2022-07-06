@@ -11,9 +11,9 @@ from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from pages.arm import Arm
-from pages.wheel import Wheel
 from pages.pds import Pds
 from pages.science import Science
+from pages.wheel import Wheel
 from useful import Header, Queue
 
 

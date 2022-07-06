@@ -16,7 +16,7 @@ def emergency_stop(tab):
 
 
 class Queue(object):
-    def __init__(self, queue_size: int) -> None:
+    def __init__(self, queue_size: int):
         self.queue_size: int = queue_size
         self.queue: list = []
 
