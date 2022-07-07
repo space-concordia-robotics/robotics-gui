@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from ui.arm_ui import Arm_Ui
-from useful import emergency_stop, ping_mcu
+from helpers import emergency_stop, ping_mcu
 
 
 class Arm(Arm_Ui):

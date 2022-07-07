@@ -1,6 +1,6 @@
 # The Science controls are still undergoing changes so no work will be done to this page and its ui until these changes are completed
 from ui.science_ui import Science_Ui
-from useful import emergency_stop
+from helpers import emergency_stop
 
 
 class Science(Science_Ui):

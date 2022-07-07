@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from ui.pds_ui import Pds_Ui
-from useful import emergency_stop, ping_mcu
+from helpers import emergency_stop, ping_mcu
 
 
 class Pds(Pds_Ui):
