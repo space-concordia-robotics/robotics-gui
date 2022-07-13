@@ -5,11 +5,6 @@ from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-def ping_mcu(tab):
-    print(f"ping rover in mcu {tab}")
-    tab.publisher.publish("ping")
-
-
 class Queue(object):
     def __init__(self, queue_size: int):
         self.queue_size: int = queue_size

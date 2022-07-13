@@ -1,4 +1,4 @@
-from helpers import ping_mcu
+import rospy
 from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -7,7 +7,7 @@ from ui.wheel_ui import Wheel_Ui
 
 
 class Wheel(Wheel_Ui):
-    def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
+    def __init__(self, width: float, height: float, publisher: rospy.Publisher, parent=None, MainWindow=None):
         super().__init__(
             width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
         )
@@ -39,6 +39,10 @@ class Wheel(Wheel_Ui):
     def estop(self):
         self.publisher.publish("motors_estop")
         print("Stopping all rover motors")
+
+    def ping(self):
+        self.publisher.publish("ping")
+        print("Pinging Rover in MCU")
 
     def send_velocity(self):
         self.publisher.publish(str(self.velocity))
@@ -75,7 +79,7 @@ class Wheel(Wheel_Ui):
         self.stop_button.clicked.connect(self.estop)
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
-        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu(self))
+        self.ping_mcu_sequence.activated.connect(self.ping)
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(self.estop)
 

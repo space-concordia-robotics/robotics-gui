@@ -15,7 +15,7 @@ from tables import Wheel_table
 
 class Science_Ui(QtWidgets.QWidget):
     def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
-        super().__init__()
+        super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent

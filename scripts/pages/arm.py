@@ -1,4 +1,4 @@
-from helpers import ping_mcu
+import rospy
 from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -7,7 +7,7 @@ from ui.arm_ui import Arm_Ui
 
 
 class Arm(Arm_Ui):
-    def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
+    def __init__(self, width: float, height: float, publisher: rospy.Publisher, parent=None, MainWindow=None):
         super().__init__(
             width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
         )
@@ -43,6 +43,10 @@ class Arm(Arm_Ui):
     def estop(self):
         self.publisher.publish("estop")
         print("Stopping all arm motors")
+
+    def ping(self):
+        self.publisher.publish("ping")
+        print("Pinging Arm in MCU")
 
     def send_speeds(self):
         self.publisher.publish(str(self.speeds))
@@ -96,7 +100,7 @@ class Arm(Arm_Ui):
         self.send_speed_multiplier_button.clicked.connect(self.send_speed_multiplier)
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
-        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu(self))
+        self.ping_mcu_sequence.activated.connect(self.ping)
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(self.estop)
 
