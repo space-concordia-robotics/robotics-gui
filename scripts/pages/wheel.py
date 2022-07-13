@@ -1,4 +1,4 @@
-from helpers import emergency_stop, ping_mcu
+from helpers import ping_mcu
 from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -11,6 +11,7 @@ class Wheel(Wheel_Ui):
         super().__init__(
             width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
         )
+        self.publisher = publisher
         self.throttle: float = 0.50
         self.currents: tuple[float] = (0,) * 6
         # first element of the velocity is right (+) / left (-) and second is front (+) / back (-)
@@ -35,7 +36,12 @@ class Wheel(Wheel_Ui):
         self.log_browser.clear_browser_button.setEnabled(value)
         self.log_browser.send_command_button.setEnabled(value)
 
+    def estop(self):
+        self.publisher.publish("motors_estop")
+        print("Stopping all rover motors")
+
     def send_velocity(self):
+        self.publisher.publish(str(self.velocity))
         print(self.velocity)
 
     def list_commands(self):
@@ -66,12 +72,12 @@ class Wheel(Wheel_Ui):
         the Rover Controller Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(lambda: emergency_stop(self))
+        self.stop_button.clicked.connect(self.estop)
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
-        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("wheel"))
+        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu(self))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
-        self.emergency_stop_sequence.activated.connect(lambda: emergency_stop(self))
+        self.emergency_stop_sequence.activated.connect(self.estop)
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)

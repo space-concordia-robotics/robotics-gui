@@ -1,4 +1,4 @@
-from helpers import emergency_stop, ping_mcu
+from helpers import ping_mcu
 from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -11,6 +11,7 @@ class Pds(Pds_Ui):
         super().__init__(
             width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
         )
+        self.publisher = publisher
         self.fan1_speed: float = 100.0
         self.fan2_speed: float = 100.0
         self.commands = {
@@ -23,6 +24,10 @@ class Pds(Pds_Ui):
         }
 
         self.start_handling_clicks()
+
+    def estop(self):
+        self.publisher.publish("disable_all_motors")
+        print("Stopping all motors")
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
@@ -88,7 +93,7 @@ class Pds(Pds_Ui):
         the Rover PDS Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(lambda: emergency_stop(self))
+        self.stop_button.clicked.connect(self.estop)
         self.reset_current_flags_button.clicked.connect(self.reset_current_flags)
         self.reset_general_flags_button.clicked.connect(self.reset_general_flags)
 
@@ -103,9 +108,9 @@ class Pds(Pds_Ui):
         self.fan2_speed_input.editingFinished.connect(lambda: self.set_fan_speed(2))
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
-        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("pds"))
+        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu(self))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
-        self.emergency_stop_sequence.activated.connect(lambda: emergency_stop(self))
+        self.emergency_stop_sequence.activated.connect(self.estop)
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)

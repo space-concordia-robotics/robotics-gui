@@ -11,13 +11,14 @@ class Log_browser(QtWidgets.QWidget):
         self.parent = parent
         self.publisher = publisher
 
-    def execute_command(self, command) -> String:
-        """Sends the passed function to the ROS publisher and returns a string that outputs to the log"""
+    def execute_command(self, command: str) -> String:
+        """Sends the passed function to the ROS publisher and returns a string"""
+
         self.publisher.publish(command.upper())
         return command.upper()
 
     def run_command(self):
-        """Gets the content of the command line and tries to run it if possible using the execute command function"""
+        """Gets the content of the command line and executes the command and appends the output to the log"""
 
         command = self.line_edit.text()
         if command.strip() != "":
@@ -32,15 +33,6 @@ class Log_browser(QtWidgets.QWidget):
         self.text_browser.append(str(data))
         self.text_browser.moveCursor(QtGui.QTextCursor.End)
         self.text_browser.ensureCursorVisible()
-
-    def submit(self):
-        """Gets the content of the command line and tries to run it if possible"""
-
-        command = self.line_edit.text()
-        if command.strip() != "":
-            self.append_to_browser(f"{command} \n")  # filler code
-        self.line_edit.clear()
-        self.line_edit.clearFocus()
 
     def setup(self):
         self.console_frame = QtWidgets.QFrame(self.parent)
@@ -107,6 +99,9 @@ class Log_browser(QtWidgets.QWidget):
         self.verticalLayout.addLayout(self.log_input)
         self.log.addLayout(self.verticalLayout)
 
+        self.start_handling_clicks()
+
+    def start_handling_clicks(self):
         self.line_edit.returnPressed.connect(self.run_command)
         self.clear_browser_button.pressed.connect(self.text_browser.clear)
-        self.send_command_button.pressed.connect(self.submit)
+        self.send_command_button.pressed.connect(self.run_command)

@@ -1,5 +1,7 @@
 # The Science controls are still undergoing changes so no work will be done to this page and its ui until these changes are completed
-from helpers import emergency_stop
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QShortcut
 from ui.science_ui import Science_Ui
 
 
@@ -8,11 +10,16 @@ class Science(Science_Ui):
         super().__init__(
             width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
         )
+        self.publisher = publisher
         self.used_vials = 0
         self.vials = {}  # template: ( [ number, status, CCD, Ramen ] )
         self.commands = {"test": "'test'"}
 
         self.start_handling_clicks()
+
+    def estop(self):
+        self.publisher.publish("estop")
+        print("Stopping all science motors")
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
@@ -29,5 +36,14 @@ class Science(Science_Ui):
         the Rover Science Page"""
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(lambda: emergency_stop("science"))
+        self.stop_button.clicked.connect(self.estop)
         self.collect_analyse_button.clicked.connect(self.collect_analyse)
+
+        self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
+        self.emergency_stop_sequence.activated.connect(self.estop)
+
+        self.test = QShortcut(Qt.Key_T, self)
+        self.test.activated.connect(self.collect_analyse)
+
+        self.list_commands_sequence = QShortcut(Qt.Key_L, self)
+        self.list_commands_sequence.activated.connect(self.list_commands)

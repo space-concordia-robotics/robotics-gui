@@ -1,4 +1,4 @@
-from helpers import emergency_stop, ping_mcu
+from helpers import ping_mcu
 from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -11,6 +11,7 @@ class Arm(Arm_Ui):
         super().__init__(
             width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
         )
+        self.publisher = publisher
         self.speed_multiplier: float = 1
         self.currents: tuple[float] = (0,) * 6
         self.speeds: list[float] = [0] * 6
@@ -39,7 +40,12 @@ class Arm(Arm_Ui):
         self.send_speed_multiplier_button.setEnabled(value)
         self.homing_button.setEnabled(value)
 
+    def estop(self):
+        self.publisher.publish("estop")
+        print("Stopping all arm motors")
+
     def send_speeds(self):
+        self.publisher.publish(str(self.speeds))
         print(self.speeds)
 
     def list_commands(self):
@@ -84,15 +90,15 @@ class Arm(Arm_Ui):
         self.manual_controls_button.toggled.connect(self.switch_controls)
 
         self.list_commands_button.clicked.connect(self.list_commands)
-        self.stop_button.clicked.connect(lambda: emergency_stop(self))
+        self.stop_button.clicked.connect(self.estop)
         self.reset_angles_button.clicked.connect(self.reset_angles)
         self.homing_button.clicked.connect(self.homing)
         self.send_speed_multiplier_button.clicked.connect(self.send_speed_multiplier)
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
-        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu("arm"))
+        self.ping_mcu_sequence.activated.connect(lambda: ping_mcu(self))
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
-        self.emergency_stop_sequence.activated.connect(lambda: emergency_stop(self))
+        self.emergency_stop_sequence.activated.connect(self.estop)
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)

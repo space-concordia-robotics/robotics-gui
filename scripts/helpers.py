@@ -5,14 +5,9 @@ from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-def ping_mcu(tab_name: str):
-    print(f"ping rover in mcu {tab_name}")
-
-
-def emergency_stop(tab):
-    """Emergency stops the respective motor(s)"""
-
-    print(f"emergency stop {tab}")
+def ping_mcu(tab):
+    print(f"ping rover in mcu {tab}")
+    tab.publisher.publish("ping")
 
 
 class Queue(object):
