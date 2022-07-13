@@ -14,11 +14,12 @@ from tables import Wheel_table
 
 
 class Science_Ui(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
+    def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
         super().__init__()
         self.width = width
         self.height = height
         self.parent = parent
+        self.publisher = publisher
 
         self.setupUi(MainWindow)
 
@@ -56,7 +57,7 @@ class Science_Ui(QtWidgets.QWidget):
         self.collect_analyse_button.setText("collect and analyse")
         self.wheel_table = Wheel_table(self.width, self.height, self.parent)
         self.wheel_table.setup()
-        self.log_browser = Log_browser(self.width, self.height, self.parent)
+        self.log_browser = Log_browser(self.width, self.height, self.publisher, self.parent)
         self.log_browser.setup()
         self.controls_frame = QtWidgets.QFrame(self.parent)
         self.controls_frame.setGeometry(

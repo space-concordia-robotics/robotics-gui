@@ -9,12 +9,13 @@ from mcu_control.msg._Currents import Currents
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
+from std_msgs.msg import String
 
+from helpers import Header, Queue
 from pages.arm import Arm
-from pages.wheel import Wheel
 from pages.pds import Pds
 from pages.science import Science
-from helpers import Header, Queue
+from pages.wheel import Wheel
 
 
 class Worker(threading.Thread):
@@ -123,7 +124,7 @@ class MainWindowClass(QtWidgets.QWidget):
         self.page: str = ""
 
         self.ping_odroid_sequence = QtWidgets.QShortcut(QtGui.QKeySequence("alt+p"), self)
-        self.ping_odroid_sequence.activated.connect(self.ping_odroid)
+        self.ping_odroid_sequence.activated.connect(lambda: threading.Thread(target=self.ping_odroid).start())
         self.setFocus()
 
     def ping_odroid(self):
@@ -135,7 +136,7 @@ class MainWindowClass(QtWidgets.QWidget):
             .stdout.read()
             .decode("utf-8")
         )
-        exec(f"{tab}.log_browser.append_to_browser(output)")
+        exec(f"worker.add_to_queue(({tab}.log_browser.append_to_browser, [output]))")
 
     def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
         self.pressed_keys.clear()  # clears all velocity and speed values that keyReleaseEvent didnt catch because of the window change
@@ -238,10 +239,14 @@ if __name__ == "__main__":
     pds_tab = QtWidgets.QWidget()
     science_tab = QtWidgets.QWidget()
 
-    wheel = Wheel(width, height, wheel_tab, MainWindow)
-    arm = Arm(width, height, arm_tab, MainWindow)
-    pds = Pds(width, height, pds_tab, MainWindow)
-    science = Science(width, height, science_tab, MainWindow)
+    wheel = Wheel(
+        width, height, rospy.Publisher("/rover_command", String, queue_size=5), wheel_tab, MainWindow
+    )
+    arm = Arm(width, height, rospy.Publisher("/arm_command", String, queue_size=5), arm_tab, MainWindow)
+    pds = Pds(width, height, rospy.Publisher("/pds_command", String, queue_size=5), pds_tab, MainWindow)
+    science = Science(
+        width, height, rospy.Publisher("/science_command", String, queue_size=5), science_tab, MainWindow
+    )
 
     header = Header(width, height, MainWindow)
     header.setup()
@@ -255,9 +260,9 @@ if __name__ == "__main__":
     science_tab.setObjectName("science")
 
     tab_widget.addTab(wheel_tab, "Wheels")
-    tab_widget.addTab(arm_tab, "Arm")
+    tab_widget.addTab(arm_tab, "Arms")
     tab_widget.addTab(pds_tab, "PDS")
-    # tab_widget.addTab(science_tab, "Science")
+    tab_widget.addTab(science_tab, "Science")
 
     ros_thread = Ros_thread(2, "ros-thread")
     tab_widget.currentChanged.connect(ros_thread.handle_tab_change)

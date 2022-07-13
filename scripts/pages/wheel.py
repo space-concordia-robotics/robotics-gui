@@ -1,14 +1,16 @@
+from helpers import emergency_stop, ping_mcu
 from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from ui.wheel_ui import Wheel_Ui
-from helpers import emergency_stop, ping_mcu
 
 
 class Wheel(Wheel_Ui):
-    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
-        super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
+    def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
+        super().__init__(
+            width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
+        )
         self.throttle: float = 0.50
         self.currents: tuple[float] = (0,) * 6
         # first element of the velocity is right (+) / left (-) and second is front (+) / back (-)

@@ -1,14 +1,16 @@
+from helpers import emergency_stop, ping_mcu
 from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from ui.pds_ui import Pds_Ui
-from helpers import emergency_stop, ping_mcu
 
 
 class Pds(Pds_Ui):
-    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
-        super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
+    def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
+        super().__init__(
+            width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
+        )
         self.fan1_speed: float = 100.0
         self.fan2_speed: float = 100.0
         self.commands = {

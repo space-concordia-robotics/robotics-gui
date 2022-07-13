@@ -14,11 +14,12 @@ from tables import Arm_table
 
 
 class Arm_Ui(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
+    def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
+        self.publisher = publisher
 
         self.setupUi(MainWindow)
 
@@ -26,7 +27,7 @@ class Arm_Ui(QtWidgets.QWidget):
         self.arm_table = Arm_table(self.width, self.height, self.parent)
         self.arm_table.setup()
 
-        self.log_browser = Log_browser(self.width, self.height, self.parent)
+        self.log_browser = Log_browser(self.width, self.height, self.publisher, self.parent)
         self.log_browser.setup()
 
         self.claw_controls_label = QtWidgets.QLabel(self.parent)

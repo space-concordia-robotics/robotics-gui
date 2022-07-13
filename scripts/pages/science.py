@@ -1,11 +1,13 @@
 # The Science controls are still undergoing changes so no work will be done to this page and its ui until these changes are completed
-from ui.science_ui import Science_Ui
 from helpers import emergency_stop
+from ui.science_ui import Science_Ui
 
 
 class Science(Science_Ui):
-    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
-        super().__init__(width=width, height=height, parent=parent, MainWindow=MainWindow)
+    def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
+        super().__init__(
+            width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
+        )
         self.used_vials = 0
         self.vials = {}  # template: ( [ number, status, CCD, Ramen ] )
         self.commands = {"test": "'test'"}

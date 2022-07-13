@@ -13,16 +13,17 @@ from tables import *
 
 
 class Pds_Ui(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
+    def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
+        self.publisher = publisher
 
         self.setupUi(MainWindow)
 
     def setupUi(self, MainWindow):
-        self.log_browser = Log_browser(self.width, self.height, self.parent)
+        self.log_browser = Log_browser(self.width, self.height, self.publisher, self.parent)
         self.log_browser.setup()
 
         self.wheel_table = Wheel_table(

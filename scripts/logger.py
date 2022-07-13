@@ -1,19 +1,27 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
+from rospy import Publisher
+from std_msgs.msg import String
 
 
 class Log_browser(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent: QtWidgets.QWidget = None):
+    def __init__(self, width: float, height: float, publisher: Publisher, parent: QtWidgets.QWidget = None):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
+        self.publisher = publisher
+
+    def execute_command(self, command) -> String:
+        """Sends the passed function to the ROS publisher and returns a string that outputs to the log"""
+        self.publisher.publish(command.upper())
+        return command.upper()
 
     def run_command(self):
-        """Gets the content of the command line and tries to run it if possible"""
+        """Gets the content of the command line and tries to run it if possible using the execute command function"""
 
         command = self.line_edit.text()
         if command.strip() != "":
-            self.append_to_browser(f"{command} \n")
+            self.append_to_browser(f"{self.execute_command(command)} \n")
         self.line_edit.clear()
         self.line_edit.clearFocus()
 
