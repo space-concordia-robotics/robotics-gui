@@ -45,8 +45,11 @@ class Wheel(Wheel_Ui):
         print("Pinging Rover in MCU")
 
     def send_velocity(self):
-        self.publisher.publish(str(self.velocity))
+        self.publisher.publish("move_rover " + " ".join([str(num) for num in self.velocity]))
         print(self.velocity)
+
+    def set_motors(self, value: bool):
+        self.publisher.publish(f"set_motors {1 if value else 0}")
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
@@ -91,3 +94,5 @@ class Wheel(Wheel_Ui):
 
         self.dec_throttle_sequence = QShortcut(Qt.Key_I, self)
         self.dec_throttle_sequence.activated.connect(lambda: self.change_throttle("-"))
+
+        self.activate_rover.toggled.connect(self.set_motors)

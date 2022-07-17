@@ -25,6 +25,9 @@ class Pds(Pds_Ui):
 
         self.start_handling_clicks()
 
+    def toggle_auto_mode(self, state: bool):
+        self.publisher.publish(f"toggle_auto_mode {1 if state else 0}")
+
     def estop(self):
         self.publisher.publish("disable_all_motors")
         print("Stopping all motors")
@@ -49,9 +52,11 @@ class Pds(Pds_Ui):
         self.arm_table.display_currents(self.arm_currents)
 
     def reset_general_flags(self):
+        self.publisher.publish("reset_general_error_flags")
         print("reset gen flags")
 
     def reset_current_flags(self):
+        self.publisher.publish("reset_current_reading_error_flags")
         print("reset curr flags")
 
     def set_fan_speed(self, fan_number: int):
@@ -61,13 +66,15 @@ class Pds(Pds_Ui):
         if fan_number == 1:
             self.fan1_speed = self.fan1_speed_input.value()
             self.fan1_speed_input.clearFocus()
+            self.publisher.publish(f"fan 1 {self.fan1_speed}")
         elif fan_number == 2:
             self.fan2_speed = self.fan2_speed_input.value()
             self.fan2_speed_input.clearFocus()
+            self.publisher.publish(f"fan 2 {self.fan2_speed}")
         print(self.fan1_speed, self.fan2_speed)
 
     def toggle_motor(self, index: int, state: bool = None):
-        exec(f"print(self.motor{index}.isChecked())")
+        self.publisher.publish(f"motor {index} {1 if state else 0}")
 
     def check_on_motors(self) -> bool:
         """Check if any of the motors is toggled on"""
@@ -121,6 +128,8 @@ class Pds(Pds_Ui):
 
         self.toggle_all_motors_sequence = QShortcut(QKeySequence("Ctrl+Shift+R"), self)
         self.toggle_all_motors_sequence.activated.connect(self.toggle_all_motors)
+
+        self.auto_mode_checkbox.toggled.connect(self.toggle_auto_mode)
 
         self.motor_list_sequence = []
         for i in range(1, 7):

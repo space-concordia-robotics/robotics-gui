@@ -64,9 +64,11 @@ class Arm(Arm_Ui):
         self.arm_table.display_currents(self.currents)
 
     def homing(self):
+        self.publisher.publish("home_motors")
         print("homing")
 
     def reset_angles(self):
+        self.publisher.publish("reset_angles")
         print("reset angles")
 
     def send_speed_multiplier(self):
