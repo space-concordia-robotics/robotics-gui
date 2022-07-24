@@ -121,7 +121,7 @@ class MainWindowClass(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.pressed_keys: list[str] = []
-        self.page: str = ""
+        self.tab_name: str = ""
 
         self.ping_odroid_sequence = QtWidgets.QShortcut(QtGui.QKeySequence("alt+p"), self)
         self.ping_odroid_sequence.activated.connect(lambda: threading.Thread(target=self.ping_odroid).start())
@@ -148,10 +148,10 @@ class MainWindowClass(QtWidgets.QWidget):
         if event.isAutoRepeat():
             return  # this prevents the press and release events from continuously firing
 
-        self.page: str = tab_widget.currentWidget().objectName()
+        self.tab_name: str = tab_widget.currentWidget().objectName()
         key: str = event.text()
 
-        if self.page == "wheel" and not wheel.log_browser.line_edit.hasFocus():
+        if self.tab_name == "wheel" and not wheel.log_browser.line_edit.hasFocus():
             keys = ["d", "w", "a", "s"]
             if key in keys:
                 self.pressed_keys.append(key)
@@ -162,7 +162,7 @@ class MainWindowClass(QtWidgets.QWidget):
                     elif key == keys[i + int(len(keys) / 2)]:
                         wheel.velocity[i] -= wheel.throttle
                 wheel.send_velocity()
-        elif self.page == "arm" and not arm.log_browser.line_edit.hasFocus():
+        elif self.tab_name == "arm" and not arm.log_browser.line_edit.hasFocus():
             keys = ["w", "e", "r", "t", "y", "u", "s", "d", "f", "g", "h", "j"]
             if key in keys:
                 self.pressed_keys.append(key)
@@ -184,7 +184,7 @@ class MainWindowClass(QtWidgets.QWidget):
         key: str = event.text()
 
         try:
-            if self.page == "wheel" and not wheel.log_browser.line_edit.hasFocus():
+            if self.tab_name == "wheel" and not wheel.log_browser.line_edit.hasFocus():
                 keys = ["d", "w", "a", "s"]
                 if key in keys:
                     self.pressed_keys.remove(key)
@@ -197,7 +197,7 @@ class MainWindowClass(QtWidgets.QWidget):
 
                     if not any(self.pressed_keys):
                         wheel.set_page_buttons(True)
-            elif self.page == "arm" and not arm.log_browser.line_edit.hasFocus():
+            elif self.tab_name == "arm" and not arm.log_browser.line_edit.hasFocus():
                 keys = ["w", "e", "r", "t", "y", "u", "s", "d", "f", "g", "h", "j"]
                 if key in keys:
                     self.pressed_keys.remove(key)
@@ -240,12 +240,12 @@ if __name__ == "__main__":
     science_tab = QtWidgets.QWidget()
 
     wheel = Wheel(
-        width, height, rospy.Publisher("/rover_command", String, queue_size=5), wheel_tab, MainWindow
+        width, height, rospy.Publisher("/rover_command", String, queue_size=10), wheel_tab, MainWindow
     )
-    arm = Arm(width, height, rospy.Publisher("/arm_command", String, queue_size=5), arm_tab, MainWindow)
-    pds = Pds(width, height, rospy.Publisher("/pds_command", String, queue_size=5), pds_tab, MainWindow)
+    arm = Arm(width, height, rospy.Publisher("/arm_command", String, queue_size=10), arm_tab, MainWindow)
+    pds = Pds(width, height, rospy.Publisher("/pds_command", String, queue_size=10), pds_tab, MainWindow)
     science = Science(
-        width, height, rospy.Publisher("/science_command", String, queue_size=5), science_tab, MainWindow
+        width, height, rospy.Publisher("/science_command", String, queue_size=10), science_tab, MainWindow
     )
 
     header = Header(width, height, MainWindow)
