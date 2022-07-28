@@ -252,7 +252,7 @@ if __name__ == "__main__":
     header.setup()
 
     tab_widget = QtWidgets.QTabWidget(MainWindow)
-    tab_widget.setGeometry(QtCore.QRect(0, height / 15.43, width, 0.87 * height))
+    tab_widget.setGeometry(QtCore.QRect(0, int(height / 15.43), width, int(0.87 * height)))
 
     wheel_tab.setObjectName("wheel")
     arm_tab.setObjectName("arm")
