@@ -38,7 +38,6 @@ class Arm(Arm_Ui):
         self.log_browser.send_command_button.setEnabled(value)
         self.speed_multiplier_input.setEnabled(value)
         self.send_speed_multiplier_button.setEnabled(value)
-        self.homing_button.setEnabled(value)
 
     def estop(self):
         self.publisher.publish("estop")
@@ -49,7 +48,7 @@ class Arm(Arm_Ui):
         print("Pinging Arm in MCU")
 
     def send_speeds(self):
-        self.publisher.publish(str(self.speeds))
+        self.publisher.publish("set_motor_speeds " + " ".join([str(num) for num in self.speeds]))
         print(self.speeds)
 
     def list_commands(self):
@@ -62,10 +61,6 @@ class Arm(Arm_Ui):
     def display_currents(self, data: Currents):
         self.currents = tuple(data.effort)
         self.arm_table.display_currents(self.currents)
-
-    def homing(self):
-        self.publisher.publish("home_motors")
-        print("homing")
 
     def reset_angles(self):
         self.publisher.publish("reset_angles")
@@ -98,7 +93,6 @@ class Arm(Arm_Ui):
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(self.estop)
         self.reset_angles_button.clicked.connect(self.reset_angles)
-        self.homing_button.clicked.connect(self.homing)
         self.send_speed_multiplier_button.clicked.connect(self.send_speed_multiplier)
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)

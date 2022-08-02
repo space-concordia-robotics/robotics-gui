@@ -1,10 +1,12 @@
+import rospy
 from PyQt5 import QtCore, QtGui, QtWidgets
-from rospy import Publisher
 from std_msgs.msg import String
 
 
 class Log_browser(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, publisher: Publisher, parent: QtWidgets.QWidget = None):
+    def __init__(
+        self, width: float, height: float, publisher: rospy.Publisher, parent: QtWidgets.QWidget = None
+    ):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
@@ -14,8 +16,11 @@ class Log_browser(QtWidgets.QWidget):
     def execute_command(self, command: str) -> String:
         """Sends the passed function to the ROS publisher and returns a string"""
 
+        message = ""
+
         self.publisher.publish(command.upper())
-        return command.upper()
+        rospy.loginfo(message)
+        return message
 
     def run_command(self):
         """Gets the content of the command line and executes the command and appends the output to the log"""

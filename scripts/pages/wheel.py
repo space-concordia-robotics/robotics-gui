@@ -44,9 +44,27 @@ class Wheel(Wheel_Ui):
         self.publisher.publish("ping")
         print("Pinging Rover in MCU")
 
+    def polarize_coords(self, coordinates: "list[float]") -> "tuple[float]":
+        magnitude = 0.0
+        angle = 0.0
+
+        if coordinates[0] == 0:
+            # Moving straight forward or backward
+            magnitude = coordinates[1]
+        elif coordinates[1] == 0:
+            # Turning in place
+            angle = 1.0 if coordinates[0] > 0 else -1.0
+        elif coordinates[1] > 0 or coordinates[1] < 0:
+            # Moving and steering at the same time
+            magnitude = coordinates[1]
+            angle = 0.5 if coordinates[0] > 0 else -0.5
+
+        return (magnitude, angle)
+
     def send_velocity(self):
-        self.publisher.publish("move_rover " + " ".join([str(num) for num in self.velocity]))
-        print(self.velocity)
+        self.publisher.publish(
+            "move_rover " + " ".join([str(num) for num in self.polarize_coords(self.velocity)])
+        )
 
     def set_motors(self, value: bool):
         self.publisher.publish(f"set_motors {1 if value else 0}")

@@ -209,16 +209,6 @@ class Arm_Ui(QtWidgets.QWidget):
             )
         )
         self.list_commands_button.setObjectName("list_commands_button")
-        self.homing_button = QtWidgets.QPushButton(self.parent)
-        self.homing_button.setGeometry(
-            QtCore.QRect(
-                self.width / 1.43,
-                self.height / 1.46,
-                self.width / 12,
-                self.height / 15.43,
-            )
-        )
-        self.homing_button.setObjectName("homing_button")
         self.send_speed_multiplier_button = QtWidgets.QPushButton(self.parent)
         self.send_speed_multiplier_button.setGeometry(
             QtCore.QRect(
@@ -274,7 +264,6 @@ class Arm_Ui(QtWidgets.QWidget):
         self.manual_claw_controls.raise_()
         self.manual_arm_controls.raise_()
         self.list_commands_button.raise_()
-        self.homing_button.raise_()
         self.send_speed_multiplier_button.raise_()
         self.reset_angles_button.raise_()
         self.stop_button.raise_()
@@ -327,7 +316,6 @@ class Arm_Ui(QtWidgets.QWidget):
         self.m5_wrist_in_button.setText(_translate("MainWindow", "M5 In\n" "H"))
         self.m5_wrist_out_button.setText(_translate("MainWindow", "M5 Out\n" "Y"))
         self.list_commands_button.setText(_translate("MainWindow", "List Commands (L)"))
-        self.homing_button.setText(_translate("MainWindow", "Homing"))
         self.send_speed_multiplier_button.setText(_translate("MainWindow", "Send Speed\n" "Multiplier"))
         self.reset_angles_button.setText(_translate("MainWindow", "Reset Angles (O)"))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))

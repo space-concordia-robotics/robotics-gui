@@ -1188,19 +1188,6 @@ Y</string>
      <string>List Commands (L)</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="homing_button">
-    <property name="geometry">
-     <rect>
-      <x>930</x>
-      <y>740</y>
-      <width>161</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Homing</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="send_speed_multiplier_button">
     <property name="geometry">
      <rect>
@@ -1274,7 +1261,6 @@ Multiplier</string>
    <zorder>manual_claw_controls</zorder>
    <zorder>manual_arm_controls</zorder>
    <zorder>list_command_button</zorder>
-   <zorder>homing_button</zorder>
    <zorder>send_speed_multiplier_button</zorder>
    <zorder>reset_angles_button</zorder>
    <zorder>stop_button</zorder>

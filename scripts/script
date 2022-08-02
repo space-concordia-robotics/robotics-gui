@@ -2,7 +2,6 @@
 
 import subprocess
 import threading
-from time import sleep
 
 import rospy
 from mcu_control.msg._Currents import Currents
@@ -40,7 +39,7 @@ class Worker(threading.Thread):
                         *self.command_queue.get_list()[0][1]
                     ) if self.command_queue.get_list()[0][1] else self.command_queue.get_list()[0][0]()
                     self.command_queue.get_list().pop(0)
-                    sleep(0.01)
+                    rospy.sleep(0.01)
             except:
                 pass
 
@@ -117,14 +116,16 @@ class Ros_thread(threading.Thread):
         )  # 0 just signifies the topics of the first tab since this is the first tab displayed
 
 
-class MainWindowClass(QtWidgets.QWidget):
+class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.pressed_keys: list[str] = []
         self.tab_name: str = ""
 
         self.ping_odroid_sequence = QtWidgets.QShortcut(QtGui.QKeySequence("alt+p"), self)
-        self.ping_odroid_sequence.activated.connect(lambda: threading.Thread(target=self.ping_odroid).start())
+        self.ping_odroid_sequence.activated.connect(
+            lambda: threading.Thread(name="ping_odroid", target=self.ping_odroid).start()
+        )
         self.setFocus()
 
     def ping_odroid(self):
@@ -170,9 +171,9 @@ class MainWindowClass(QtWidgets.QWidget):
                 arm.set_page_buttons(False)
                 for i in range(int(len(keys) / 2)):
                     if key == keys[i]:
-                        arm.speeds[i] += arm.speed_multiplier
+                        arm.speeds[i] += arm.speed_multiplier * 50  # mapped to between -250 and 250
                     elif key == keys[i + int(len(keys) / 2)]:
-                        arm.speeds[i] -= arm.speed_multiplier
+                        arm.speeds[i] -= arm.speed_multiplier * 50
                 arm.send_speeds()
 
         return super().keyPressEvent(event)
@@ -194,7 +195,6 @@ class MainWindowClass(QtWidgets.QWidget):
                         elif key == keys[i + int(len(keys) / 2)]:
                             wheel.velocity[i] += wheel.throttle
                     wheel.send_velocity()
-
                     if not any(self.pressed_keys):
                         wheel.set_page_buttons(True)
             elif self.tab_name == "arm" and not arm.log_browser.line_edit.hasFocus():
@@ -203,11 +203,10 @@ class MainWindowClass(QtWidgets.QWidget):
                     self.pressed_keys.remove(key)
                     for i in range(int(len(keys) / 2)):
                         if key == keys[i]:
-                            arm.speeds[i] -= arm.speed_multiplier
+                            arm.speeds[i] -= arm.speed_multiplier * 50
                         elif key == keys[i + int(len(keys) / 2)]:
-                            arm.speeds[i] += arm.speed_multiplier
+                            arm.speeds[i] += arm.speed_multiplier * 50
                     arm.send_speeds()
-
                     if not any(self.pressed_keys):
                         arm.set_page_buttons(True)
         except ValueError:
@@ -217,6 +216,11 @@ class MainWindowClass(QtWidgets.QWidget):
 
 
 if __name__ == "__main__":
+    # import debugpy
+
+    # debugpy.listen(5678)  # This area helps attach a debugger to the scipt to help with testing when needed
+    # debugpy.wait_for_client()
+
     import sys
 
     rospy.init_node("gui_controller")
@@ -228,11 +232,18 @@ if __name__ == "__main__":
     MainWindow.setObjectName("MainWindow")
 
     # used for adaptive window size, gets the screen size of the current display
-    screen = QtWidgets.QDesktopWidget().screenGeometry(-1)
-    width: int = screen.width()  # 1920 x 1080 for me
-    height: int = screen.height()
+    width, height = QtWidgets.QDesktopWidget().screenGeometry(-1).getRect()[2:]
     MainWindow.resize(width, height)
     MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n" "color: rgb(238, 238, 236);")
+
+    scroll_area = QtWidgets.QScrollArea(MainWindow)
+    scroll_area.setGeometry(QtCore.QRect(0, 0, width, int(0.87 * height)))
+    scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+    scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+    scroll_area.setWidgetResizable(True)
+    # scroll_area.setMinimumSize(width, height)
+
+    MainWindow.setCentralWidget(scroll_area)
 
     wheel_tab = QtWidgets.QWidget()
     arm_tab = QtWidgets.QWidget()
@@ -248,11 +259,11 @@ if __name__ == "__main__":
         width, height, rospy.Publisher("/science_command", String, queue_size=10), science_tab, MainWindow
     )
 
-    header = Header(width, height, MainWindow)
+    header = Header(width, height, scroll_area)
     header.setup()
 
-    tab_widget = QtWidgets.QTabWidget(MainWindow)
-    tab_widget.setGeometry(QtCore.QRect(0, int(height / 15.43), width, int(0.87 * height)))
+    tab_widget = QtWidgets.QTabWidget(scroll_area)
+    tab_widget.setGeometry(QtCore.QRect(0, int(height / 15.43), width, int(0.9 * height)))
 
     wheel_tab.setObjectName("wheel")
     arm_tab.setObjectName("arm")
@@ -262,7 +273,7 @@ if __name__ == "__main__":
     tab_widget.addTab(wheel_tab, "Wheels")
     tab_widget.addTab(arm_tab, "Arms")
     tab_widget.addTab(pds_tab, "PDS")
-    tab_widget.addTab(science_tab, "Science")
+    # tab_widget.addTab(science_tab, "Science")
 
     ros_thread = Ros_thread(2, "ros-thread")
     tab_widget.currentChanged.connect(ros_thread.handle_tab_change)
