@@ -45,6 +45,19 @@ color: rgb(238, 238, 236);</string>
      <string>STOP (Q)</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="enable_motors_button">
+    <property name="geometry">
+     <rect>
+      <x>1490</x>
+      <y>840</y>
+      <width>171</width>
+      <height>65</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enable Motors (E)</string>
+    </property>
+   </widget>
    <widget class="QFrame" name="table_frame">
     <property name="geometry">
      <rect>

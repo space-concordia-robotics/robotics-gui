@@ -15,12 +15,12 @@ class Wheel_table(QtWidgets.QWidget):
         self.y = y or self.height / 15
 
     def display_currents(self, currents: list):
-        self.r_front_current.setText(f"{currents[0]}")
-        self.r_mid_current.setText(f"{currents[1]}")
-        self.r_back_current.setText(f"{currents[2]}")
-        self.l_front_current.setText(f"{currents[3]}")
-        self.l_mid_current.setText(f"{currents[4]}")
-        self.l_back_current.setText(f"{currents[5]}")
+        self.r_front_current.setText(f"{round(currents[5], 1)}")
+        self.r_mid_current.setText(f"{round(currents[4], 1)}")
+        self.r_back_current.setText(f"{round(currents[1], 1)}")
+        self.l_front_current.setText(f"{round(currents[2], 1)}")
+        self.l_mid_current.setText(f"{round(currents[3], 1)}")
+        self.l_back_current.setText(f"{round(currents[0], 1)}")
 
     def setup(self):
         self.table_frame = QtWidgets.QFrame(self.parent)
@@ -414,12 +414,12 @@ class Arm_table(QtWidgets.QWidget):
         self.y = y or self.height / 15
 
     def display_currents(self, currents: list):
-        self.m1_current.setText(f"{currents[0]}")
-        self.m2_current.setText(f"{currents[1]}")
-        self.m3_current.setText(f"{currents[2]}")
-        self.m4_current.setText(f"{currents[3]}")
-        self.m5_current.setText(f"{currents[4]}")
-        self.m6_current.setText(f"{currents[5]}")
+        self.m1_current.setText(f"{round(currents[3], 1)}")
+        self.m2_current.setText(f"{round(currents[2], 1)}")
+        self.m3_current.setText(f"{round(currents[1], 1)}")
+        self.m4_current.setText(f"{round(currents[0], 1)}")
+        self.m5_current.setText(f"{round(currents[4], 1)}")
+        self.m6_current.setText(f"{round(currents[5], 1)}")
 
     def setup(self):
         self.table_frame_3 = QtWidgets.QFrame(self.parent)

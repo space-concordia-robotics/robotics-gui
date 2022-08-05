@@ -18,7 +18,7 @@ class Log_browser(QtWidgets.QWidget):
 
         message = ""
 
-        self.publisher.publish(command.upper())
+        self.publisher.publish(command)
         rospy.loginfo(message)
         return message
 

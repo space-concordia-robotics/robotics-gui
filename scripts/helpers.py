@@ -58,7 +58,7 @@ class Header(QtWidgets.QWidget):
 
     def update_temps(self, data: ThermistorTemps):
         degree = "\N{DEGREE SIGN}"
-        self.temps = tuple(str(data).split()[1::2])
+        self.temps = data.therms
         self.temp1_label.setText(f"{self.temps[0]} {degree}C")
         self.temp2_label.setText(f"{self.temps[1]} {degree}C")
         self.temp3_label.setText(f"{self.temps[2]} {degree}C")
