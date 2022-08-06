@@ -19,7 +19,6 @@ class Pds(Pds_Ui):
             "alt-p": "'ping odroid'",
             "q": "'cut power to all motors'",
             "l": "'view key commands'",
-            "ctrl-shift-# (1-6)": "'turn on / off motor #'",
             "ctrl-shift-r": "'turn on / off all motors'\n",
         }
 
@@ -29,8 +28,16 @@ class Pds(Pds_Ui):
         self.publisher.publish(f"toggle_auto_mode {1 if state else 0}")
 
     def estop(self):
-        self.publisher.publish("estop 1 1")
-        print("Stopping all motors")
+        if self.or_motors():
+            self.toggle_motors(list(range(1, 7)), state=False, toggle_button=True, publish=False)
+            self.publisher.publish("estop 1 1")
+            print("Stopping all motors")
+
+    def enable_motors(self):
+        if not self.and_motors():
+            self.toggle_motors(list(range(1, 7)), state=True, toggle_button=True, publish=False)
+            self.publisher.publish("enable_motors 1 1")
+            print("Enabling all motors")
 
     def ping(self):
         self.publisher.publish("ping")
@@ -73,10 +80,26 @@ class Pds(Pds_Ui):
             self.publisher.publish(f"fan 2 {self.fan2_speed}")
         print(self.fan1_speed, self.fan2_speed)
 
-    def toggle_motor(self, index: int, state: bool = None):
-        self.publisher.publish(f"motor {index} {1 if state else 0}")
+    def toggle_motors(
+        self,
+        indexes: "list[int]" or int,
+        state: bool,
+        toggle_button: bool = False,
+        publish: bool = True,
+    ):
+        if type(indexes) is int:
+            if toggle_button:
+                exec(f"self.motor{indexes}.setChecked(state)")
+            if publish:
+                self.publisher.publish(f"motor {indexes} {1 if state else 0}")
+        elif type(indexes) is list:
+            for index in indexes:
+                if toggle_button:
+                    exec(f"self.motor{index}.setChecked(state)")
+                if publish:
+                    self.publisher.publish(f"motor {index} {1 if state else 0}")
 
-    def check_on_motors(self) -> bool:
+    def or_motors(self) -> bool:
         """Check if any of the motors is toggled on"""
 
         return (
@@ -88,16 +111,17 @@ class Pds(Pds_Ui):
             or self.motor6.isChecked()
         )
 
-    def toggle_all_motors(self):
-        """If one of the motors in on, turns all of them off,
-        otherwise, turns all of them on"""
+    def and_motors(self) -> bool:
+        """Check if all of the motors are toggled on"""
 
-        if self.check_on_motors():
-            for i in range(1, 7):
-                exec(f"self.motor{i}.setChecked(False)")
-        else:
-            for i in range(1, 7):
-                exec(f"self.motor{i}.setChecked(True)")
+        return (
+            self.motor1.isChecked()
+            and self.motor2.isChecked()
+            and self.motor3.isChecked()
+            and self.motor4.isChecked()
+            and self.motor5.isChecked()
+            and self.motor6.isChecked()
+        )
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for
@@ -108,12 +132,12 @@ class Pds(Pds_Ui):
         self.reset_current_flags_button.clicked.connect(self.reset_current_flags)
         self.reset_general_flags_button.clicked.connect(self.reset_general_flags)
 
-        self.motor1.toggled.connect(lambda state: self.toggle_motor(1, bool(state)))
-        self.motor2.toggled.connect(lambda state: self.toggle_motor(2, bool(state)))
-        self.motor3.toggled.connect(lambda state: self.toggle_motor(3, bool(state)))
-        self.motor4.toggled.connect(lambda state: self.toggle_motor(4, bool(state)))
-        self.motor5.toggled.connect(lambda state: self.toggle_motor(5, bool(state)))
-        self.motor6.toggled.connect(lambda state: self.toggle_motor(6, bool(state)))
+        self.motor1.pressed.connect(lambda: self.toggle_motors(1, not self.motor1.isChecked()))
+        self.motor2.pressed.connect(lambda: self.toggle_motors(2, not self.motor2.isChecked()))
+        self.motor3.pressed.connect(lambda: self.toggle_motors(3, not self.motor3.isChecked()))
+        self.motor4.pressed.connect(lambda: self.toggle_motors(4, not self.motor4.isChecked()))
+        self.motor5.pressed.connect(lambda: self.toggle_motors(5, not self.motor5.isChecked()))
+        self.motor6.pressed.connect(lambda: self.toggle_motors(6, not self.motor6.isChecked()))
 
         self.fan1_speed_input.editingFinished.connect(lambda: self.set_fan_speed(1))
         self.fan2_speed_input.editingFinished.connect(lambda: self.set_fan_speed(2))
@@ -126,12 +150,7 @@ class Pds(Pds_Ui):
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)
 
-        self.toggle_all_motors_sequence = QShortcut(QKeySequence("Ctrl+Shift+R"), self)
-        self.toggle_all_motors_sequence.activated.connect(self.toggle_all_motors)
+        self.enable_all_motors_sequence = QShortcut(QKeySequence("Ctrl+Shift+R"), self)
+        self.enable_all_motors_sequence.activated.connect(self.enable_motors)
 
         self.auto_mode_checkbox.toggled.connect(self.toggle_auto_mode)
-
-        self.motor_list_sequence = []
-        for i in range(1, 7):
-            exec(f"self.motor_list_sequence.append(QShortcut(QKeySequence('Ctrl+Shift+{i}'), self))")
-            exec(f"self.motor_list_sequence[i - 1].activated.connect(self.motor{i}.toggle)")

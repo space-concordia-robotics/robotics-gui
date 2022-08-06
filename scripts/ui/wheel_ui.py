@@ -38,7 +38,7 @@ class Wheel_Ui(QtWidgets.QWidget):
         self.stop_button.setGeometry(
             QtCore.QRect(
                 4.75 * self.width / 6,
-                4.6 * self.height / 7,
+                5.2 * self.height / 7,
                 self.width / 10,
                 2 * self.height / 25,
             )
@@ -48,7 +48,7 @@ class Wheel_Ui(QtWidgets.QWidget):
         self.enable_motors_button.setGeometry(
             QtCore.QRect(
                 4.75 * self.width / 6,
-                5.2 * self.height / 7,
+                4.6 * self.height / 7,
                 self.width / 10,
                 2 * self.height / 25,
             )

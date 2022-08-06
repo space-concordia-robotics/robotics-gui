@@ -233,7 +233,7 @@ class Arm_Ui(QtWidgets.QWidget):
         self.stop_button.setGeometry(
             QtCore.QRect(
                 self.width / 1.43,
-                self.height / 1.64,
+                self.height / 1.46,
                 self.width / 12,
                 self.height / 15.43,
             )
@@ -243,7 +243,7 @@ class Arm_Ui(QtWidgets.QWidget):
         self.enable_motors_button.setGeometry(
             QtCore.QRect(
                 self.width / 1.43,
-                self.height / 1.46,
+                self.height / 1.64,
                 self.width / 12,
                 self.height / 15.43,
             )
