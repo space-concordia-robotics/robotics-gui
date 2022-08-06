@@ -29,7 +29,7 @@ class Pds(Pds_Ui):
         self.publisher.publish(f"toggle_auto_mode {1 if state else 0}")
 
     def estop(self):
-        self.publisher.publish("estop")
+        self.publisher.publish("estop 1 1")
         print("Stopping all motors")
 
     def ping(self):

@@ -7,11 +7,13 @@ from ui.arm_ui import Arm_Ui
 
 
 class Arm(Arm_Ui):
-    def __init__(self, width: float, height: float, publisher: rospy.Publisher, parent=None, MainWindow=None):
+    def __init__(self, width: float, height: float, publisher: rospy.Publisher, pds_publisher: rospy.Publisher,
+                 parent=None, MainWindow=None):
         super().__init__(
             width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
         )
         self.publisher = publisher
+        self.pds_publisher = pds_publisher
         self.speed_multiplier: float = 1
         self.currents: tuple[float] = (0,) * 6
         self.speeds: list[float] = [0] * 6
@@ -40,7 +42,7 @@ class Arm(Arm_Ui):
         self.send_speed_multiplier_button.setEnabled(value)
 
     def estop(self):
-        self.publisher.publish("estop")
+        self.pds_publisher.publish("estop 1 0")
         print("Stopping all arm motors")
 
     def ping(self):
