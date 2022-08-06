@@ -7,8 +7,15 @@ from ui.wheel_ui import Wheel_Ui
 
 
 class Wheel(Wheel_Ui):
-    def __init__(self, width: float, height: float, publisher: rospy.Publisher, pds_publisher: rospy.Publisher,
-                 parent=None, MainWindow=None):
+    def __init__(
+        self,
+        width: float,
+        height: float,
+        publisher: rospy.Publisher,
+        pds_publisher: rospy.Publisher,
+        parent=None,
+        MainWindow=None,
+    ):
         super().__init__(
             width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
         )
@@ -24,17 +31,19 @@ class Wheel(Wheel_Ui):
             "q": "'emergency stop all motors'",
             "l": "'view key commands'",
             "u": "'increase throttle value'",
-            "i": "'decrease throttle value'\n",
+            "i": "'decrease throttle value'",
+            "e": "'enable all rover wheel motors'\n",
         }
 
         self.start_handling_clicks()
 
     def set_page_buttons(self, value: bool):
-        """Enables / Disables all the buttons of the page"""
+        """Enables / Disables all the buttons of the page
+        used to lock buttons while input is given"""
 
         self.list_commands_button.setEnabled(value)
         self.stop_button.setEnabled(value)
-        # self.enable_motors_button.setEnabled(value)
+        self.enable_motors_button.setEnabled(value)
         self.log_browser.line_edit.setEnabled(value)
         self.log_browser.clear_browser_button.setEnabled(value)
         self.log_browser.send_command_button.setEnabled(value)
@@ -105,14 +114,14 @@ class Wheel(Wheel_Ui):
 
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(self.estop)
-        # self.enable_motors_button.clicked.connect(self.enable_motors)
+        self.enable_motors_button.clicked.connect(self.enable_motors)
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(self.ping)
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(self.estop)
-        # self.enable_motors_sequence = QShortcut(Qt.Key_E, self)
-        # self.enable_motors_sequence.activated.connect(self.enable_motors)
+        self.enable_motors_sequence = QShortcut(Qt.Key_E, self)
+        self.enable_motors_sequence.activated.connect(self.enable_motors)
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)

@@ -239,6 +239,16 @@ class Arm_Ui(QtWidgets.QWidget):
             )
         )
         self.stop_button.setObjectName("stop_button")
+        self.enable_motors_button = QtWidgets.QPushButton(self.parent)
+        self.enable_motors_button.setGeometry(
+            QtCore.QRect(
+                self.width / 1.43,
+                self.height / 1.46,
+                self.width / 12,
+                self.height / 15.43,
+            )
+        )
+        self.enable_motors_button.setObjectName("enable_motor_button")
         self.speed_multiplier_input = QtWidgets.QDoubleSpinBox(self.parent)
         self.speed_multiplier_input.setGeometry(
             QtCore.QRect(
@@ -319,3 +329,4 @@ class Arm_Ui(QtWidgets.QWidget):
         self.send_speed_multiplier_button.setText(_translate("MainWindow", "Send Speed\n" "Multiplier"))
         self.reset_angles_button.setText(_translate("MainWindow", "Reset Angles (O)"))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
+        self.enable_motors_button.setText(_translate("MainWindow", "Enable all Motors (A)"))

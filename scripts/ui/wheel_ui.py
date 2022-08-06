@@ -44,6 +44,16 @@ class Wheel_Ui(QtWidgets.QWidget):
             )
         )
         self.stop_button.setObjectName("stop_button")
+        self.enable_motors_button = QtWidgets.QPushButton(self.parent)
+        self.enable_motors_button.setGeometry(
+            QtCore.QRect(
+                4.75 * self.width / 6,
+                5.2 * self.height / 7,
+                self.width / 10,
+                2 * self.height / 25,
+            )
+        )
+        self.enable_motors_button.setObjectName("enable_motors_button")
         self.wheel_table = Wheel_table(self.width, self.height, self.parent)
         self.wheel_table.setup()
         self.log_browser = Log_browser(self.width, self.height, self.publisher, self.parent)
@@ -171,6 +181,7 @@ class Wheel_Ui(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
         self.list_commands_button.setText(_translate("MainWindow", "List Commands (L) "))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
+        self.enable_motors_button.setText(_translate("MainWindow", "Enable all Motors (E)"))
 
         self.controller_left.setText(_translate("MainWindow", "Left\nA"))
         self.controller_down.setText(_translate("MainWindow", "Down\nS"))

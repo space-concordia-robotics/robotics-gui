@@ -253,9 +253,21 @@ if __name__ == "__main__":
     pds_publisher = rospy.Publisher("/pds_command", String, queue_size=10)
 
     wheel = Wheel(
-        width, height, rospy.Publisher("/rover_command", String, queue_size=10), pds_publisher, wheel_tab, MainWindow
+        width,
+        height,
+        rospy.Publisher("/rover_command", String, queue_size=10),
+        pds_publisher,
+        wheel_tab,
+        MainWindow,
     )
-    arm = Arm(width, height, rospy.Publisher("/arm_command", String, queue_size=10), pds_publisher, arm_tab, MainWindow)
+    arm = Arm(
+        width,
+        height,
+        rospy.Publisher("/arm_command", String, queue_size=10),
+        pds_publisher,
+        arm_tab,
+        MainWindow,
+    )
     pds = Pds(width, height, pds_publisher, pds_tab, MainWindow)
     science = Science(
         width, height, rospy.Publisher("/science_command", String, queue_size=10), science_tab, MainWindow
