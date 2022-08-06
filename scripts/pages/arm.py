@@ -43,6 +43,7 @@ class Arm(Arm_Ui):
 
         self.reset_angles_button.setEnabled(value)
         self.stop_button.setEnabled(value)
+        self.enable_motors_button.setEnabled(value)
         self.list_commands_button.setEnabled(value)
         self.log_browser.line_edit.setEnabled(value)
         self.log_browser.clear_browser_button.setEnabled(value)
@@ -107,7 +108,7 @@ class Arm(Arm_Ui):
 
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(self.estop)
-        # self.enable_motors_button.clicked.connect(self.enable_motor)
+        self.enable_motors_button.clicked.connect(self.enable_motors)
         self.reset_angles_button.clicked.connect(self.reset_angles)
         self.send_speed_multiplier_button.clicked.connect(self.send_speed_multiplier)
 
