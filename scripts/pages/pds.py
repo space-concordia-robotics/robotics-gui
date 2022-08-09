@@ -18,8 +18,8 @@ class Pds(Pds_Ui):
             "ctrl-p": "'ping rover mcu'",
             "alt-p": "'ping odroid'",
             "q": "'cut power to all motors'",
-            "l": "'view key commands'",
-            "ctrl-shift-r": "'turn on / off all motors'\n",
+            "ctrl-q": "'turn on / off all motors'",
+            "l": "'view key commands'\n",
         }
 
         self.start_handling_clicks()
@@ -88,8 +88,9 @@ class Pds(Pds_Ui):
         publish: bool = True,
     ):
         if type(indexes) is int:
+            index = indexes
             if toggle_button:
-                exec(f"self.motor{indexes}.setChecked(state)")
+                exec(f"self.motor{index}.setChecked(state)")
             if publish:
                 self.publisher.publish(f"motor {indexes} {1 if state else 0}")
         elif type(indexes) is list:
@@ -129,6 +130,7 @@ class Pds(Pds_Ui):
 
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(self.estop)
+        self.enable_motors_button.clicked.connect(self.enable_motors)
         self.reset_current_flags_button.clicked.connect(self.reset_current_flags)
         self.reset_general_flags_button.clicked.connect(self.reset_general_flags)
 
@@ -146,11 +148,10 @@ class Pds(Pds_Ui):
         self.ping_mcu_sequence.activated.connect(self.ping)
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(self.estop)
+        self.enable_all_motors_sequence = QShortcut(QKeySequence("Ctrl+Q"), self)
+        self.enable_all_motors_sequence.activated.connect(self.enable_motors)
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)
-
-        self.enable_all_motors_sequence = QShortcut(QKeySequence("Ctrl+Shift+R"), self)
-        self.enable_all_motors_sequence.activated.connect(self.enable_motors)
 
         self.auto_mode_checkbox.toggled.connect(self.toggle_auto_mode)

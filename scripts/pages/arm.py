@@ -28,9 +28,9 @@ class Arm(Arm_Ui):
             "ctrl-p": "'ping arm mcu'",
             "alt-p": "'ping odroid'",
             "q": "'emergency stop all motors'",
+            "ctrl-q": "'enable all arm motors'",
             "o": "'reset memorized angle values'",
             "l": "'view key commands'",
-            "a": "'enable all arm motors'",
             "Keys 'w' to 'u'": "'move motors 1-6 forwards'",
             "Keys 's' to 'j'": "'move motors 1-6 backwards'\n",
         }
@@ -116,7 +116,7 @@ class Arm(Arm_Ui):
         self.ping_mcu_sequence.activated.connect(self.ping)
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(self.estop)
-        self.enable_motors_sequence = QShortcut(Qt.Key_A, self)
+        self.enable_motors_sequence = QShortcut(QKeySequence("Ctrl+Q"), self)
         self.enable_motors_sequence.activated.connect(self.enable_motors)
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)

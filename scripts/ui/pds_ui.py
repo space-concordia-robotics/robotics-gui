@@ -46,7 +46,7 @@ class Pds_Ui(QtWidgets.QWidget):
         self.list_commands_button = QtWidgets.QPushButton(self.parent)
         self.list_commands_button.setGeometry(
             QtCore.QRect(
-                self.width / 3.49,
+                self.width / 2,
                 self.height / 5.14,
                 self.width / 14.66,
                 self.height / 15.21,
@@ -72,6 +72,11 @@ class Pds_Ui(QtWidgets.QWidget):
                 self.height / 15.21,
             )
         )
+        self.enable_motors_button = QtWidgets.QPushButton(self.parent)
+        self.enable_motors_button.setGeometry(
+            QtCore.QRect(self.width / 3.49, self.height / 5.14, self.width / 14.66, self.height / 15.21)
+        )
+        self.enable_motors_button.setObjectName("enable_motors_button")
         self.reset_general_flags_button.setObjectName("reset_general_flags_button")
         self.reset_current_flags_button = QtWidgets.QPushButton(self.parent)
         self.reset_current_flags_button.setGeometry(
@@ -146,8 +151,8 @@ class Pds_Ui(QtWidgets.QWidget):
         self.layoutWidget3 = QtWidgets.QWidget(self.parent)
         self.layoutWidget3.setGeometry(
             QtCore.QRect(
-                self.width / 1.94,
-                self.height / 5.14,
+                self.width / 1.7,
+                self.height / 20,
                 self.width / 19.2,
                 self.height / 21.6,
             )
@@ -168,8 +173,8 @@ class Pds_Ui(QtWidgets.QWidget):
         self.layoutWidget4 = QtWidgets.QWidget(self.parent)
         self.layoutWidget4.setGeometry(
             QtCore.QRect(
-                self.width / 1.94,
-                self.height / 3.6,
+                self.width / 1.7,
+                self.height / 9,
                 self.width / 19.2,
                 self.height / 19.29,
             )
@@ -195,6 +200,7 @@ class Pds_Ui(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
         self.list_commands_button.setText(_translate("MainWindow", "List Commands\n" "(L)"))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
+        self.enable_motors_button.setText(_translate("MainWindow", "Enable all Motors\n(Ctrl+Q)"))
         self.reset_general_flags_button.setText(_translate("MainWindow", "Reset General\n" "Flags"))
         self.reset_current_flags_button.setText(_translate("MainWindow", "Reset Current\n" "Flags"))
         self.motor1.setText(_translate("MainWindow", "Motor 1"))

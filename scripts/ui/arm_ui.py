@@ -329,4 +329,4 @@ class Arm_Ui(QtWidgets.QWidget):
         self.send_speed_multiplier_button.setText(_translate("MainWindow", "Send Speed\n" "Multiplier"))
         self.reset_angles_button.setText(_translate("MainWindow", "Reset Angles (O)"))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
-        self.enable_motors_button.setText(_translate("MainWindow", "Enable all Motors (A)"))
+        self.enable_motors_button.setText(_translate("MainWindow", "Enable all Motors\n(Ctrl+Q)"))

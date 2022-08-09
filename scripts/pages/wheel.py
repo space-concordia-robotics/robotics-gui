@@ -29,10 +29,10 @@ class Wheel(Wheel_Ui):
             "ctrl-p": "'ping rover mcu'",
             "alt-p": "'ping odroid'",
             "q": "'emergency stop all motors'",
+            "ctrl-q": "'enable all rover wheel motors'",
             "l": "'view key commands'",
             "u": "'increase throttle value'",
-            "i": "'decrease throttle value'",
-            "e": "'enable all rover wheel motors'\n",
+            "i": "'decrease throttle value'\n",
         }
 
         self.start_handling_clicks()
@@ -120,7 +120,7 @@ class Wheel(Wheel_Ui):
         self.ping_mcu_sequence.activated.connect(self.ping)
         self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
         self.emergency_stop_sequence.activated.connect(self.estop)
-        self.enable_motors_sequence = QShortcut(Qt.Key_E, self)
+        self.enable_motors_sequence = QShortcut(QKeySequence("Ctrl+Q"), self)
         self.enable_motors_sequence.activated.connect(self.enable_motors)
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)

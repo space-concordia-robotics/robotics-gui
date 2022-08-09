@@ -181,7 +181,7 @@ class Wheel_Ui(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
         self.list_commands_button.setText(_translate("MainWindow", "List Commands (L) "))
         self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
-        self.enable_motors_button.setText(_translate("MainWindow", "Enable all Motors (E)"))
+        self.enable_motors_button.setText(_translate("MainWindow", "Enable all Motors\n(Ctrl+Q)"))
 
         self.controller_left.setText(_translate("MainWindow", "Left\nA"))
         self.controller_down.setText(_translate("MainWindow", "Down\nS"))
