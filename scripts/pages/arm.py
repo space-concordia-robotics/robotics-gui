@@ -37,6 +37,10 @@ class Arm(Arm_Ui):
 
         self.start_handling_clicks()
 
+    def reset_speeds(self):
+        self.speeds = [0] * 6
+        self.send_speeds()
+
     def set_page_buttons(self, value: bool):
         """Enables / Disables all buttons on the page
         used to lock buttons while input is given"""
@@ -50,6 +54,9 @@ class Arm(Arm_Ui):
         self.log_browser.send_command_button.setEnabled(value)
         self.speed_multiplier_input.setEnabled(value)
         self.send_speed_multiplier_button.setEnabled(value)
+
+    def toggle_led(self, state):
+        self.publisher.publish(f"blink_toggle {1 if state else 0}")
 
     def estop(self):
         self.pds_publisher.publish("estop 1 0")
@@ -111,6 +118,7 @@ class Arm(Arm_Ui):
         self.enable_motors_button.clicked.connect(self.enable_motors)
         self.reset_angles_button.clicked.connect(self.reset_angles)
         self.send_speed_multiplier_button.clicked.connect(self.send_speed_multiplier)
+        self.toggle_led_button.stateChanged.connect(self.toggle_led)
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(self.ping)

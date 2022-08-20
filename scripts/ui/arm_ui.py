@@ -265,6 +265,11 @@ class Arm_Ui(QtWidgets.QWidget):
         self.speed_multiplier_input.setSingleStep(0.5)
         self.speed_multiplier_input.setProperty("value", 1.0)
         self.speed_multiplier_input.setObjectName("speed_multiplier_input")
+
+        self.toggle_led_button = QtWidgets.QCheckBox(self.parent)
+        self.toggle_led_button.setGeometry(QtCore.QRect(900, 500, 200, 200))
+        self.toggle_led_button.setText("Toggle LED")
+
         self.claw_controls_widget.raise_()
         self.arm_controls_widget.raise_()
         self.claw_controls_label.raise_()

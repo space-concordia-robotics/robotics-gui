@@ -141,8 +141,8 @@ class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
 
     def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
         self.pressed_keys.clear()  # clears all velocity and speed values that keyReleaseEvent didnt catch because of the window change
-        wheel.velocity = [0] * 2
-        arm.speeds = [0] * 6
+        wheel.reset_velocity()
+        arm.reset_speeds()
         return super().focusOutEvent(event)
 
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:

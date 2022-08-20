@@ -37,6 +37,10 @@ class Wheel(Wheel_Ui):
 
         self.start_handling_clicks()
 
+    def reset_velocity(self):
+        self.velocity = [0] * 2
+        self.send_velocity()
+
     def set_page_buttons(self, value: bool):
         """Enables / Disables all the buttons of the page
         used to lock buttons while input is given"""
@@ -47,6 +51,9 @@ class Wheel(Wheel_Ui):
         self.log_browser.line_edit.setEnabled(value)
         self.log_browser.clear_browser_button.setEnabled(value)
         self.log_browser.send_command_button.setEnabled(value)
+
+    def toggle_led(self, state):
+        self.publisher.publish(f"blink_toggle {1 if state else 0}")
 
     def estop(self):
         self.pds_publisher.publish("estop 0 1")
@@ -115,6 +122,7 @@ class Wheel(Wheel_Ui):
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(self.estop)
         self.enable_motors_button.clicked.connect(self.enable_motors)
+        self.toggle_led_button.stateChanged.connect(self.toggle_led)
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(self.ping)
