@@ -773,32 +773,6 @@ color: rgb(0, 0, 0);</string>
      <string>Arm Controls</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="command_listener_button">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>450</y>
-      <width>161</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Command Listener</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="manual_controls_button">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>450</y>
-      <width>141</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Manual Controls</string>
-    </property>
-   </widget>
    <widget class="QWidget" name="arm_controls_widget" native="true">
     <property name="geometry">
      <rect>
@@ -1250,14 +1224,45 @@ Multiplier</string>
      <double>1.000000000000000</double>
     </property>
    </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>430</y>
+      <width>531</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="command_listener_button">
+       <property name="text">
+        <string>Command Listener</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="manual_controls_button">
+       <property name="text">
+        <string>Manual Controls</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox">
+       <property name="text">
+        <string>Toggle LE</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
    <zorder>claw_controls_widget</zorder>
    <zorder>arm_controls_widget</zorder>
    <zorder>table_frame_3</zorder>
    <zorder>console_frame</zorder>
    <zorder>claw_controls_label</zorder>
    <zorder>arm_controls_label</zorder>
-   <zorder>command_listener_button</zorder>
-   <zorder>manual_controls_button</zorder>
    <zorder>manual_claw_controls</zorder>
    <zorder>manual_arm_controls</zorder>
    <zorder>list_command_button</zorder>
@@ -1265,6 +1270,7 @@ Multiplier</string>
    <zorder>reset_angles_button</zorder>
    <zorder>stop_button</zorder>
    <zorder>speed_multiplier_input</zorder>
+   <zorder>horizontalLayoutWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

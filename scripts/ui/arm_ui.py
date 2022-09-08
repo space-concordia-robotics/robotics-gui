@@ -50,21 +50,24 @@ class Arm_Ui(QtWidgets.QWidget):
             )
         )
         self.arm_controls_label.setObjectName("arm_controls_label")
-        self.command_listener_button = QtWidgets.QCheckBox(self.parent)
-        self.command_listener_button.setGeometry(
-            QtCore.QRect(self.width / 21.33, self.height / 2.4, self.width / 12, self.height / 54)
+
+        self.horizontalLayoutWidget = QtWidgets.QWidget(self.parent)
+        self.horizontalLayoutWidget.setGeometry(
+            QtCore.QRect(self.width / 32, self.height / 2.63, self.width / 3.62, self.height / 13.5)
         )
+        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.command_listener_button = QtWidgets.QCheckBox(self.horizontalLayoutWidget)
         self.command_listener_button.setObjectName("command_listener_button")
-        self.manual_controls_button = QtWidgets.QCheckBox(self.parent)
-        self.manual_controls_button.setGeometry(
-            QtCore.QRect(
-                self.width / 5.5,
-                self.height / 2.4,
-                self.width / 13.71,
-                self.height / 54,
-            )
-        )
+        self.horizontalLayout.addWidget(self.command_listener_button)
+        self.manual_controls_button = QtWidgets.QCheckBox(self.horizontalLayoutWidget)
         self.manual_controls_button.setObjectName("manual_controls_button")
+        self.horizontalLayout.addWidget(self.manual_controls_button)
+        self.toggle_led_button = QtWidgets.QCheckBox(self.horizontalLayoutWidget)
+        self.toggle_led_button.setObjectName("toggle_led_button")
+        self.horizontalLayout.addWidget(self.toggle_led_button)
+
         self.arm_controls_widget = QtWidgets.QWidget(self.parent)
         self.arm_controls_widget.setGeometry(
             QtCore.QRect(self.width / 5.65, self.height / 2, self.width / 8, self.height / 4.5)
@@ -266,10 +269,6 @@ class Arm_Ui(QtWidgets.QWidget):
         self.speed_multiplier_input.setProperty("value", 1.0)
         self.speed_multiplier_input.setObjectName("speed_multiplier_input")
 
-        self.toggle_led_button = QtWidgets.QCheckBox(self.parent)
-        self.toggle_led_button.setGeometry(QtCore.QRect(900, 500, 200, 200))
-        self.toggle_led_button.setText("Toggle LED")
-
         self.claw_controls_widget.raise_()
         self.arm_controls_widget.raise_()
         self.claw_controls_label.raise_()
@@ -306,6 +305,7 @@ class Arm_Ui(QtWidgets.QWidget):
         self.arm_controls_label.setText(_translate("MainWindow", "Arm Controls"))
         self.command_listener_button.setText(_translate("MainWindow", "Command Listener"))
         self.manual_controls_button.setText(_translate("MainWindow", "Manual Controls"))
+        self.toggle_led_button.setText(_translate("MainWindow", "Toggle LED"))
         self.arm_down_button.setText(_translate("MainWindow", "Arm\n" "Down"))
         self.arm_left_button.setText(_translate("MainWindow", "Arm\n" "Left"))
         self.arm_right_button.setText(_translate("MainWindow", "Arm\n" "Right"))

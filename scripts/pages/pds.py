@@ -92,7 +92,7 @@ class Pds(Pds_Ui):
             if toggle_button:
                 exec(f"self.motor{index}.setChecked(state)")
             if publish:
-                self.publisher.publish(f"motor {indexes} {1 if state else 0}")
+                self.publisher.publish(f"motor {index} {1 if state else 0}")
         elif type(indexes) is list:
             for index in indexes:
                 if toggle_button:
