@@ -193,6 +193,12 @@ class Pds_Ui(QtWidgets.QWidget):
         self.label.setObjectName("label")
         self.formLayout_2.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label)
 
+        self.enable_data_checkbox = QtWidgets.QCheckBox(self.layoutWidget2)
+        self.enable_data_checkbox.setObjectName("enable_data_checkbox")
+        self.enable_data_checkbox.setText("Enable Data Connection")
+        self.verticalLayout_5.addWidget(self.enable_data_checkbox)
+
+
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 

@@ -1,5 +1,6 @@
 import rospy
 from mcu_control.msg._Currents import Currents
+from std_msgs.msg import String
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
@@ -14,6 +15,7 @@ class Pds(Pds_Ui):
         self.publisher = publisher
         self.fan1_speed: float = 100.0
         self.fan2_speed: float = 100.0
+        self.data_topic = rospy.Publisher("power_report_command", String, queue_size=10)
         self.commands = {
             "ctrl-p": "'ping rover mcu'",
             "alt-p": "'ping odroid'",
@@ -42,6 +44,10 @@ class Pds(Pds_Ui):
     def ping(self):
         self.publisher.publish("ping")
         print("Pinging Rover in MCU")
+
+    def enable_data_connection(self, state):
+        self.data_topic.publish("start" if state else "stop")
+        print("Enabling data connection" if state else "Pausing data connection")
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
@@ -133,6 +139,7 @@ class Pds(Pds_Ui):
         self.enable_motors_button.clicked.connect(self.enable_motors)
         self.reset_current_flags_button.clicked.connect(self.reset_current_flags)
         self.reset_general_flags_button.clicked.connect(self.reset_general_flags)
+        self.enable_data_checkbox.stateChanged.connect(self.enable_data_connection)
 
         self.motor1.pressed.connect(lambda: self.toggle_motors(1, not self.motor1.isChecked()))
         self.motor2.pressed.connect(lambda: self.toggle_motors(2, not self.motor2.isChecked()))
