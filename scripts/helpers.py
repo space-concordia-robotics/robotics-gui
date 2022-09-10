@@ -1,3 +1,4 @@
+import multiprocessing
 import os
 
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
@@ -55,6 +56,13 @@ class Header(QtWidgets.QWidget):
         self.parent = parent
         self.temps = (0, 0, 0)
         self.voltage = 0
+
+    def run_joy_comms(self):
+        self.run_joy_comms_button.setEnabled(False)
+        self.run_joy_comms_button.setStyleSheet("background-color: black")
+        multiprocessing.Process(
+            target=lambda: os.system("roslaunch mcu_control joy_comms_manual.launch"), daemon=True
+        ).start()
 
     def update_temps(self, data: ThermistorTemps):
         degree = "\N{DEGREE SIGN}"
@@ -152,6 +160,14 @@ class Header(QtWidgets.QWidget):
         self.temp3_label.setText(f"- {degree}C")
         self.temp3_label.setObjectName("temp3_label")
         horizontalLayout_3.addWidget(self.temp3_label)
+
+        self.run_joy_comms_button = QtWidgets.QPushButton(self.parent)
+        self.run_joy_comms_button.setObjectName("run_joy_comms_button")
+        self.run_joy_comms_button.setText("Run Joystick Commands")
+        self.run_joy_comms_button.setGeometry(
+            QtCore.QRect(self.width / 2.5, self.height / 50, self.width / 10, self.height / 28)
+        )
+        self.run_joy_comms_button.clicked.connect(self.run_joy_comms)
 
         temp_logo.setPixmap(
             QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/therm_icon.png"))
