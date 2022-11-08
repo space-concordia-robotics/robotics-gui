@@ -251,6 +251,7 @@ class Arm_Ui(QtWidgets.QWidget):
                 self.height / 15.43,
             )
         )
+        self.stop_button.setStyleSheet("background-color: red")
         self.enable_motors_button.setObjectName("enable_motor_button")
         self.speed_multiplier_input = QtWidgets.QDoubleSpinBox(self.parent)
         self.speed_multiplier_input.setGeometry(
