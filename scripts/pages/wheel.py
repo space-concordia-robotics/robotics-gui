@@ -28,7 +28,7 @@ class Wheel(Wheel_Ui):
         self.commands = {
             "ctrl-p": "'ping rover mcu'",
             "alt-p": "'ping odroid'",
-            "q": "'emergency stop all motors'",
+            "Space": "'emergency stop all motors'",
             "ctrl-q": "'enable all rover wheel motors'",
             "l": "'view key commands'",
             "u": "'increase throttle value'",
@@ -36,6 +36,9 @@ class Wheel(Wheel_Ui):
         }
 
         self.start_handling_clicks()
+
+    def display_stream(self, data):
+        self.stream_screen.display(data)
 
     def reset_velocity(self):
         self.velocity = [0] * 2

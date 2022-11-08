@@ -27,7 +27,7 @@ class Arm(Arm_Ui):
         self.commands = {
             "ctrl-p": "'ping arm mcu'",
             "alt-p": "'ping odroid'",
-            "q": "'emergency stop all motors'",
+            "Space": "'emergency stop all motors'",
             "ctrl-q": "'enable all arm motors'",
             "o": "'reset memorized angle values'",
             "l": "'view key commands'",

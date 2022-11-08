@@ -19,7 +19,7 @@ class Pds(Pds_Ui):
         self.commands = {
             "ctrl-p": "'ping rover mcu'",
             "alt-p": "'ping odroid'",
-            "q": "'cut power to all motors'",
+            "Space": "'cut power to all motors'",
             "ctrl-q": "'turn on / off all motors'",
             "l": "'view key commands'\n",
         }
