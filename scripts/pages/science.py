@@ -40,7 +40,7 @@ class Science(Science_Ui):
         self.stop_button.clicked.connect(self.estop)
         self.collect_analyse_button.clicked.connect(self.collect_analyse)
 
-        self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
+        self.emergency_stop_sequence = QShortcut(QKeySequence("Space"), self)
         self.emergency_stop_sequence.activated.connect(self.estop)
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)

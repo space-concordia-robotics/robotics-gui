@@ -153,7 +153,7 @@ class Pds(Pds_Ui):
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(self.ping)
-        self.emergency_stop_sequence = QShortcut(Qt.Key_Q, self)
+        self.emergency_stop_sequence = QShortcut(QKeySequence("Space"), self)
         self.emergency_stop_sequence.activated.connect(self.estop)
         self.enable_all_motors_sequence = QShortcut(QKeySequence("Ctrl+Q"), self)
         self.enable_all_motors_sequence.activated.connect(self.enable_motors)
