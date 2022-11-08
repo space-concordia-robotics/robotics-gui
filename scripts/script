@@ -3,15 +3,18 @@
 import subprocess
 import threading
 
+import rosnode
 import rospy
 from mcu_control.msg._Currents import Currents
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
+from sensor_msgs.msg import Image
 from std_msgs.msg import String
 
 from helpers import Header, Queue
 from pages.arm import Arm
+from pages.cams import Cams
 from pages.pds import Pds
 from pages.science import Science
 from pages.wheel import Wheel
@@ -32,13 +35,12 @@ class Worker(threading.Thread):
         self.command_queue.append(data)
 
     def run(self):
+        queue = self.command_queue.get_list()
         while not rospy.is_shutdown():
             try:
-                if self.command_queue.get_list():
-                    self.command_queue.get_list()[0][0](
-                        *self.command_queue.get_list()[0][1]
-                    ) if self.command_queue.get_list()[0][1] else self.command_queue.get_list()[0][0]()
-                    self.command_queue.get_list().pop(0)
+                if queue:
+                    queue[0][0](*queue[0][1]) if queue[0][1] else queue[0][0]()
+                    queue.pop(0)
                     rospy.sleep(0.01)
             except:
                 pass
@@ -62,6 +64,12 @@ class Ros_thread(threading.Thread):
                     Currents,
                     lambda data: worker.add_to_queue((wheel.display_currents, [data])),
                 ),
+                (
+                    # "cv_camera/image_raw",  # for testing
+                    "video1/imageraw",
+                    Image,
+                    wheel.display_stream,
+                ),
             ],  # wheel topics
             [
                 (
@@ -83,6 +91,32 @@ class Ros_thread(threading.Thread):
                 ),
             ],  # pds topics
             [],  # science topics
+            [
+                (
+                    # "cv_camera/image_raw",  # for testing
+                    "video1/imageraw",
+                    Image,
+                    cams.display_stream1,
+                ),
+                (
+                    # "cv_camera/image_raw",  # for testing
+                    "video2/imageraw",
+                    Image,
+                    cams.display_stream2,
+                ),
+                (
+                    # "cv_camera/image_raw",  # for testing
+                    "video3/imageraw",
+                    Image,
+                    cams.display_stream3,
+                ),
+                (
+                    # "cv_camera/image_raw",  # for testing
+                    "video4/imageraw",
+                    Image,
+                    cams.display_stream4,
+                ),
+            ],  # cams topics
         )
 
     def handle_tab_change(self, page_index: int):
@@ -249,6 +283,7 @@ if __name__ == "__main__":
     arm_tab = QtWidgets.QWidget()
     pds_tab = QtWidgets.QWidget()
     science_tab = QtWidgets.QWidget()
+    cams_tab = QtWidgets.QWidget()
 
     pds_publisher = rospy.Publisher("/pds_command", String, queue_size=10)
 
@@ -272,6 +307,7 @@ if __name__ == "__main__":
     science = Science(
         width, height, rospy.Publisher("/science_command", String, queue_size=10), science_tab, MainWindow
     )
+    cams = Cams(width, height, cams_tab, MainWindow)
 
     layout = QtWidgets.QWidget()
     scroll_area.setWidget(layout)
@@ -286,11 +322,13 @@ if __name__ == "__main__":
     arm_tab.setObjectName("arm")
     pds_tab.setObjectName("pds")
     science_tab.setObjectName("science")
+    cams_tab.setObjectName("cams")
 
     tab_widget.addTab(wheel_tab, "Wheels")
     tab_widget.addTab(arm_tab, "Arms")
     tab_widget.addTab(pds_tab, "PDS")
-    # tab_widget.addTab(science_tab, "Science")
+    tab_widget.addTab(science_tab, "Science")
+    tab_widget.addTab(cams_tab, "Cams")
 
     ros_thread = Ros_thread(2, "ros-thread")
     tab_widget.currentChanged.connect(ros_thread.handle_tab_change)
@@ -300,4 +338,10 @@ if __name__ == "__main__":
 
     ros_thread.start()
     worker.start()
-    sys.exit(app.exec_())
+
+    try:
+        sys.exit(app.exec_())
+    except:
+        if ["/joy_comms"] in rosnode.get_node_names():
+            subprocess.Popen(["rosnode", "kill", "/joy_comms"], stdout=subprocess.PIPE)
+        worker.clear_queue()

@@ -1,4 +1,5 @@
 import multiprocessing
+import ros_numpy
 import os
 
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
@@ -25,27 +26,38 @@ class Queue(object):
             self.queue.append(data)
 
 
-# This is currently a place holder for the Stream component
 class Stream(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent: QtWidgets.QWidget = None):
+    def __init__(self, width: float, height: float, parent: QtWidgets.QWidget = None, x=0, y=0):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
+        self.x = x or 0.63 * self.width
+        self.y = y or self.height / 15
+
+    def display(self, data):
+        height, width, channel = ros_numpy.numpify(data).shape
+        bytesPerLine = 3 * width
+        self.display_screen.setPixmap(
+            QtGui.QPixmap(QtGui.QImage(data.data, width, height, bytesPerLine, QtGui.QImage.Format_BGR888))
+        )
+
+    def change_geometry(self, width, height):
+        self.display_screen.setGeometry(QtCore.QRect(self.x, self.y, width, height))
 
     def setup(self):
-        self.stream_screen = QtWidgets.QLabel(self.parent)
-        self.stream_screen.setGeometry(
+        self.display_screen = QtWidgets.QLabel(self.parent)
+        self.display_screen.setGeometry(
             QtCore.QRect(
-                0.63 * self.width,
-                self.height / 15,
+                self.x,
+                self.y,
                 7 * self.width / 24,
                 0.44 * self.height,
             )
         )
-        self.stream_screen.setStyleSheet("background-color: rgb(255, 255, 255);\n" "color: rgb(0, 0, 0);")
-        self.stream_screen.setAlignment(QtCore.Qt.AlignCenter)
-        self.stream_screen.setObjectName("stream_screen")
+        self.display_screen.setStyleSheet("background-color: rgb(255, 255, 255);\n" "color: rgb(0, 0, 0);")
+        self.display_screen.setAlignment(QtCore.Qt.AlignCenter)
+        self.display_screen.setObjectName("stream_screen")
 
 
 class Header(QtWidgets.QWidget):
@@ -61,7 +73,7 @@ class Header(QtWidgets.QWidget):
         self.run_joy_comms_button.setEnabled(False)
         self.run_joy_comms_button.setStyleSheet("background-color: black")
         multiprocessing.Process(
-            target=lambda: os.system("roslaunch mcu_control joy_comms_manual.launch"), daemon=True
+            target=lambda: os.system("roslaunch mcu_control joy_comms_manual.launch")
         ).start()
 
     def update_temps(self, data: ThermistorTemps):
