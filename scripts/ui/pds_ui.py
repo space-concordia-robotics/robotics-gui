@@ -62,6 +62,7 @@ class Pds_Ui(QtWidgets.QWidget):
                 self.height / 15.21,
             )
         )
+        self.stop_button.setStyleSheet("background-color: red")
         self.stop_button.setObjectName("stop_button")
         self.reset_general_flags_button = QtWidgets.QPushButton(self.parent)
         self.reset_general_flags_button.setGeometry(
@@ -197,7 +198,6 @@ class Pds_Ui(QtWidgets.QWidget):
         self.enable_data_checkbox.setObjectName("enable_data_checkbox")
         self.enable_data_checkbox.setText("Enable Data Connection")
         self.verticalLayout_5.addWidget(self.enable_data_checkbox)
-
 
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)

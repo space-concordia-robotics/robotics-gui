@@ -43,6 +43,7 @@ class Wheel_Ui(QtWidgets.QWidget):
                 2 * self.height / 25,
             )
         )
+        self.stop_button.setStyleSheet("background-color: red")
         self.stop_button.setObjectName("stop_button")
         self.enable_motors_button = QtWidgets.QPushButton(self.parent)
         self.enable_motors_button.setGeometry(
