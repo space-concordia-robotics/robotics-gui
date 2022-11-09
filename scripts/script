@@ -65,8 +65,8 @@ class Ros_thread(threading.Thread):
                     lambda data: worker.add_to_queue((wheel.display_currents, [data])),
                 ),
                 (
-                    # "cv_camera/image_raw",  # for testing
-                    "video1/imageraw",
+                    "cv_camera/image_raw",  # for testing
+                    # "video1/imageraw",
                     Image,
                     wheel.display_stream,
                 ),
@@ -93,28 +93,32 @@ class Ros_thread(threading.Thread):
             [],  # science topics
             [
                 (
-                    # "cv_camera/image_raw",  # for testing
-                    "video1/imageraw",
+                    "cv_camera/image_raw",  # for testing
+                    # "video1/imageraw",
                     Image,
-                    cams.display_stream1,
+                    lambda data: worker.add_to_queue((cams.display_stream1, [data])),
+                    # cams.display_stream1,
                 ),
                 (
-                    # "cv_camera/image_raw",  # for testing
-                    "video2/imageraw",
+                    "cv_camera/image_raw",  # for testing
+                    # "video2/imageraw",
                     Image,
-                    cams.display_stream2,
+                    lambda data: worker.add_to_queue((cams.display_stream2, [data])),
+                    # cams.display_stream2,
                 ),
                 (
-                    # "cv_camera/image_raw",  # for testing
-                    "video3/imageraw",
+                    "cv_camera/image_raw",  # for testing
+                    # "video3/imageraw",
                     Image,
-                    cams.display_stream3,
+                    lambda data: worker.add_to_queue((cams.display_stream3, [data])),
+                    # cams.display_stream3,
                 ),
                 (
-                    # "cv_camera/image_raw",  # for testing
-                    "video4/imageraw",
+                    "cv_camera/image_raw",  # for testing
+                    # "video4/imageraw",
                     Image,
-                    cams.display_stream4,
+                    lambda data: worker.add_to_queue((cams.display_stream4, [data])),
+                    # cams.display_stream4,
                 ),
             ],  # cams topics
         )
