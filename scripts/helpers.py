@@ -2,6 +2,7 @@ import multiprocessing
 import ros_numpy
 import os
 
+from sensor_msgs.msg import Image
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -35,7 +36,7 @@ class Stream(QtWidgets.QWidget):
         self.x = x or 0.63 * self.width
         self.y = y or self.height / 15
 
-    def display(self, data):
+    def display(self, data: Image):
         height, width, channel = ros_numpy.numpify(data).shape
         bytesPerLine = 3 * width
         self.display_screen.setPixmap(
