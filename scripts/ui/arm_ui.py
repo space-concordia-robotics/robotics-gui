@@ -262,7 +262,7 @@ class Arm_Ui(QtWidgets.QWidget):
                 self.height / 27,
             )
         )
-        self.stream_screen = Stream(self.width, self.height, self.parent)
+        self.stream_screen = Stream(5, self.width, self.height, self.parent)
         self.stream_screen.setup()
         self.speed_multiplier_input.setDecimals(1)
         self.speed_multiplier_input.setMaximum(5.0)

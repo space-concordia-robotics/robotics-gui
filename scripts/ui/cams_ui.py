@@ -21,13 +21,17 @@ class Cams_Ui(QtWidgets.QWidget):
         self.setupUi()
 
     def setupUi(self):
-        self.cam1_stream = Stream(self.width, self.height, self.parent, 0.01 * self.width, 0.01 * self.height)
+        self.cam1_stream = Stream(
+            1, self.width, self.height, self.parent, 0.01 * self.width, 0.01 * self.height
+        )
         self.cam1_stream.setup()
-        self.cam2_stream = Stream(self.width, self.height, self.parent, self.width / 2, 0.01 * self.height)
+        self.cam2_stream = Stream(2, self.width, self.height, self.parent, self.width / 2, 0.01 * self.height)
         self.cam2_stream.setup()
-        self.cam3_stream = Stream(self.width, self.height, self.parent, 0.01 * self.width, self.height / 2.2)
+        self.cam3_stream = Stream(
+            3, self.width, self.height, self.parent, 0.01 * self.width, self.height / 2.2
+        )
         self.cam3_stream.setup()
-        self.cam4_stream = Stream(self.width, self.height, self.parent, self.width / 2, self.height / 2.2)
+        self.cam4_stream = Stream(4, self.width, self.height, self.parent, self.width / 2, self.height / 2.2)
         self.cam4_stream.setup()
 
         self.cam1_stream.change_geometry(self.width / 3, self.height / 2.5)

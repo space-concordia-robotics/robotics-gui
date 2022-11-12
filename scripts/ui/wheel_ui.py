@@ -177,7 +177,7 @@ class Wheel_Ui(QtWidgets.QWidget):
         self.controller_left.setDisabled(True)
         self.controller_down.setDisabled(True)
 
-        self.stream_screen = Stream(self.width, self.height, self.parent)
+        self.stream_screen = Stream(0, self.width, self.height, self.parent)
         self.stream_screen.setup()
 
         self.retranslateUi()

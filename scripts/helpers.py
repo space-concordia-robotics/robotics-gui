@@ -2,6 +2,7 @@ import multiprocessing
 import ros_numpy
 import os
 
+from PIL import Image as PILImage
 from sensor_msgs.msg import Image
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Voltage import Voltage
@@ -28,23 +29,34 @@ class Queue(object):
 
 
 class Stream(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent: QtWidgets.QWidget = None, x=0, y=0):
+    def __init__(self, id: int, width: float, height: float, parent: QtWidgets.QWidget = None, x=0, y=0):
         super().__init__(parent=parent)
+        self.id = id
         self.width = width
         self.height = height
         self.parent = parent
         self.x = x or 0.63 * self.width
         self.y = y or self.height / 15
+        self.counter = 0
+        self.frame = None
 
     def display(self, data: Image):
-        height, width, channel = ros_numpy.numpify(data).shape
-        bytesPerLine = 3 * width
-        self.display_screen.setPixmap(
-            QtGui.QPixmap(QtGui.QImage(data.data, width, height, bytesPerLine, QtGui.QImage.Format_BGR888))
-        )
+        if not self.paused_checkbox.isChecked():
+            height, width, channel = ros_numpy.numpify(data).shape
+            bytesPerLine = 3 * width
+            self.frame = QtGui.QPixmap(
+                QtGui.QImage(data.data, width, height, bytesPerLine, QtGui.QImage.Format_BGR888)
+            )
+            self.display_screen.setPixmap(self.frame)
+
+    def capture_frame(self):
+        image = PILImage.fromqpixmap(self.frame)
+        image.save(f"cam{self.id}-{self.counter}.png")
+        self.counter += 1
 
     def change_geometry(self, width, height):
         self.display_screen.setGeometry(QtCore.QRect(self.x, self.y, width, height))
+        self.screen_capture_button.setGeometry(self.x + width - 20, self.y, 20, 20)
 
     def setup(self):
         self.display_screen = QtWidgets.QLabel(self.parent)
@@ -59,6 +71,15 @@ class Stream(QtWidgets.QWidget):
         self.display_screen.setStyleSheet("background-color: rgb(255, 255, 255);\n" "color: rgb(0, 0, 0);")
         self.display_screen.setAlignment(QtCore.Qt.AlignCenter)
         self.display_screen.setObjectName("stream_screen")
+
+        self.paused_checkbox = QtWidgets.QCheckBox(self.parent)
+        self.paused_checkbox.setGeometry(QtCore.QRect(self.x, self.y, 20, 20))
+        self.paused_checkbox.setObjectName("paused_checkbox")
+
+        self.screen_capture_button = QtWidgets.QPushButton(self.parent)
+        self.screen_capture_button.setGeometry(self.x + 7 * self.width / 24 - 20, self.y, 20, 20)
+        self.screen_capture_button.setObjectName("screen_capture_button")
+        self.screen_capture_button.pressed.connect(self.capture_frame)
 
 
 class Header(QtWidgets.QWidget):

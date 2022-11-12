@@ -168,8 +168,6 @@ class Science_Ui(QtWidgets.QWidget):
         self.controller_right.setCheckable(False)
         self.controller_right.setChecked(False)
         self.controller_right.setObjectName("controller_right")
-        self.stream_screen = Stream(self.width, self.height, self.parent)
-        self.stream_screen.setup()
 
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
