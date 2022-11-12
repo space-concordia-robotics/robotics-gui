@@ -66,7 +66,7 @@ class Ros_thread(threading.Thread):
                 ),
                 (
                     # "cv_camera/image_raw",  # for testing
-                    "video1/imageraw",
+                    "video1/image_raw",
                     Image,
                     wheel.display_stream,
                 ),
@@ -94,25 +94,25 @@ class Ros_thread(threading.Thread):
             [
                 (
                     # "cv_camera/image_raw",  # for testing
-                    "video1/imageraw",
+                    "video1/image_raw",
                     Image,
                     lambda data: worker.add_to_queue((cams.display_stream1, [data])),
                 ),
                 (
                     # "cv_camera/image_raw",  # for testing
-                    "video2/imageraw",
+                    "video2/image_raw",
                     Image,
                     lambda data: worker.add_to_queue((cams.display_stream2, [data])),
                 ),
                 (
                     # "cv_camera/image_raw",  # for testing
-                    "video3/imageraw",
+                    "video3/image_raw",
                     Image,
                     lambda data: worker.add_to_queue((cams.display_stream3, [data])),
                 ),
                 (
                     # "cv_camera/image_raw",  # for testing
-                    "video4/imageraw",
+                    "video4/image_raw",
                     Image,
                     lambda data: worker.add_to_queue((cams.display_stream4, [data])),
                 ),
