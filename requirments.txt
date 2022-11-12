@@ -2,3 +2,4 @@ pyqt5
 rospy
 pyyaml
 rospkg
+pillow
