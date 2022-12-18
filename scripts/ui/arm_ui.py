@@ -15,7 +15,7 @@ from tables import Arm_table
 
 class Arm_Ui(QtWidgets.QWidget):
     def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
-        super().__init__(parent=parent)
+        super().__init__()
         self.width = width
         self.height = height
         self.parent = parent
@@ -262,7 +262,7 @@ class Arm_Ui(QtWidgets.QWidget):
                 self.height / 27,
             )
         )
-        self.stream_screen = Stream(5, self.width, self.height, self.parent)
+        self.stream_screen = Stream(0, self.width, self.height, self.parent)
         self.stream_screen.setup()
         self.speed_multiplier_input.setDecimals(1)
         self.speed_multiplier_input.setMaximum(5.0)
@@ -334,5 +334,5 @@ class Arm_Ui(QtWidgets.QWidget):
         self.list_commands_button.setText(_translate("MainWindow", "List Commands (L)"))
         self.send_speed_multiplier_button.setText(_translate("MainWindow", "Send Speed\n" "Multiplier"))
         self.reset_angles_button.setText(_translate("MainWindow", "Reset Angles (O)"))
-        self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
+        self.stop_button.setText(_translate("MainWindow", "STOP\n(Space)"))
         self.enable_motors_button.setText(_translate("MainWindow", "Enable all Motors\n(Ctrl+Q)"))

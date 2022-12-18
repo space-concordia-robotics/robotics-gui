@@ -15,7 +15,7 @@ from tables import Wheel_table
 
 class Wheel_Ui(QtWidgets.QWidget):
     def __init__(self, width: float, height: float, publisher, parent=None, MainWindow=None):
-        super().__init__(parent=parent)
+        super().__init__()
         self.width = width
         self.height = height
         self.parent = parent
@@ -186,7 +186,7 @@ class Wheel_Ui(QtWidgets.QWidget):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.list_commands_button.setText(_translate("MainWindow", "List Commands (L) "))
-        self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
+        self.stop_button.setText(_translate("MainWindow", "STOP\n(Space)"))
         self.enable_motors_button.setText(_translate("MainWindow", "Enable all Motors\n(Ctrl+Q)"))
 
         self.controller_left.setText(_translate("MainWindow", "Left\nA"))

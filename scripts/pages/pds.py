@@ -8,22 +8,21 @@ from ui.pds_ui import Pds_Ui
 
 
 class Pds(Pds_Ui):
-    def __init__(self, width: float, height: float, publisher: rospy.Publisher, parent=None, MainWindow=None):
-        super().__init__(
-            width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
-        )
+    def __init__(self, width: float, height: float, publisher: rospy.Publisher, MainWindow=None):
+        super().__init__(width=width, height=height, publisher=publisher, parent=self, MainWindow=MainWindow)
         self.publisher = publisher
         self.fan1_speed: float = 100.0
         self.fan2_speed: float = 100.0
         self.data_topic = rospy.Publisher("power_report_command", String, queue_size=10)
         self.commands = {
-            "ctrl-p": "'ping rover mcu'",
-            "alt-p": "'ping odroid'",
+            "Ctrl-P": "'ping rover mcu'",
+            "Alt-P": "'ping odroid'",
+            "Ctrl-Q": "'turn on all motors'",
             "Space": "'cut power to all motors'",
-            "ctrl-q": "'turn on / off all motors'",
-            "l": "'view key commands'\n",
+            "L": "'view key commands'\n",
         }
 
+        self.setObjectName("pds")
         self.start_handling_clicks()
 
     def toggle_auto_mode(self, state: bool):

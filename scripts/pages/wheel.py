@@ -13,35 +13,34 @@ class Wheel(Wheel_Ui):
         height: float,
         publisher: rospy.Publisher,
         pds_publisher: rospy.Publisher,
-        parent=None,
         MainWindow=None,
     ):
-        super().__init__(
-            width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
-        )
+        super().__init__(width=width, height=height, publisher=publisher, parent=self, MainWindow=MainWindow)
         self.publisher = publisher
         self.pds_publisher = pds_publisher
         self.throttle: float = 0.50
         self.currents: tuple[float] = (0,) * 6
         # first element of the velocity is right (+) / left (-) and second is front (+) / back (-)
-        self.velocity: list[float] = [0] * 2
+        self.velocity: list[float] = [0] * 4
         self.commands = {
-            "ctrl-p": "'ping rover mcu'",
-            "alt-p": "'ping odroid'",
+            "Ctrl-P": "'ping rover mcu'",
+            "Alt-P": "'ping odroid'",
+            "Ctrl-Q": "'enable all rover wheel motors'",
             "Space": "'emergency stop all motors'",
-            "ctrl-q": "'enable all rover wheel motors'",
-            "l": "'view key commands'",
-            "u": "'increase throttle value'",
-            "i": "'decrease throttle value'\n",
+            "Ctrl-S": "'screen capture'",
+            "L": "'view key commands'",
+            "U": "'increase throttle value'",
+            "I": "'decrease throttle value'\n",
         }
 
+        self.setObjectName("wheel")
         self.start_handling_clicks()
 
     def display_stream(self, data):
         self.stream_screen.display(data)
 
     def reset_velocity(self):
-        self.velocity = [0] * 2
+        self.velocity = [0] * 4
         self.send_velocity()
 
     def set_page_buttons(self, value: bool):
@@ -71,19 +70,20 @@ class Wheel(Wheel_Ui):
         print("Pinging Rover in MCU")
 
     def polarize_coords(self, coordinates: "list[float]") -> "tuple[float]":
+        temp = [coordinates[i] + coordinates[i + 2] for i in range(int(len(coordinates) / 2))]
         magnitude = 0.0
         angle = 0.0
 
-        if coordinates[0] == 0:
+        if temp[0] == 0:
             # Moving straight forward or backward
-            magnitude = coordinates[1]
-        elif coordinates[1] == 0:
+            magnitude = temp[1]
+        elif temp[1] == 0:
             # Turning in place
-            angle = 1.0 if coordinates[0] > 0 else -1.0
-        elif coordinates[1] > 0 or coordinates[1] < 0:
+            angle = 1.0 if temp[0] > 0 else -1.0
+        elif temp[1] > 0 or temp[1] < 0:
             # Moving and steering at the same time
-            magnitude = coordinates[1]
-            angle = 0.5 if coordinates[0] > 0 else -0.5
+            magnitude = temp[1]
+            angle = 0.5 if temp[0] > 0 else -0.5
 
         return (magnitude, angle)
 
@@ -133,6 +133,9 @@ class Wheel(Wheel_Ui):
         self.emergency_stop_sequence.activated.connect(self.estop)
         self.enable_motors_sequence = QShortcut(QKeySequence("Ctrl+Q"), self)
         self.enable_motors_sequence.activated.connect(self.enable_motors)
+
+        self.screen_capture_sequence = QShortcut(QKeySequence("Ctrl+S"), self)
+        self.screen_capture_sequence.activated.connect(self.stream_screen.capture_frame)
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)

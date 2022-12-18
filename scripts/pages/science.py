@@ -7,15 +7,14 @@ from ui.science_ui import Science_Ui
 
 
 class Science(Science_Ui):
-    def __init__(self, width: float, height: float, publisher: rospy.Publisher, parent=None, MainWindow=None):
-        super().__init__(
-            width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
-        )
+    def __init__(self, width: float, height: float, publisher: rospy.Publisher, MainWindow=None):
+        super().__init__(width=width, height=height, publisher=publisher, parent=self, MainWindow=MainWindow)
         self.publisher = publisher
         self.used_vials = 0
         self.vials = {}  # template: ( [ number, status, CCD, Ramen ] )
         self.commands = {"test": "'test'"}
 
+        self.setObjectName("science")
         self.start_handling_clicks()
 
     def estop(self):

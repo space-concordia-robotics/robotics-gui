@@ -40,18 +40,20 @@ class Stream(QtWidgets.QWidget):
         self.counter = 0
         self.frame = None
 
+    def pause_topic(self):
+        print(self.parent)
+
     def display(self, data: Image):
-        if not self.paused_checkbox.isChecked():
-            height, width, channel = ros_numpy.numpify(data).shape
-            bytesPerLine = 3 * width
-            self.frame = QtGui.QPixmap(
-                QtGui.QImage(data.data, width, height, bytesPerLine, QtGui.QImage.Format_BGR888)
-            )
-            self.display_screen.setPixmap(self.frame)
+        height, width, channel = ros_numpy.numpify(data).shape
+        bytesPerLine = 3 * width
+        self.frame = QtGui.QPixmap(
+            QtGui.QImage(data.data, width, height, bytesPerLine, QtGui.QImage.Format_BGR888)
+        )
+        self.display_screen.setPixmap(self.frame)
 
     def capture_frame(self):
         image = PILImage.fromqpixmap(self.frame)
-        image.save(f"cam{self.id}-{self.counter}.png")
+        image.save(f"{self.parent.objectName()}{self.id}-{self.counter}.png")
         self.counter += 1
 
     def change_geometry(self, width, height):
@@ -75,6 +77,7 @@ class Stream(QtWidgets.QWidget):
         self.paused_checkbox = QtWidgets.QCheckBox(self.parent)
         self.paused_checkbox.setGeometry(QtCore.QRect(self.x, self.y, 20, 20))
         self.paused_checkbox.setObjectName("paused_checkbox")
+        self.paused_checkbox.clicked.connect(self.pause_topic)
 
         self.screen_capture_button = QtWidgets.QPushButton(self.parent)
         self.screen_capture_button.setGeometry(self.x + 7 * self.width / 24 - 20, self.y, 20, 20)

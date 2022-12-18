@@ -13,32 +13,31 @@ class Arm(Arm_Ui):
         height: float,
         publisher: rospy.Publisher,
         pds_publisher: rospy.Publisher,
-        parent=None,
         MainWindow=None,
     ):
-        super().__init__(
-            width=width, height=height, publisher=publisher, parent=parent, MainWindow=MainWindow
-        )
+        super().__init__(width=width, height=height, publisher=publisher, parent=self, MainWindow=MainWindow)
         self.publisher = publisher
         self.pds_publisher = pds_publisher
         self.speed_multiplier: float = 1
         self.currents: tuple[float] = (0,) * 6
-        self.speeds: list[float] = [0] * 6
+        self.speeds: list[float] = [0] * 12
         self.commands = {
-            "ctrl-p": "'ping arm mcu'",
-            "alt-p": "'ping odroid'",
+            "Ctrl-P": "'ping arm mcu'",
+            "Alt-P": "'ping odroid'",
+            "Ctrl-Q": "'enable all arm motors'",
             "Space": "'emergency stop all motors'",
-            "ctrl-q": "'enable all arm motors'",
-            "o": "'reset memorized angle values'",
-            "l": "'view key commands'",
+            "Ctrl-S": "'screen capture'",
+            "O": "'reset memorized angle values'",
+            "L": "'view key commands'",
             "Keys 'w' to 'u'": "'move motors 1-6 forwards'",
             "Keys 's' to 'j'": "'move motors 1-6 backwards'\n",
         }
 
+        self.setObjectName("arm")
         self.start_handling_clicks()
 
     def reset_speeds(self):
-        self.speeds = [0] * 6
+        self.speeds = [0] * 12
         self.send_speeds()
 
     def set_page_buttons(self, value: bool):
@@ -71,8 +70,8 @@ class Arm(Arm_Ui):
         print("Pinging Arm in MCU")
 
     def send_speeds(self):
-        self.publisher.publish("set_motor_speeds " + " ".join([str(num) for num in self.speeds]))
-        print(self.speeds)
+        temp = [self.speeds[i] + self.speeds[i + 6] for i in range(int(len(self.speeds) / 2))]
+        self.publisher.publish("set_motor_speeds " + " ".join([str(num) for num in temp]))
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
@@ -126,6 +125,9 @@ class Arm(Arm_Ui):
         self.emergency_stop_sequence.activated.connect(self.estop)
         self.enable_motors_sequence = QShortcut(QKeySequence("Ctrl+Q"), self)
         self.enable_motors_sequence.activated.connect(self.enable_motors)
+
+        self.screen_capture_sequence = QShortcut(QKeySequence("Ctrl+S"), self)
+        self.screen_capture_sequence.activated.connect(self.stream_screen.capture_frame)
 
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)

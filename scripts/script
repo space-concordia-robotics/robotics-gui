@@ -65,8 +65,8 @@ class Ros_thread(threading.Thread):
                     lambda data: worker.add_to_queue((wheel.display_currents, [data])),
                 ),
                 (
-                    # "cv_camera/image_raw",  # for testing
-                    "video1/image_raw",
+                    "cv_camera/image_raw",  # for testing
+                    # "video1/image_raw",
                     Image,
                     wheel.display_stream,
                 ),
@@ -180,8 +180,6 @@ class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
         return super().focusOutEvent(event)
 
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
-        if event.isAutoRepeat():
-            return  # this prevents the press and release events from continuously firing
 
         self.tab_name: str = tab_widget.currentWidget().objectName()
         key: str = event.text()
@@ -193,9 +191,9 @@ class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
                 wheel.set_page_buttons(False)
                 for i in range(int(len(keys) / 2)):
                     if key == keys[i]:
-                        wheel.velocity[i] += wheel.throttle
+                        wheel.velocity[i] = wheel.throttle
                     elif key == keys[i + int(len(keys) / 2)]:
-                        wheel.velocity[i] -= wheel.throttle
+                        wheel.velocity[i + int(len(keys) / 2)] = -wheel.throttle
                 wheel.send_velocity()
         elif self.tab_name == "arm" and not arm.log_browser.line_edit.hasFocus():
             keys = ["w", "e", "r", "t", "y", "u", "s", "d", "f", "g", "h", "j"]
@@ -205,15 +203,15 @@ class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
                 arm.set_page_buttons(False)
                 for i in range(int(len(keys) / 2)):
                     if key == keys[i]:
-                        arm.speeds[i] += arm.speed_multiplier * 50  # mapped to between -250 and 250
+                        arm.speeds[i] = arm.speed_multiplier * 50  # mapped to between -250 and 250
                     elif key == keys[i + int(len(keys) / 2)]:
-                        arm.speeds[i] -= arm.speed_multiplier * 50
+                        arm.speeds[i + int(len(keys) / 2)] = arm.speed_multiplier * -50
                 arm.send_speeds()
 
         return super().keyPressEvent(event)
 
     def keyReleaseEvent(self, event: QtGui.QKeyEvent) -> None:
-        if event.isAutoRepeat():
+        if event.isAutoRepeat():  # prevents the release event from continuasly firing
             return
 
         key: str = event.text()
@@ -223,25 +221,23 @@ class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
                 keys = ["d", "w", "a", "s"]
                 if key in keys:
                     self.pressed_keys.remove(key)
-                    for i in range(int(len(keys) / 2)):
+                    for i in range(int(len(keys))):
                         if key == keys[i]:
-                            wheel.velocity[i] -= wheel.throttle
-                        elif key == keys[i + int(len(keys) / 2)]:
-                            wheel.velocity[i] += wheel.throttle
+                            wheel.velocity[i] = 0
                     wheel.send_velocity()
                     if not any(self.pressed_keys):
+                        wheel.reset_velocity()
                         wheel.set_page_buttons(True)
             elif self.tab_name == "arm" and not arm.log_browser.line_edit.hasFocus():
                 keys = ["w", "e", "r", "t", "y", "u", "s", "d", "f", "g", "h", "j"]
                 if key in keys:
                     self.pressed_keys.remove(key)
-                    for i in range(int(len(keys) / 2)):
+                    for i in range(int(len(keys))):
                         if key == keys[i]:
-                            arm.speeds[i] -= arm.speed_multiplier * 50
-                        elif key == keys[i + int(len(keys) / 2)]:
-                            arm.speeds[i] += arm.speed_multiplier * 50
+                            arm.speeds[i] = 0
                     arm.send_speeds()
                     if not any(self.pressed_keys):
+                        arm.reset_speeds()
                         arm.set_page_buttons(True)
         except ValueError:
             pass
@@ -279,12 +275,6 @@ if __name__ == "__main__":
 
     MainWindow.setCentralWidget(scroll_area)
 
-    wheel_tab = QtWidgets.QWidget()
-    arm_tab = QtWidgets.QWidget()
-    pds_tab = QtWidgets.QWidget()
-    science_tab = QtWidgets.QWidget()
-    cams_tab = QtWidgets.QWidget()
-
     pds_publisher = rospy.Publisher("/pds_command", String, queue_size=10)
 
     wheel = Wheel(
@@ -292,7 +282,6 @@ if __name__ == "__main__":
         height,
         rospy.Publisher("/rover_command", String, queue_size=10),
         pds_publisher,
-        wheel_tab,
         MainWindow,
     )
     arm = Arm(
@@ -300,14 +289,25 @@ if __name__ == "__main__":
         height,
         rospy.Publisher("/arm_command", String, queue_size=10),
         pds_publisher,
-        arm_tab,
         MainWindow,
     )
-    pds = Pds(width, height, pds_publisher, pds_tab, MainWindow)
-    science = Science(
-        width, height, rospy.Publisher("/science_command", String, queue_size=10), science_tab, MainWindow
+    pds = Pds(
+        width,
+        height,
+        pds_publisher,
+        MainWindow,
     )
-    cams = Cams(width, height, cams_tab, MainWindow)
+    science = Science(
+        width,
+        height,
+        rospy.Publisher("/science_command", String, queue_size=10),
+        MainWindow,
+    )
+    cams = Cams(
+        width,
+        height,
+        MainWindow,
+    )
 
     layout = QtWidgets.QWidget()
     scroll_area.setWidget(layout)
@@ -317,18 +317,11 @@ if __name__ == "__main__":
 
     tab_widget = QtWidgets.QTabWidget(layout)
     tab_widget.setGeometry(QtCore.QRect(0, int(height / 15.43), width, int(0.9 * height)))
-
-    wheel_tab.setObjectName("wheel")
-    arm_tab.setObjectName("arm")
-    pds_tab.setObjectName("pds")
-    science_tab.setObjectName("science")
-    cams_tab.setObjectName("cams")
-
-    tab_widget.addTab(wheel_tab, "Wheels")
-    tab_widget.addTab(arm_tab, "Arms")
-    tab_widget.addTab(pds_tab, "PDS")
-    tab_widget.addTab(science_tab, "Science")
-    tab_widget.addTab(cams_tab, "Cams")
+    tab_widget.addTab(wheel, "Wheels")
+    tab_widget.addTab(arm, "Arms")
+    tab_widget.addTab(pds, "PDS")
+    tab_widget.addTab(science, "Science")
+    tab_widget.addTab(cams, "Cams")
 
     ros_thread = Ros_thread(2, "ros-thread")
     tab_widget.currentChanged.connect(ros_thread.handle_tab_change)
@@ -336,12 +329,12 @@ if __name__ == "__main__":
     MainWindow.setWindowTitle("Rover Controller")
     MainWindow.show()
 
-    ros_thread.start()
     worker.start()
+    ros_thread.start()
 
     try:
         sys.exit(app.exec_())
     except:
+        worker.clear_queue()
         if ["/joy_comms"] in rosnode.get_node_names():
             subprocess.Popen(["rosnode", "kill", "/joy_comms"], stdout=subprocess.PIPE)
-        worker.clear_queue()
