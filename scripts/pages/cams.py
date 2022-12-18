@@ -13,6 +13,12 @@ class Cams(Cams_Ui):
         self.setObjectName("cams")
         self.start_handling_clicks()
 
+    def pause_cam_topic(self):
+        self.cam1_stream.pause_topic()
+        self.cam2_stream.pause_topic()
+        self.cam3_stream.pause_topic()
+        self.cam4_stream.pause_topic()
+
     def display_stream1(self, data: Image):
         self.cam1_stream.display(data)
 

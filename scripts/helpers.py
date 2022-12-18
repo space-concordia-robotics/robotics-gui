@@ -30,7 +30,9 @@ class Worker(threading.Thread):
         while not rospy.is_shutdown():
             try:
                 if queue:
-                    queue[0][0](*queue[0][1]) if queue[0][1] else queue[0][0]()
+                    command = queue[0][0]
+                    args = queue[0][1]
+                    command(*args) if args else command()
                     queue.pop(0)
                     rospy.sleep(0.01)
             except:
@@ -100,8 +102,8 @@ class Stream(QtWidgets.QWidget):
             queue_size=1,
         )
 
-    def pause_topic(self, checked):
-        if checked:
+    def pause_topic(self, checked=None):
+        if checked or not self.isVisible():
             self.subscriber.unregister()
         else:
             self.subscriber = rospy.Subscriber(*self.topics[self.topic_dropdown.currentText()], queue_size=1)
@@ -142,6 +144,9 @@ class Stream(QtWidgets.QWidget):
         self.display_screen.setStyleSheet("background-color: rgb(255, 255, 255);\n" "color: rgb(0, 0, 0);")
         self.display_screen.setAlignment(QtCore.Qt.AlignCenter)
         self.display_screen.setObjectName("stream_screen")
+        self.display_screen.mouseDoubleClickEvent = lambda _: self.paused_checkbox.setChecked(
+            not self.paused_checkbox.isChecked()
+        )
 
         self.paused_checkbox = QtWidgets.QCheckBox(self.display_screen)
         self.paused_checkbox.setGeometry(QtCore.QRect(0, 0, 20, 20))
@@ -279,7 +284,7 @@ class Header(QtWidgets.QWidget):
 
         self.run_joy_comms_button = QtWidgets.QPushButton(self.parent)
         self.run_joy_comms_button.setObjectName("run_joy_comms_button")
-        self.run_joy_comms_button.setText("Run Joystick Commands")
+        self.run_joy_comms_button.setText("Start Basestation")
         self.run_joy_comms_button.setGeometry(
             QtCore.QRect(self.width / 2.5, self.height / 50, self.width / 10, self.height / 28)
         )

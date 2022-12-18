@@ -36,6 +36,9 @@ class Arm(Arm_Ui):
         self.setObjectName("arm")
         self.start_handling_clicks()
 
+    def pause_cam_topic(self):
+        self.stream_screen.pause_topic()
+
     def reset_speeds(self):
         self.speeds = [0] * 12
         self.send_speeds()

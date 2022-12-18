@@ -36,6 +36,9 @@ class Wheel(Wheel_Ui):
         self.setObjectName("wheel")
         self.start_handling_clicks()
 
+    def pause_cam_topic(self):
+        self.stream_screen.pause_topic()
+
     def display_stream(self, data):
         self.stream_screen.display(data)
 
