@@ -12,38 +12,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
 
-from helpers import Header, Queue
+from helpers import Header, Worker
 from pages.arm import Arm
 from pages.cams import Cams
 from pages.pds import Pds
 from pages.science import Science
 from pages.wheel import Wheel
-
-
-class Worker(threading.Thread):
-    def __init__(self, threadID: int, name: str):
-        threading.Thread.__init__(self)
-        self.threadID: int = threadID
-        self.name: str = name
-        self.daemon: bool = True  # close with parent
-        self.command_queue = Queue(10)
-
-    def clear_queue(self):
-        self.command_queue.clear()
-
-    def add_to_queue(self, data):
-        self.command_queue.append(data)
-
-    def run(self):
-        queue = self.command_queue.get_list()
-        while not rospy.is_shutdown():
-            try:
-                if queue:
-                    queue[0][0](*queue[0][1]) if queue[0][1] else queue[0][0]()
-                    queue.pop(0)
-                    rospy.sleep(0.01)
-            except:
-                pass
 
 
 class Ros_thread(threading.Thread):
@@ -64,12 +38,12 @@ class Ros_thread(threading.Thread):
                     Currents,
                     lambda data: worker.add_to_queue((wheel.display_currents, [data])),
                 ),
-                (
-                    "cv_camera/image_raw",  # for testing
-                    # "video1/image_raw",
-                    Image,
-                    wheel.display_stream,
-                ),
+                # (
+                #     "cv_camera/image_raw",  # for testing
+                #     # "video1/image_raw",
+                #     Image,
+                #     wheel.display_stream,
+                # ),
             ],  # wheel topics
             [
                 (
@@ -92,30 +66,30 @@ class Ros_thread(threading.Thread):
             ],  # pds topics
             [],  # science topics
             [
-                (
-                    # "cv_camera/image_raw",  # for testing
-                    "video1/image_raw",
-                    Image,
-                    lambda data: worker.add_to_queue((cams.display_stream1, [data])),
-                ),
-                (
-                    # "cv_camera/image_raw",  # for testing
-                    "video2/image_raw",
-                    Image,
-                    lambda data: worker.add_to_queue((cams.display_stream2, [data])),
-                ),
-                (
-                    # "cv_camera/image_raw",  # for testing
-                    "video3/image_raw",
-                    Image,
-                    lambda data: worker.add_to_queue((cams.display_stream3, [data])),
-                ),
-                (
-                    # "cv_camera/image_raw",  # for testing
-                    "video4/image_raw",
-                    Image,
-                    lambda data: worker.add_to_queue((cams.display_stream4, [data])),
-                ),
+                # (
+                #     # "cv_camera/image_raw",  # for testing
+                #     "video1/image_raw",
+                #     Image,
+                #     lambda data: worker.add_to_queue((cams.display_stream1, [data])),
+                # ),
+                # (
+                #     # "cv_camera/image_raw",  # for testing
+                #     "video2/image_raw",
+                #     Image,
+                #     lambda data: worker.add_to_queue((cams.display_stream2, [data])),
+                # ),
+                # (
+                #     # "cv_camera/image_raw",  # for testing
+                #     "video3/image_raw",
+                #     Image,
+                #     lambda data: worker.add_to_queue((cams.display_stream3, [data])),
+                # ),
+                # (
+                #     # "cv_camera/image_raw",  # for testing
+                #     "video4/image_raw",
+                #     Image,
+                #     lambda data: worker.add_to_queue((cams.display_stream4, [data])),
+                # ),
             ],  # cams topics
         )
 

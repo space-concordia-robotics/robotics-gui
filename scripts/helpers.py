@@ -1,12 +1,40 @@
 import multiprocessing
-import ros_numpy
 import os
+import rospy
+import ros_numpy
+import threading
 
 from PIL import Image as PILImage
 from sensor_msgs.msg import Image
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Worker(threading.Thread):
+    def __init__(self, threadID: int, name: str):
+        threading.Thread.__init__(self)
+        self.threadID: int = threadID
+        self.name: str = name
+        self.daemon: bool = True  # close with parent
+        self.command_queue = Queue(10)
+
+    def clear_queue(self):
+        self.command_queue.clear()
+
+    def add_to_queue(self, data):
+        self.command_queue.append(data)
+
+    def run(self):
+        queue = self.command_queue.get_list()
+        while not rospy.is_shutdown():
+            try:
+                if queue:
+                    queue[0][0](*queue[0][1]) if queue[0][1] else queue[0][0]()
+                    queue.pop(0)
+                    rospy.sleep(0.01)
+            except:
+                pass
 
 
 class Queue(object):
@@ -40,16 +68,52 @@ class Stream(QtWidgets.QWidget):
         self.counter = 0
         self.frame = None
 
-    def pause_topic(self):
-        print(self.parent)
+        self.topics = {
+            "video1": (
+                "cv_camera/image_raw",  # for testing
+                # "video1/image_raw",
+                Image,
+                self.display,
+            ),
+            "video2": (
+                # "cv_camera/image_raw",  # for testing
+                "video2/image_raw",
+                Image,
+                self.display,
+            ),
+            "video3": (
+                # "cv_camera/image_raw",  # for testing
+                "video3/image_raw",
+                Image,
+                self.display,
+            ),
+            "video4": (
+                # "cv_camera/image_raw",  # for testing
+                "video4/image_raw",
+                Image,
+                self.display,
+            ),
+        }
+
+        self.subscriber: rospy.Subscriber = rospy.Subscriber(
+            *self.topics[tuple(self.topics.keys())[self.id]],  # defaults to the topic corresponding to the ID
+            queue_size=1,
+        )
+
+    def pause_topic(self, checked):
+        if checked:
+            self.subscriber.unregister()
+        else:
+            self.subscriber = rospy.Subscriber(*self.topics[self.topic_dropdown.currentText()], queue_size=1)
 
     def display(self, data: Image):
-        height, width, channel = ros_numpy.numpify(data).shape
-        bytesPerLine = 3 * width
-        self.frame = QtGui.QPixmap(
-            QtGui.QImage(data.data, width, height, bytesPerLine, QtGui.QImage.Format_BGR888)
-        )
-        self.display_screen.setPixmap(self.frame)
+        if data:
+            height, width, channel = ros_numpy.numpify(data).shape
+            bytesPerLine = 3 * width
+            self.frame = QtGui.QPixmap(
+                QtGui.QImage(data.data, width, height, bytesPerLine, QtGui.QImage.Format_BGR888)
+            )
+            self.display_screen.setPixmap(self.frame)
 
     def capture_frame(self):
         image = PILImage.fromqpixmap(self.frame)
@@ -59,6 +123,11 @@ class Stream(QtWidgets.QWidget):
     def change_geometry(self, width, height):
         self.display_screen.setGeometry(QtCore.QRect(self.x, self.y, width, height))
         self.screen_capture_button.setGeometry(self.x + width - 20, self.y, 20, 20)
+
+    def update_topic(self, topic: str):
+        self.subscriber.unregister()
+        self.subscriber = rospy.Subscriber(*self.topics[topic], queue_size=1)
+        self.paused_checkbox.setChecked(False)
 
     def setup(self):
         self.display_screen = QtWidgets.QLabel(self.parent)
@@ -74,15 +143,25 @@ class Stream(QtWidgets.QWidget):
         self.display_screen.setAlignment(QtCore.Qt.AlignCenter)
         self.display_screen.setObjectName("stream_screen")
 
-        self.paused_checkbox = QtWidgets.QCheckBox(self.parent)
-        self.paused_checkbox.setGeometry(QtCore.QRect(self.x, self.y, 20, 20))
+        self.paused_checkbox = QtWidgets.QCheckBox(self.display_screen)
+        self.paused_checkbox.setGeometry(QtCore.QRect(0, 0, 20, 20))
         self.paused_checkbox.setObjectName("paused_checkbox")
-        self.paused_checkbox.clicked.connect(self.pause_topic)
+        self.paused_checkbox.stateChanged.connect(self.pause_topic)
 
-        self.screen_capture_button = QtWidgets.QPushButton(self.parent)
-        self.screen_capture_button.setGeometry(self.x + 7 * self.width / 24 - 20, self.y, 20, 20)
+        self.screen_capture_button = QtWidgets.QPushButton(self.display_screen)
+        self.screen_capture_button.setGeometry(7 * self.width / 24 - 20, 0, 20, 20)
         self.screen_capture_button.setObjectName("screen_capture_button")
         self.screen_capture_button.pressed.connect(self.capture_frame)
+
+        self.topic_dropdown = QtWidgets.QComboBox(self.display_screen)
+        self.topic_dropdown.setGeometry(QtCore.QRect(self.width / 7, 0, 100, 20))
+        self.topic_dropdown.setObjectName("topic_dropdown")
+        self.topic_dropdown.addItem(tuple(self.topics.keys())[0])
+        self.topic_dropdown.addItem(tuple(self.topics.keys())[1])
+        self.topic_dropdown.addItem(tuple(self.topics.keys())[2])
+        self.topic_dropdown.addItem(tuple(self.topics.keys())[3])
+        self.topic_dropdown.currentTextChanged.connect(lambda topic: self.update_topic(topic))
+        self.topic_dropdown.setCurrentIndex(self.id)
 
 
 class Header(QtWidgets.QWidget):
