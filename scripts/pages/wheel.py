@@ -37,7 +37,7 @@ class Wheel(Wheel_Ui):
         self.start_handling_clicks()
 
     def pause_cam_topic(self):
-        self.stream_screen.pause_topic()
+        self.stream_screen.update_topic(self.stream_screen.topic_dropdown.currentText(), not self.isVisible())
 
     def display_stream(self, data):
         self.stream_screen.display(data)

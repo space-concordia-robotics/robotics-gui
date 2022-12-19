@@ -101,12 +101,8 @@ class Stream(QtWidgets.QWidget):
             *self.topics[tuple(self.topics.keys())[self.id]],  # defaults to the topic corresponding to the ID
             queue_size=1,
         )
-
-    def pause_topic(self, checked=None):
-        if checked or not self.isVisible():
+        if not self.parent.objectName() == "wheel":
             self.subscriber.unregister()
-        else:
-            self.subscriber = rospy.Subscriber(*self.topics[self.topic_dropdown.currentText()], queue_size=1)
 
     def display(self, data: Image):
         if data:
@@ -126,10 +122,10 @@ class Stream(QtWidgets.QWidget):
         self.display_screen.setGeometry(QtCore.QRect(self.x, self.y, width, height))
         self.screen_capture_button.setGeometry(self.x + width - 20, self.y, 20, 20)
 
-    def update_topic(self, topic: str):
+    def update_topic(self, topic: str, pause: bool = False):
         self.subscriber.unregister()
-        self.subscriber = rospy.Subscriber(*self.topics[topic], queue_size=1)
-        self.paused_checkbox.setChecked(False)
+        if not pause and not self.paused_checkbox.isChecked():
+            self.subscriber = rospy.Subscriber(*self.topics[topic], queue_size=1)
 
     def setup(self):
         self.display_screen = QtWidgets.QLabel(self.parent)
@@ -151,7 +147,9 @@ class Stream(QtWidgets.QWidget):
         self.paused_checkbox = QtWidgets.QCheckBox(self.display_screen)
         self.paused_checkbox.setGeometry(QtCore.QRect(0, 0, 20, 20))
         self.paused_checkbox.setObjectName("paused_checkbox")
-        self.paused_checkbox.stateChanged.connect(self.pause_topic)
+        self.paused_checkbox.stateChanged.connect(
+            lambda pause: self.update_topic(self.topic_dropdown.currentText(), pause)
+        )
 
         self.screen_capture_button = QtWidgets.QPushButton(self.display_screen)
         self.screen_capture_button.setGeometry(7 * self.width / 24 - 20, 0, 20, 20)
@@ -165,7 +163,7 @@ class Stream(QtWidgets.QWidget):
         self.topic_dropdown.addItem(tuple(self.topics.keys())[1])
         self.topic_dropdown.addItem(tuple(self.topics.keys())[2])
         self.topic_dropdown.addItem(tuple(self.topics.keys())[3])
-        self.topic_dropdown.currentTextChanged.connect(lambda topic: self.update_topic(topic))
+        self.topic_dropdown.currentTextChanged.connect(self.update_topic)
         self.topic_dropdown.setCurrentIndex(self.id)
 
 
@@ -208,7 +206,7 @@ class Header(QtWidgets.QWidget):
             )
         )
         sc_logo.setText(
-            f'<a style="text-decoration: none" href="http://spaceconcordia.ca"><img src="{os.path.join(os.path.dirname(__file__), "../resource/sclogo_header.png")}"/></a>'
+            f'<a style="text-decoration: none" href="http://spaceconcordia.ca"><img src="{os.path.join(os.path.dirname(__file__), "../../resource/sclogo_header.png")}"/></a>'
         )
         sc_logo.setOpenExternalLinks(True)
         sc_logo.setObjectName("sc_logo")

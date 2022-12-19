@@ -1,4 +1,3 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 
@@ -14,10 +13,10 @@ class Cams(Cams_Ui):
         self.start_handling_clicks()
 
     def pause_cam_topic(self):
-        self.cam1_stream.pause_topic()
-        self.cam2_stream.pause_topic()
-        self.cam3_stream.pause_topic()
-        self.cam4_stream.pause_topic()
+        self.cam1_stream.update_topic(self.cam1_stream.topic_dropdown.currentText(), not self.isVisible())
+        self.cam2_stream.update_topic(self.cam2_stream.topic_dropdown.currentText(), not self.isVisible())
+        self.cam3_stream.update_topic(self.cam3_stream.topic_dropdown.currentText(), not self.isVisible())
+        self.cam4_stream.update_topic(self.cam4_stream.topic_dropdown.currentText(), not self.isVisible())
 
     def display_stream1(self, data: Image):
         self.cam1_stream.display(data)
