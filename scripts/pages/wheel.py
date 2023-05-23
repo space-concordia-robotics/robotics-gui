@@ -33,10 +33,9 @@ class Wheel(Wheel_Ui):
             "I": "'decrease throttle value'\n",
         }
 
-        self.setObjectName("wheel")
         self.start_handling_clicks()
 
-    def pause_cam_topic(self):
+    def update_cam_topic(self):
         self.stream_screen.update_topic(self.stream_screen.topic_dropdown.currentText(), not self.isVisible())
 
     def display_stream(self, data):
@@ -73,7 +72,7 @@ class Wheel(Wheel_Ui):
         print("Pinging Rover in MCU")
 
     def polarize_coords(self, coordinates: "list[float]") -> "tuple[float]":
-        temp = [coordinates[i] + coordinates[i + 2] for i in range(int(len(coordinates) / 2))]
+        temp = [coordinates[i] - coordinates[i + 2] for i in range(int(len(coordinates) / 2))]
         magnitude = 0.0
         angle = 0.0
 

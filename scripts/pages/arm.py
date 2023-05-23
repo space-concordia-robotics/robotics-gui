@@ -33,10 +33,9 @@ class Arm(Arm_Ui):
             "Keys 's' to 'j'": "'move motors 1-6 backwards'\n",
         }
 
-        self.setObjectName("arm")
         self.start_handling_clicks()
 
-    def pause_cam_topic(self):
+    def update_cam_topic(self):
         self.stream_screen.update_topic(self.stream_screen.topic_dropdown.currentText(), not self.isVisible())
 
     def reset_speeds(self):
@@ -73,7 +72,7 @@ class Arm(Arm_Ui):
         print("Pinging Arm in MCU")
 
     def send_speeds(self):
-        temp = [self.speeds[i] + self.speeds[i + 6] for i in range(int(len(self.speeds) / 2))]
+        temp = [self.speeds[i] - self.speeds[i + 6] for i in range(int(len(self.speeds) / 2))]
         self.publisher.publish("set_motor_speeds " + " ".join([str(num) for num in temp]))
 
     def list_commands(self):

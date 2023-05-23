@@ -6,13 +6,12 @@ from sensor_msgs.msg import Image
 
 
 class Cams(Cams_Ui):
-    def __init__(self, width: float, height: float, MainWindow=None):
-        super().__init__(width=width, height=height, parent=self, MainWindow=MainWindow)
+    def __init__(self, width: float, height: float):
+        super().__init__(width=width, height=height, parent=self)
 
-        self.setObjectName("cams")
         self.start_handling_clicks()
 
-    def pause_cam_topic(self):
+    def update_cam_topic(self):
         self.cam1_stream.update_topic(self.cam1_stream.topic_dropdown.currentText(), not self.isVisible())
         self.cam2_stream.update_topic(self.cam2_stream.topic_dropdown.currentText(), not self.isVisible())
         self.cam3_stream.update_topic(self.cam3_stream.topic_dropdown.currentText(), not self.isVisible())
@@ -38,7 +37,7 @@ class Cams(Cams_Ui):
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for
-        the Rover Controller Page"""
+        the Rover Cams Page"""
 
         self.screen_capture_sequence = QShortcut(QKeySequence("Ctrl+S"), self)
         self.screen_capture_sequence.activated.connect(self.capture_all_screens)

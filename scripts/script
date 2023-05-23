@@ -12,6 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from std_msgs.msg import String
 
 from pages.arm import Arm
+from pages.autonomy import Autonomy
 from pages.cams import Cams
 from pages.pds import Pds
 from pages.science import Science
@@ -59,6 +60,7 @@ class Ros_thread(threading.Thread):
             ],  # pds topics
             [],  # science topics
             [],  # cams topics
+            [],  # autonomy topics
         )
 
     def handle_tab_change(self, page_index: int):
@@ -129,25 +131,23 @@ class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
         if self.tab_name == "wheel" and not wheel.log_browser.line_edit.hasFocus():
             keys = ["d", "w", "a", "s"]
             if key in keys:
-                self.pressed_keys.append(key)
+                if not key in self.pressed_keys:
+                    self.pressed_keys.append(key)
                 wheel.set_page_buttons(False)
-                for i in range(int(len(keys) / 2)):
+                for i in range(int(len(keys))):
                     if key == keys[i]:
                         wheel.velocity[i] = wheel.throttle
-                    elif key == keys[i + int(len(keys) / 2)]:
-                        wheel.velocity[i + int(len(keys) / 2)] = -wheel.throttle
                 wheel.send_velocity()
         elif self.tab_name == "arm" and not arm.log_browser.line_edit.hasFocus():
             keys = ["w", "e", "r", "t", "y", "u", "s", "d", "f", "g", "h", "j"]
             if key in keys:
-                self.pressed_keys.append(key)
+                if not key in self.pressed_keys:
+                    self.pressed_keys.append(key)
                 arm.manual_controls_button.setChecked(True)
                 arm.set_page_buttons(False)
-                for i in range(int(len(keys) / 2)):
+                for i in range(int(len(keys))):
                     if key == keys[i]:
                         arm.speeds[i] = arm.speed_multiplier * 50  # mapped to between -250 and 250
-                    elif key == keys[i + int(len(keys) / 2)]:
-                        arm.speeds[i + int(len(keys) / 2)] = arm.speed_multiplier * -50
                 arm.send_speeds()
 
         return super().keyPressEvent(event)
@@ -248,8 +248,8 @@ if __name__ == "__main__":
     cams = Cams(
         width,
         height,
-        MainWindow,
     )
+    autonomy = Autonomy(width, height, rospy.Publisher("/autonomy_handler", String, queue_size=10))
 
     layout = QtWidgets.QWidget()
     scroll_area.setWidget(layout)
@@ -264,13 +264,15 @@ if __name__ == "__main__":
     tab_widget.addTab(pds, "PDS")
     tab_widget.addTab(science, "Science")
     tab_widget.addTab(cams, "Cams")
+    tab_widget.addTab(autonomy, "Autonomy")
 
     ros_thread = Ros_thread(2, "ros-thread")
     tab_widget.currentChanged.connect(ros_thread.handle_tab_change)
 
-    tab_widget.currentChanged.connect(wheel.pause_cam_topic)
-    tab_widget.currentChanged.connect(arm.pause_cam_topic)
-    tab_widget.currentChanged.connect(cams.pause_cam_topic)
+    tab_widget.currentChanged.connect(wheel.update_cam_topic)
+    tab_widget.currentChanged.connect(arm.update_cam_topic)
+    tab_widget.currentChanged.connect(cams.update_cam_topic)
+    tab_widget.currentChanged.connect(autonomy.update_cam_topic)
 
     MainWindow.setWindowTitle("Rover Controller")
     MainWindow.show()

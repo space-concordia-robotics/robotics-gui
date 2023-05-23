@@ -22,7 +22,6 @@ class Pds(Pds_Ui):
             "L": "'view key commands'\n",
         }
 
-        self.setObjectName("pds")
         self.start_handling_clicks()
 
     def toggle_auto_mode(self, state: bool):
