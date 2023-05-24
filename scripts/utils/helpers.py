@@ -145,14 +145,16 @@ class Stream(QtWidgets.QWidget):
         )
 
         self.paused_checkbox = QtWidgets.QCheckBox(self.display_screen)
-        self.paused_checkbox.setGeometry(QtCore.QRect(0, 0, 20, 20))
+        self.paused_checkbox.setText("Paused")
+        self.paused_checkbox.setGeometry(QtCore.QRect(2, 0, 70, 20))
         self.paused_checkbox.setObjectName("paused_checkbox")
         self.paused_checkbox.stateChanged.connect(
             lambda pause: self.update_topic(self.topic_dropdown.currentText(), pause)
         )
 
         self.screen_capture_button = QtWidgets.QPushButton(self.display_screen)
-        self.screen_capture_button.setGeometry(7 * self.width / 24 - 20, 0, 20, 20)
+        self.screen_capture_button.setText("Capture")
+        self.screen_capture_button.setGeometry(7 * self.width / 24 - 60 - 2, 0, 60, 20)
         self.screen_capture_button.setObjectName("screen_capture_button")
         self.screen_capture_button.pressed.connect(self.capture_frame)
 
