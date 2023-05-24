@@ -22,7 +22,6 @@ class Science(Science_Ui):
         self.commands = {"test": "'test'"}
         self.current_vial = 1
 
-        self.setObjectName("science")
         self.start_handling_clicks()
         self.vial1.setChecked(True)
 

@@ -59,7 +59,9 @@ class Queue(object):
 
 
 class Stream(QtWidgets.QWidget):
-    def __init__(self, id: int, width: float, height: float, parent: QtWidgets.QWidget = None, x=0, y=0):
+    def __init__(
+        self, id: int, width: float, height: float, parent: QtWidgets.QWidget = None, x=0, y=0, topic=None
+    ):
         super().__init__(parent=parent)
         self.id = id
         self.width = width
@@ -70,36 +72,30 @@ class Stream(QtWidgets.QWidget):
         self.counter = 0
         self.frame = None
 
-        self.topics = {
-            "video1": (
-                "cv_camera/image_raw",  # for testing
-                # "video1/image_raw",
-                Image,
-                self.display,
-            ),
-            "video2": (
-                # "cv_camera/image_raw",  # for testing
-                "video2/image_raw",
-                Image,
-                self.display,
-            ),
-            "video3": (
-                # "cv_camera/image_raw",  # for testing
-                "video3/image_raw",
-                Image,
-                self.display,
-            ),
-            "video4": (
-                # "cv_camera/image_raw",  # for testing
-                "video4/image_raw",
-                Image,
-                self.display,
-            ),
-        }
+        self.topics = (
+            {
+                "video1": "cv_camera/image_raw"  # for testing
+                # "video1/image_raw"
+                ,
+                "video2": "video2/image_raw"
+                # "cv_camera/image_raw"  # for testing
+                ,
+                "video3": "video3/image_raw"
+                # "cv_camera/image_raw"  # for testing
+                ,
+                "video4": "video4/image_raw"
+                # "cv_camera/image_raw"  # for testing
+                ,
+            }
+            if not topic
+            else {"ARViz": topic}
+        )
 
         self.subscriber: rospy.Subscriber = rospy.Subscriber(
-            *self.topics[tuple(self.topics.keys())[self.id]],  # defaults to the topic corresponding to the ID
-            queue_size=1,
+            self.topics[tuple(self.topics.keys())[self.id]],  # defaults to the topic corresponding to the ID
+            Image,
+            self.display,
+            queue_size=50,
         )
         if not self.parent.objectName() == "wheel":
             self.subscriber.unregister()
@@ -120,12 +116,12 @@ class Stream(QtWidgets.QWidget):
 
     def change_geometry(self, width, height):
         self.display_screen.setGeometry(QtCore.QRect(self.x, self.y, width, height))
-        self.screen_capture_button.setGeometry(self.x + width - 20, self.y, 20, 20)
+        self.screen_capture_button.setGeometry(width - 20, 0, 20, 20)
 
     def update_topic(self, topic: str, pause: bool = False):
         self.subscriber.unregister()
         if not pause and not self.paused_checkbox.isChecked():
-            self.subscriber = rospy.Subscriber(*self.topics[topic], queue_size=1)
+            self.subscriber = rospy.Subscriber(self.topics[topic], Image, self.display, queue_size=None)
 
     def setup(self):
         self.display_screen = QtWidgets.QLabel(self.parent)
@@ -143,6 +139,8 @@ class Stream(QtWidgets.QWidget):
         self.display_screen.mouseDoubleClickEvent = lambda _: self.paused_checkbox.setChecked(
             not self.paused_checkbox.isChecked()
         )
+        self.display_screen.setText("Image unavailable")
+        self.display_screen.setFont(QtGui.QFont("Sans serif", 16))
 
         self.paused_checkbox = QtWidgets.QCheckBox(self.display_screen)
         self.paused_checkbox.setText("Paused")
@@ -161,10 +159,8 @@ class Stream(QtWidgets.QWidget):
         self.topic_dropdown = QtWidgets.QComboBox(self.display_screen)
         self.topic_dropdown.setGeometry(QtCore.QRect(self.width / 7, 0, 100, 20))
         self.topic_dropdown.setObjectName("topic_dropdown")
-        self.topic_dropdown.addItem(tuple(self.topics.keys())[0])
-        self.topic_dropdown.addItem(tuple(self.topics.keys())[1])
-        self.topic_dropdown.addItem(tuple(self.topics.keys())[2])
-        self.topic_dropdown.addItem(tuple(self.topics.keys())[3])
+        for key in tuple(self.topics.keys()):
+            self.topic_dropdown.addItem(key)
         self.topic_dropdown.currentTextChanged.connect(self.update_topic)
         self.topic_dropdown.setCurrentIndex(self.id)
 
@@ -291,8 +287,8 @@ class Header(QtWidgets.QWidget):
         self.run_joy_comms_button.clicked.connect(self.run_joy_comms)
 
         temp_logo.setPixmap(
-            QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/therm_icon.png"))
+            QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../../resource/therm_icon.png"))
         )
         battery_logo.setPixmap(
-            QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../resource/battery_icon.png"))
+            QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../../resource/battery_icon.png"))
         )
