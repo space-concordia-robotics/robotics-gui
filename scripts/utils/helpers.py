@@ -7,7 +7,7 @@ import threading
 from PIL import Image as PILImage
 from sensor_msgs.msg import Image
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
-from mcu_control.msg._Voltage import Voltage
+#from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -188,9 +188,9 @@ class Header(QtWidgets.QWidget):
         self.temp2_label.setText(f"{self.temps[1]} {degree}C")
         self.temp3_label.setText(f"{self.temps[2]} {degree}C")
 
-    def update_voltage(self, data: Voltage):
-        self.voltage = data.data
-        self.voltage_label.setText(f"{self.voltage} V")
+    #def update_voltage(self, data: Voltage):
+    #    self.voltage = data.data
+    #    self.voltage_label.setText(f"{self.voltage} V")
 
     def setup(self):
         sc_logo = QtWidgets.QLabel(self.parent)
