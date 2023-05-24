@@ -12,7 +12,7 @@ from PyQt5 import QtWidgets
 
 
 class Cams_Ui(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent=None, MainWindow=None):
+    def __init__(self, width: float, height: float, parent=None):
         super().__init__()
         self.width = width
         self.height = height
@@ -23,13 +23,13 @@ class Cams_Ui(QtWidgets.QWidget):
 
     def setupUi(self):
         self.cam1_stream = Stream(
-            0, self.width, self.height, self.parent, 0.01 * self.width, 0.01 * self.height
+            0, self.width, self.height, self.parent, 0.05 * self.width, 0.01 * self.height
         )
         self.cam1_stream.setup()
         self.cam2_stream = Stream(1, self.width, self.height, self.parent, self.width / 2, 0.01 * self.height)
         self.cam2_stream.setup()
         self.cam3_stream = Stream(
-            2, self.width, self.height, self.parent, 0.01 * self.width, self.height / 2.2
+            2, self.width, self.height, self.parent, 0.05 * self.width, self.height / 2.2
         )
         self.cam3_stream.setup()
         self.cam4_stream = Stream(3, self.width, self.height, self.parent, self.width / 2, self.height / 2.2)

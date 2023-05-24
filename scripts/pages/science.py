@@ -14,7 +14,6 @@ class Science(Science_Ui):
         self.vials = {}  # template: ( [ number, status, CCD, Ramen ] )
         self.commands = {"test": "'test'"}
 
-        self.setObjectName("science")
         self.start_handling_clicks()
 
     def estop(self):
