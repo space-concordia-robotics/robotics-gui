@@ -3,3 +3,4 @@ rospy
 pyyaml
 rospkg
 pillow
+ffmpeg-python
