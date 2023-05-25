@@ -16,7 +16,7 @@ class Log_browser(QtWidgets.QWidget):
     def execute_command(self, command: str) -> String:
         """Sends the passed function to the ROS publisher and returns a string"""
 
-        message = command.upper()
+        message = command.lower()
 
         self.publisher.publish(message)
         rospy.loginfo(message)
