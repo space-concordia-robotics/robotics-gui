@@ -186,18 +186,14 @@ class Header(QtWidgets.QWidget):
         )
         self.temps = (0, 0, 0)
         self.voltage = 0
-        self.basestation.start()
 
     def run_joy_comms(self):
-        pass
-        # self.basestation.terminate()
-        # if not self.basestation_started:
-        #     # self.run_joy_comms_button.setEnabled(False)
-        #     # self.run_joy_comms_button.setStyleSheet("background-color: black")
-        #     self.basestation_started = True
-        # else:
-        #     self.basestation.terminate()
-        #     self.basestation_started = False
+        if not self.basestation_started:
+            self.basestation.start()
+            self.basestation_started = True
+        else:
+            self.basestation.terminate()
+            self.basestation_started = False
 
     def update_temps(self, data: ThermistorTemps):
         degree = "\N{DEGREE SIGN}"
