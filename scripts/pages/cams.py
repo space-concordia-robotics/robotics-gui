@@ -2,7 +2,7 @@ from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 
 from ui.cams_ui import Cams_Ui
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
 
 
 class Cams(Cams_Ui):
@@ -17,16 +17,16 @@ class Cams(Cams_Ui):
         self.cam3_stream.update_topic(self.cam3_stream.topic_dropdown.currentText(), not self.isVisible())
         self.cam4_stream.update_topic(self.cam4_stream.topic_dropdown.currentText(), not self.isVisible())
 
-    def display_stream1(self, data: Image):
+    def display_stream1(self, data: CompressedImage):
         self.cam1_stream.display(data)
 
-    def display_stream2(self, data: Image):
+    def display_stream2(self, data: CompressedImage):
         self.cam2_stream.display(data)
 
-    def display_stream3(self, data: Image):
+    def display_stream3(self, data: CompressedImage):
         self.cam3_stream.display(data)
 
-    def display_stream4(self, data: Image):
+    def display_stream4(self, data: CompressedImage):
         self.cam4_stream.display(data)
 
     def capture_all_screens(self):
