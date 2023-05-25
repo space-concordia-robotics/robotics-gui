@@ -61,15 +61,15 @@ class Arm(Arm_Ui):
 
     def estop(self):
         self.pds_publisher.publish("estop 1 0")
-        print("Stopping all arm motors")
+        self.log_browser.log_message("Stopping all arm motors")
 
     def enable_motors(self):
         self.pds_publisher.publish("enable_motors 1 0")
-        print("Enabling all arm motors")
+        self.log_browser.log_message("Enabling all arm motors")
 
     def ping(self):
         self.publisher.publish("ping")
-        print("Pinging Arm in MCU")
+        self.log_browser.log_message("Pinging Arm in MCU")
 
     def send_speeds(self):
         temp = [self.speeds[i] - self.speeds[i + 6] for i in range(int(len(self.speeds) / 2))]
@@ -88,7 +88,7 @@ class Arm(Arm_Ui):
 
     def reset_angles(self):
         self.publisher.publish("reset_angles")
-        print("reset angles")
+        self.log_browser.log_message("resetting angles")
 
     def send_speed_multiplier(self):
         self.speed_multiplier = self.speed_multiplier_input.value()

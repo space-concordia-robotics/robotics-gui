@@ -58,18 +58,19 @@ class Wheel(Wheel_Ui):
 
     def toggle_led(self, state):
         self.publisher.publish(f"blink_toggle {1 if state else 0}")
+        self.log_browser.log_message(f"turning led lights {'on' if state else 'off'}")
 
     def estop(self):
         self.pds_publisher.publish("estop 0 1")
-        print("Stopping all rover wheel motors")
+        self.log_browser.log_message("Stopping all rover wheel motors")
 
     def enable_motors(self):
         self.pds_publisher.publish("enable_motors 0 1")
-        print("Enabling all rover wheel motors")
+        self.log_browser.log_message("Enabling all rover wheel motors")
 
     def ping(self):
         self.publisher.publish("ping")
-        print("Pinging Rover in MCU")
+        self.log_browser.log_message("Pinging Rover in MCU")
 
     def polarize_coords(self, coordinates: "list[float]") -> "tuple[float]":
         temp = [coordinates[i] - coordinates[i + 2] for i in range(int(len(coordinates) / 2))]

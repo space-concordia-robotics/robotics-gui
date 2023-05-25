@@ -20,44 +20,68 @@ class Science_Ui(QtWidgets.QWidget):
         self.height = height
         self.parent = parent
         self.publisher = publisher
+        self.topic = ["Carousel", "cv_camera/image_raw"]
 
         self.setObjectName("science")
         self.setupUi()
 
     def setupUi(self):
-        self.stream = Stream(0, self.width, self.height, self.parent, 0.01 * self.width, self.height / 2.4)
-        self.stream.setup()
+        self.stream_screen = Stream(
+            0,
+            self.width,
+            self.height,
+            self.parent,
+            self.width / 48,
+            self.height / 2.6,
+            topic=self.topic,
+        )
+        self.stream_screen.setup()
 
         self.log_browser = Log_browser(self.width, self.height, self.publisher, self.parent)
         self.log_browser.setup()
 
         self.list_commands_button = QtWidgets.QPushButton(self.parent)
-        self.list_commands_button.setGeometry(QtCore.QRect(1140, 810, 131, 81))
+        self.list_commands_button.setGeometry(
+            QtCore.QRect(self.width * 0.594, self.height * 0.75, self.width * 0.068, self.height * 0.075)
+        )
         self.list_commands_button.setObjectName("list_commands_button")
         self.stop_button = QtWidgets.QPushButton(self.parent)
-        self.stop_button.setGeometry(QtCore.QRect(1360, 810, 131, 81))
+        self.stop_button.setGeometry(
+            QtCore.QRect(self.width * 0.71, self.height * 0.75, self.width * 0.068, self.height * 0.075)
+        )
         self.stop_button.setObjectName("stop_button")
-        self.collect_analyse_button = QtWidgets.QPushButton(self.parent)
-        self.collect_analyse_button.setGeometry(QtCore.QRect(1580, 810, 131, 81))
-        self.collect_analyse_button.setObjectName("collect_analyse_button")
+        self.stop_button.setStyleSheet("background-color: red")
+        self.spin_mix_button = QtWidgets.QPushButton(self.parent)
+        self.spin_mix_button.setGeometry(
+            QtCore.QRect(self.width * 0.82, self.height * 0.75, self.width * 0.068, self.height * 0.075)
+        )
+        self.spin_mix_button.setObjectName("spin_mix_button")
         self.science_table_frame = QtWidgets.QFrame(self.parent)
-        self.science_table_frame.setGeometry(QtCore.QRect(1110, 50, 631, 691))
+        self.science_table_frame.setGeometry(
+            QtCore.QRect(self.width * 0.578, self.height * 0.046, self.width * 0.33, self.height * 0.64)
+        )
         self.science_table_frame.setStyleSheet("")
         self.science_table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.science_table_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.science_table_frame.setObjectName("science_table_frame")
         self.science_table_title = QtWidgets.QLabel(self.science_table_frame)
-        self.science_table_title.setGeometry(QtCore.QRect(10, 10, 611, 23))
+        self.science_table_title.setGeometry(
+            QtCore.QRect(self.width / 192, self.height / 108, self.width * 0.318, self.height * 0.021)
+        )
         font = QtGui.QFont()
-        font.setPointSize(15)
+        font.setPointSize(self.width / 128)
         self.science_table_title.setFont(font)
         self.science_table_title.setAlignment(QtCore.Qt.AlignCenter)
         self.science_table_title.setObjectName("science_table_title")
         self.widget = QtWidgets.QWidget(self.science_table_frame)
-        self.widget.setGeometry(QtCore.QRect(20, 140, 581, 471))
+        self.widget.setGeometry(
+            QtCore.QRect(self.width / 96, self.height / 7.71, self.width * 0.3, self.height / 2.298)
+        )
         self.widget.setObjectName("widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget)
-        self.horizontalLayout.setContentsMargins(11, 11, 11, 11)
+        self.horizontalLayout.setContentsMargins(
+            self.width / 174.54, self.height / 98.18, self.width / 174.54, self.height / 98.18
+        )
         self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
@@ -186,10 +210,14 @@ class Science_Ui(QtWidgets.QWidget):
         self.verticalLayout_4.addWidget(self.vial6_ramen_result)
         self.horizontalLayout.addLayout(self.verticalLayout_4)
         self.widget1 = QtWidgets.QWidget(self.science_table_frame)
-        self.widget1.setGeometry(QtCore.QRect(20, 630, 581, 51))
+        self.widget1.setGeometry(
+            QtCore.QRect(self.width / 96, self.height / 1.71, self.width / 3.31, self.height / 21.6)
+        )
         self.widget1.setObjectName("widget1")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget1)
-        self.horizontalLayout_2.setContentsMargins(11, 11, 11, 11)
+        self.horizontalLayout_2.setContentsMargins(
+            self.width / 174.54, self.height / 98.18, self.width / 174.54, self.height / 98.18
+        )
         self.horizontalLayout_2.setSpacing(6)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.total_used_vials = QtWidgets.QLabel(self.widget1)
@@ -207,10 +235,14 @@ class Science_Ui(QtWidgets.QWidget):
         self.used_vials.setObjectName("used_vials")
         self.horizontalLayout_2.addWidget(self.used_vials)
         self.widget2 = QtWidgets.QWidget(self.science_table_frame)
-        self.widget2.setGeometry(QtCore.QRect(20, 50, 581, 71))
+        self.widget2.setGeometry(
+            QtCore.QRect(self.width / 96, self.height / 21.6, self.width / 3.31, self.height / 15.43)
+        )
         self.widget2.setObjectName("widget2")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.widget2)
-        self.horizontalLayout_3.setContentsMargins(11, 11, 11, 11)
+        self.horizontalLayout_3.setContentsMargins(
+            self.width / 174.54, self.height / 98.18, self.width / 174.54, self.height / 98.18
+        )
         self.horizontalLayout_3.setSpacing(6)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.science_status_title_2 = QtWidgets.QLabel(self.widget2)
@@ -248,15 +280,54 @@ class Science_Ui(QtWidgets.QWidget):
         self.ramen_test_result_title.setObjectName("ramen_test_result_title")
         self.horizontalLayout_3.addWidget(self.ramen_test_result_title)
 
+        self.next_vial_button = QtWidgets.QPushButton(self.parent)
+        self.previous_vial_button = QtWidgets.QPushButton(self.parent)
+
+        self.next_vial_button.setObjectName("next_vial_button")
+        self.previous_vial_button.setObjectName("previous_vial_button")
+
+        self.next_vial_button.setText("Next Vial")
+        self.previous_vial_button.setText("Previous Vial")
+        self.next_vial_button.setGeometry(
+            self.width / 1.35, self.height / 1.45, self.width / 19.2, self.height / 21.6
+        )
+        self.previous_vial_button.setGeometry(
+            self.width / 1.455, self.height / 1.45, self.width / 19.2, self.height / 21.6
+        )
+
+        self.servo_angle_input = QtWidgets.QDoubleSpinBox(self.parent)
+        self.servo_angle_input.setGeometry(
+            QtCore.QRect(self.width / 2.13, self.height / 4.696, self.width / 27.43, self.height / 43.2)
+        )
+        self.servo_angle_input.setDecimals(1)
+        self.servo_angle_input.setMaximum(360.0)
+        self.servo_angle_input.setSingleStep(10.0)
+        self.servo_angle_input.setObjectName("servo_angle_input")
+        self.servo_angle_label = QtWidgets.QLabel(self.parent)
+        self.servo_angle_label.setGeometry(
+            QtCore.QRect(self.width / 2.06, self.height / 5.4, self.width / 21.33, self.height / 63.53)
+        )
+        self.servo_angle_label.setObjectName("label")
+        self.set_servo_angle_button = QtWidgets.QPushButton(self.parent)
+        self.set_servo_angle_button.setGeometry(
+            QtCore.QRect(self.width / 1.959, self.height / 4.696, self.width / 32, self.height / 43.2)
+        )
+        self.set_servo_angle_button.setObjectName("pushButton")
+
+        self.get_status_button = QtWidgets.QPushButton(self.parent)
+        self.get_status_button.setText("Get Status")
+        self.get_status_button.setObjectName("get_status_button")
+        self.get_status_button.setGeometry(
+            QtCore.QRect(self.width / 2.13, self.height / 3, self.width * 0.068, self.height * 0.075)
+        )
+
         self.retranslateUi()
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.list_commands_button.setText(_translate("MainWindow", "List Commands\n" "(L)"))
-        self.stop_button.setText(_translate("MainWindow", "STOP (Q)"))
-        self.collect_analyse_button.setText(
-            _translate("MainWindow", "Collect and\n" " Analyse next\n" "sample (C)")
-        )
+        self.stop_button.setText(_translate("MainWindow", "STOP (Space)"))
+        self.spin_mix_button.setText(_translate("MainWindow", "Spin Mix (S)"))
         self.science_table_title.setText(_translate("MainWindow", "Science Table"))
         self.vial1.setText(_translate("MainWindow", "#1"))
         self.vial2.setText(_translate("MainWindow", "#2"))
@@ -284,6 +355,10 @@ class Science_Ui(QtWidgets.QWidget):
         self.vial6_ramen_result.setText(_translate("MainWindow", "-"))
         self.total_used_vials.setText(_translate("MainWindow", "Total Vials Used"))
         self.used_vials.setText(_translate("MainWindow", "0"))
+
+        self.servo_angle_label.setText(_translate("MainWindow", "Servo Angle"))
+        self.set_servo_angle_button.setText(_translate("MainWindow", "Set"))
+
         self.science_status_title_2.setText(
             _translate("MainWindow", '<html><head/><body><p align="center">Vial Selection</p></body></html>')
         )

@@ -17,7 +17,7 @@ class Autonomy_Ui(QtWidgets.QWidget):
         self.width = width
         self.height = height
         self.parent = parent
-        self.topic = "/video0/ARViz"
+        self.topic = ["ARViz", "/video0/ARViz"]
 
         self.setObjectName("autonomy")
         self.setupUi()

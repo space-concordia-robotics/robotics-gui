@@ -1,4 +1,3 @@
-# The Science controls are still undergoing changes so no work will be done to this page and its ui until these changes are completed
 import rospy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -10,7 +9,8 @@ class Science(Science_Ui):
     def __init__(self, width: float, height: float, publisher: rospy.Publisher, MainWindow=None):
         super().__init__(width=width, height=height, publisher=publisher, parent=self, MainWindow=MainWindow)
         self.publisher = publisher
-        self.used_vials = 0
+        self.used_vials: int = 0
+        self.current_vial: int = 1
         self.vials = [
             [1, False, None, None],
             [2, False, None, None],
@@ -19,15 +19,20 @@ class Science(Science_Ui):
             [5, False, None, None],
             [6, False, None, None],
         ]  # template: ( [ number, used (True / False), CCD, Ramen ] )
-        self.commands = {"test": "'test'"}
-        self.current_vial = 1
+        self.commands = {
+            "S": "'spin mix'",
+            "L": "'view key commands'",
+            "Space": "'estop'",
+            "Ctrl-S": "'screen capture'",
+            "Keys '1' to '6'": "'Set current vial'\n",
+        }
 
         self.start_handling_clicks()
         self.vial1.setChecked(True)
 
     def estop(self):
         self.publisher.publish("estop")
-        print("Stopping all science motors")
+        self.log_browser.log_message("Estop Science")
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
@@ -36,13 +41,43 @@ class Science(Science_Ui):
         for command in self.commands:
             self.log_browser.append_to_browser(f"'{command}': {self.commands[command]}")
 
-    def collect_analyse(self):
-        self.publisher.publish("collect_analyse")
-        print("Collect and analyse next sample")
+    def spin_mix(self):
+        self.publisher.publish("spin_mix")
+        self.log_browser.log_message("Mixing Sample")
 
-    def setCurrentVial(self, i):
+    def set_current_vial(self, i: int):
+        if self.current_vial == i:
+            return
         self.current_vial = i
-        print(self.current_vial)
+        self.publisher.publish(f"go_to_test_tube {self.current_vial}")
+        self.log_browser.log_message(f"setting current vial to {self.current_vial}")
+
+    def next_vial(self):
+        if self.current_vial == 6:
+            self.log_browser.append_to_browser("Unable to go to next vial")
+            return
+        self.publisher.publish("next_test_tube")
+        self.current_vial += 1
+        exec(f"self.vial{self.current_vial}.click()")
+        self.log_browser.log_message("next vial")
+
+    def previous_vial(self):
+        if self.current_vial == 1:
+            self.log_browser.append_to_browser("Unable to go to previous vial")
+            return
+        self.publisher.publish("previous_test_tube")
+        self.current_vial -= 1
+        exec(f"self.vial{self.current_vial}.click()")
+        self.log_browser.log_message("previous vial")
+
+    def set_servo_angle(self):
+        self.angle = self.servo_angle_input.value()
+        self.publisher.publish(f"set_servo_angle {self.angle}")
+        self.log_browser.log_message(f"Setting servo angle to {self.angle} degrees")
+
+    def get_status(self):
+        self.publisher.publish("get_status")
+        self.log_browser.log_message("getting status")
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for
@@ -50,7 +85,7 @@ class Science(Science_Ui):
 
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(self.estop)
-        self.collect_analyse_button.clicked.connect(self.collect_analyse)
+        self.spin_mix_button.clicked.connect(self.spin_mix)
 
         self.emergency_stop_sequence = QShortcut(QKeySequence("Space"), self)
         self.emergency_stop_sequence.activated.connect(self.estop)
@@ -58,23 +93,34 @@ class Science(Science_Ui):
         self.list_commands_sequence = QShortcut(Qt.Key_L, self)
         self.list_commands_sequence.activated.connect(self.list_commands)
 
-        self.vial1.toggled.connect(lambda: self.setCurrentVial(1))
-        self.vial2.toggled.connect(lambda: self.setCurrentVial(2))
-        self.vial3.toggled.connect(lambda: self.setCurrentVial(3))
-        self.vial4.toggled.connect(lambda: self.setCurrentVial(4))
-        self.vial5.toggled.connect(lambda: self.setCurrentVial(5))
-        self.vial6.toggled.connect(lambda: self.setCurrentVial(6))
+        self.spin_mix_sequence = QShortcut(Qt.Key_S, self)
+        self.spin_mix_sequence.activated.connect(self.spin_mix)
 
-        self.vial1_shortcut = QShortcut(QKeySequence("1"), self)
-        self.vial2_shortcut = QShortcut(QKeySequence("2"), self)
-        self.vial3_shortcut = QShortcut(QKeySequence("3"), self)
-        self.vial4_shortcut = QShortcut(QKeySequence("4"), self)
-        self.vial5_shortcut = QShortcut(QKeySequence("5"), self)
-        self.vial6_shortcut = QShortcut(QKeySequence("6"), self)
+        self.screen_capture_sequence = QShortcut(QKeySequence("Ctrl+S"), self)
+        self.screen_capture_sequence.activated.connect(self.stream_screen.capture_frame)
 
-        self.vial1_shortcut.activated.connect(self.vial1.toggle)
-        self.vial2_shortcut.activated.connect(self.vial2.toggle)
-        self.vial3_shortcut.activated.connect(self.vial3.toggle)
-        self.vial4_shortcut.activated.connect(self.vial4.toggle)
-        self.vial5_shortcut.activated.connect(self.vial5.toggle)
-        self.vial6_shortcut.activated.connect(self.vial6.toggle)
+        self.vial1.clicked.connect(lambda: self.set_current_vial(1))
+        self.vial2.clicked.connect(lambda: self.set_current_vial(2))
+        self.vial3.clicked.connect(lambda: self.set_current_vial(3))
+        self.vial4.clicked.connect(lambda: self.set_current_vial(4))
+        self.vial5.clicked.connect(lambda: self.set_current_vial(5))
+        self.vial6.clicked.connect(lambda: self.set_current_vial(6))
+
+        self.vial1_shortcut = QShortcut(Qt.Key_1, self)
+        self.vial2_shortcut = QShortcut(Qt.Key_2, self)
+        self.vial3_shortcut = QShortcut(Qt.Key_3, self)
+        self.vial4_shortcut = QShortcut(Qt.Key_4, self)
+        self.vial5_shortcut = QShortcut(Qt.Key_5, self)
+        self.vial6_shortcut = QShortcut(Qt.Key_6, self)
+
+        self.vial1_shortcut.activated.connect(self.vial1.click)
+        self.vial2_shortcut.activated.connect(self.vial2.click)
+        self.vial3_shortcut.activated.connect(self.vial3.click)
+        self.vial4_shortcut.activated.connect(self.vial4.click)
+        self.vial5_shortcut.activated.connect(self.vial5.click)
+        self.vial6_shortcut.activated.connect(self.vial6.click)
+
+        self.next_vial_button.clicked.connect(self.next_vial)
+        self.previous_vial_button.clicked.connect(self.previous_vial)
+        self.set_servo_angle_button.clicked.connect(self.set_servo_angle)
+        self.get_status_button.clicked.connect(self.get_status)
