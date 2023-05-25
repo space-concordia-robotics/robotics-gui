@@ -2,10 +2,11 @@ import multiprocessing
 import os
 import rospy
 import ros_numpy
+from cv_bridge import CvBridge
 import threading
 
 from PIL import Image as PILImage
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
 #from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -74,16 +75,16 @@ class Stream(QtWidgets.QWidget):
 
         self.topics = (
             {
-                "video1": "cv_camera/image_raw"  # for testing
-                # "video1/image_raw"
-                ,
-                "video2": "video2/image_raw"
+                "video1": "video0/image_raw/compressed"
                 # "cv_camera/image_raw"  # for testing
                 ,
-                "video3": "video3/image_raw"
+                "video2": "video1/image_raw/compressed"
                 # "cv_camera/image_raw"  # for testing
                 ,
-                "video4": "video4/image_raw"
+                "video3": "video2/image_raw/compressed"
+                # "cv_camera/image_raw"  # for testing
+                ,
+                "video4": "video3/image_raw/compressed"
                 # "cv_camera/image_raw"  # for testing
                 ,
             }
@@ -93,19 +94,23 @@ class Stream(QtWidgets.QWidget):
 
         self.subscriber: rospy.Subscriber = rospy.Subscriber(
             self.topics[tuple(self.topics.keys())[self.id]],  # defaults to the topic corresponding to the ID
-            Image,
+            CompressedImage,
             self.display,
             queue_size=50,
         )
         if not self.parent.objectName() == "wheel":
             self.subscriber.unregister()
 
-    def display(self, data: Image):
+    def display(self, data: CompressedImage):
+        bridge = CvBridge()
+        raw_image = bridge.compressed_imgmsg_to_cv2(data, desired_encoding="rgb8")
+        raw_msg = bridge.cv2_to_imgmsg(raw_image)
+
         if data:
-            height, width, channel = ros_numpy.numpify(data).shape
+            height, width, channel = ros_numpy.numpify(raw_msg).shape
             bytesPerLine = 3 * width
             self.frame = QtGui.QPixmap(
-                QtGui.QImage(data.data, width, height, bytesPerLine, QtGui.QImage.Format_BGR888)
+                QtGui.QImage(raw_image, width, height, bytesPerLine, QtGui.QImage.Format_RGB888)
             )
             self.display_screen.setPixmap(self.frame)
 
@@ -121,7 +126,7 @@ class Stream(QtWidgets.QWidget):
     def update_topic(self, topic: str, pause: bool = False):
         self.subscriber.unregister()
         if not pause and not self.paused_checkbox.isChecked():
-            self.subscriber = rospy.Subscriber(self.topics[topic], Image, self.display, queue_size=None)
+            self.subscriber = rospy.Subscriber(self.topics[topic], CompressedImage, self.display, queue_size=None)
 
     def setup(self):
         self.display_screen = QtWidgets.QLabel(self.parent)
