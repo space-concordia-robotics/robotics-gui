@@ -31,21 +31,21 @@ class Pds(Pds_Ui):
         if self.or_motors():
             self.toggle_motors(list(range(1, 7)), state=False, toggle_button=True, publish=False)
             self.publisher.publish("estop 1 1")
-            print("Stopping all motors")
+            self.log_browser.log_message("Stopping all motors")
 
     def enable_motors(self):
         if not self.and_motors():
             self.toggle_motors(list(range(1, 7)), state=True, toggle_button=True, publish=False)
             self.publisher.publish("enable_motors 1 1")
-            print("Enabling all motors")
+            self.log_browser.log_message("Enabling all motors")
 
     def ping(self):
         self.publisher.publish("ping")
-        print("Pinging Rover in MCU")
+        self.log_browser.log_message("Pinging Rover in MCU")
 
     def enable_data_connection(self, state):
         self.data_topic.publish("start" if state else "stop")
-        print("Enabling data connection" if state else "Pausing data connection")
+        self.log_browser.log_message("Enabling data connection" if state else "Pausing data connection")
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
@@ -64,11 +64,11 @@ class Pds(Pds_Ui):
 
     def reset_general_flags(self):
         self.publisher.publish("reset_general_error_flags")
-        print("reset gen flags")
+        self.log_browser.log_message("resetting general flags")
 
     def reset_current_flags(self):
         self.publisher.publish("reset_current_reading_error_flags")
-        print("reset curr flags")
+        self.log_browser.log_message("resetting current flags")
 
     def set_fan_speed(self, fan_number: int):
         """Gets the fan speed from the speed input and sets it to the
@@ -82,7 +82,7 @@ class Pds(Pds_Ui):
             self.fan2_speed = self.fan2_speed_input.value()
             self.fan2_speed_input.clearFocus()
             self.publisher.publish(f"fan 2 {self.fan2_speed}")
-        print(self.fan1_speed, self.fan2_speed)
+        self.log_browser.log_message(f"setting fan speeds to {self.fan1_speed} and {self.fan2_speed}")
 
     def toggle_motors(
         self,

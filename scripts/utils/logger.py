@@ -13,21 +13,26 @@ class Log_browser(QtWidgets.QWidget):
         self.parent = parent
         self.publisher = publisher
 
+    def log_message(self, message):
+        """Logs the given message to rosout, the current log browser, and the console"""
+
+        self.append_to_browser(message + "\n")
+        rospy.loginfo(message)
+        print(message)
+
     def execute_command(self, command: str) -> String:
         """Sends the passed function to the ROS publisher and returns a string"""
 
-        message = command.upper()
-
-        self.publisher.publish(message)
-        rospy.loginfo(message)
-        return message
+        self.publisher.publish(command)
+        rospy.loginfo(command)
+        return command
 
     def run_command(self):
         """Gets the content of the command line and executes the command and appends the output to the log"""
 
         command = self.line_edit.text()
         if command.strip() != "":
-            self.append_to_browser(f"{self.execute_command(command)} \n")
+            self.append_to_browser(f"executing: {self.execute_command(command)}... \n")
         self.line_edit.clear()
         self.line_edit.clearFocus()
 

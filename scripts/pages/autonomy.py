@@ -13,23 +13,23 @@ class Autonomy(Autonomy_Ui):
 
     def estop(self):
         self.publisher.publish("stop_all")
-        print("Emergency stop in Autonomy")
+        self.log_browser.log_message("Emergency stop in Autonomy")
 
     def start_mapping(self):
         self.publisher.publish("start_mapping")
-        print("Starting Map...")
+        self.log_browser.log_message("Starting Map...")
 
     def save_map(self):
         self.publisher.publish("save_map")
-        print("Saving Map")
+        self.log_browser.log_message("Saving Map")
 
     def start_nav(self):
         self.publisher.publish("start_nav")
-        print("Starting Nav...")
+        self.log_browser.log_message("Starting Nav...")
 
     def follow_planned_path(self):
         self.publisher.publish("follow_planned_path")
-        print("Following Planned Path...")
+        self.log_browser.log_message("Following Planned Path...")
 
     def update_cam_topic(self):
         self.stream_screen.update_topic(self.stream_screen.topic_dropdown.currentText(), not self.isVisible())

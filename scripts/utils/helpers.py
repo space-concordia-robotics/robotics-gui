@@ -3,6 +3,7 @@ import os
 import rospy
 import ros_numpy
 import threading
+import datetime
 
 from PIL import Image as PILImage
 from sensor_msgs.msg import Image
@@ -69,13 +70,12 @@ class Stream(QtWidgets.QWidget):
         self.parent = parent
         self.x = x or 0.63 * self.width
         self.y = y or self.height / 15
-        self.counter = 0
         self.frame = None
 
         self.topics = (
             {
-                "video1": "cv_camera/image_raw"  # for testing
-                # "video1/image_raw"
+                "video1": "video1/image_raw"
+                # "cv_camera/image_raw"  # for testing
                 ,
                 "video2": "video2/image_raw"
                 # "cv_camera/image_raw"  # for testing
@@ -88,17 +88,15 @@ class Stream(QtWidgets.QWidget):
                 ,
             }
             if not topic
-            else {"ARViz": topic}
+            else {topic[0]: topic[1]}
         )
 
         self.subscriber: rospy.Subscriber = rospy.Subscriber(
             self.topics[tuple(self.topics.keys())[self.id]],  # defaults to the topic corresponding to the ID
             Image,
             self.display,
-            queue_size=50,
+            queue_size=None,
         )
-        if not self.parent.objectName() == "wheel":
-            self.subscriber.unregister()
 
     def display(self, data: Image):
         if data:
@@ -110,9 +108,12 @@ class Stream(QtWidgets.QWidget):
             self.display_screen.setPixmap(self.frame)
 
     def capture_frame(self):
-        image = PILImage.fromqpixmap(self.frame)
-        image.save(f"{self.parent.objectName()}{self.id}-{self.counter}.png")
-        self.counter += 1
+        if self.frame:
+            now = datetime.datetime.now()
+            image = PILImage.fromqpixmap(self.frame)
+            image.save(
+                f"{self.parent.objectName()}{self.id}_{now.year}-{now.month}-{now.day}-{now.hour}-{now.minute}-{now.second}-{now.microsecond}.png"
+            )
 
     def change_geometry(self, width, height):
         self.display_screen.setGeometry(QtCore.QRect(self.x, self.y, width, height))
@@ -171,15 +172,24 @@ class Header(QtWidgets.QWidget):
         self.width = width
         self.height = height
         self.parent = parent
+        self.basestation_started: bool = False
+        self.basestation = multiprocessing.Process(
+            target=lambda: os.system("roslaunch mcu_control joy_comms_manual.launch")
+        )
         self.temps = (0, 0, 0)
         self.voltage = 0
+        self.basestation.start()
 
     def run_joy_comms(self):
-        self.run_joy_comms_button.setEnabled(False)
-        self.run_joy_comms_button.setStyleSheet("background-color: black")
-        multiprocessing.Process(
-            target=lambda: os.system("roslaunch mcu_control joy_comms_manual.launch")
-        ).start()
+        pass
+        # self.basestation.terminate()
+        # if not self.basestation_started:
+        #     # self.run_joy_comms_button.setEnabled(False)
+        #     # self.run_joy_comms_button.setStyleSheet("background-color: black")
+        #     self.basestation_started = True
+        # else:
+        #     self.basestation.terminate()
+        #     self.basestation_started = False
 
     def update_temps(self, data: ThermistorTemps):
         degree = "\N{DEGREE SIGN}"
