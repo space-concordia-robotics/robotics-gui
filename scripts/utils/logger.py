@@ -22,10 +22,11 @@ class Log_browser(QtWidgets.QWidget):
 
     def execute_command(self, command: str) -> String:
         """Sends the passed function to the ROS publisher and returns a string"""
+        message = command.lower()
 
-        self.publisher.publish(command)
-        rospy.loginfo(command)
-        return command
+        self.publisher.publish(message)
+        rospy.loginfo(message)
+        return message
 
     def run_command(self):
         """Gets the content of the command line and executes the command and appends the output to the log"""

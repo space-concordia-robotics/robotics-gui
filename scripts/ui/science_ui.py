@@ -33,7 +33,7 @@ class Science_Ui(QtWidgets.QWidget):
             self.parent,
             self.width / 48,
             self.height / 2.6,
-            topic=self.topic,
+            # topic=self.topic, # path for science cam is not hard set yet
         )
         self.stream_screen.setup()
 
