@@ -56,10 +56,6 @@ class Wheel(Wheel_Ui):
         self.log_browser.clear_browser_button.setEnabled(value)
         self.log_browser.send_command_button.setEnabled(value)
 
-    def toggle_led(self, state):
-        self.publisher.publish(f"blink_toggle {1 if state else 0}")
-        self.log_browser.log_message(f"turning led lights {'on' if state else 'off'}")
-
     def estop(self):
         self.pds_publisher.publish("estop 0 1")
         self.log_browser.log_message("Stopping all rover wheel motors")
@@ -128,7 +124,6 @@ class Wheel(Wheel_Ui):
         self.list_commands_button.clicked.connect(self.list_commands)
         self.stop_button.clicked.connect(self.estop)
         self.enable_motors_button.clicked.connect(self.enable_motors)
-        self.toggle_led_button.stateChanged.connect(self.toggle_led)
 
         self.ping_mcu_sequence = QShortcut(QKeySequence("Ctrl+P"), self)
         self.ping_mcu_sequence.activated.connect(self.ping)

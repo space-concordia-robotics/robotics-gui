@@ -168,11 +168,6 @@ class Wheel_Ui(QtWidgets.QWidget):
         )
         self.controller_right.setObjectName("controller_right")
 
-        self.toggle_led_button = QtWidgets.QCheckBox(self.rover_settings)
-        self.horizontalLayout.addWidget(self.toggle_led_button)
-        self.toggle_led_button.setGeometry(QtCore.QRect(900, 500, 100, 100))
-        self.toggle_led_button.setText("Toggle LED")
-
         self.controller_up.setDisabled(True)
         self.controller_right.setDisabled(True)
         self.controller_left.setDisabled(True)

@@ -6,7 +6,8 @@ import rospy
 
 from mcu_control.msg._Currents import Currents
 from mcu_control.msg._ThermistorTemps import ThermistorTemps
-#from mcu_control.msg._Voltage import Voltage
+
+# from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets
 from std_msgs.msg import String
 
@@ -30,9 +31,9 @@ class Ros_thread(threading.Thread):
         # each item in this tuple is a collection of all topics needed for the according page
         # each item (topic) in said collection is a tuple that contains the arguments needed for the Subscriber method
         # the lambda function used appends the passed function and its args to the Worker thread's Queue so they are run in order
-        self.topics = ([])
+        self.topics = []
 
-        #self.topics = (
+        # self.topics = (
         #    [
         #        (
         #            "wheel_motor_currents",
@@ -62,7 +63,7 @@ class Ros_thread(threading.Thread):
         #    [],  # science topics
         #    [],  # cams topics
         #    [],  # autonomy topics
-        #)
+        # )
 
     def handle_tab_change(self, page_index: int):
         """Called on tab change to unsub to old topics and
@@ -218,12 +219,13 @@ if __name__ == "__main__":
 
     MainWindow.setCentralWidget(scroll_area)
 
+    wheels_publisher = rospy.Publisher("/rover_command", String, queue_size=10)
     pds_publisher = rospy.Publisher("/pds_command", String, queue_size=10)
 
     wheel = Wheel(
         width,
         height,
-        rospy.Publisher("/rover_command", String, queue_size=10),
+        wheels_publisher,
         pds_publisher,
         MainWindow,
     )
@@ -255,7 +257,7 @@ if __name__ == "__main__":
     layout = QtWidgets.QWidget()
     scroll_area.setWidget(layout)
 
-    header = Header(width, height, layout)
+    header = Header(width, height, wheels_publisher, layout)
     header.setup()
 
     tab_widget = QtWidgets.QTabWidget(layout)
@@ -285,4 +287,5 @@ if __name__ == "__main__":
         sys.exit(app.exec_())
     except:
         worker.clear_queue()
-        header.basestation.terminate()
+        if header.basestation_started:
+            header.basestation.terminate()

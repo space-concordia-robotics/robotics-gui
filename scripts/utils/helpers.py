@@ -1,4 +1,4 @@
-import multiprocessing
+import subprocess
 import os
 import rospy
 import ros_numpy
@@ -175,24 +175,26 @@ class Stream(QtWidgets.QWidget):
 
 
 class Header(QtWidgets.QWidget):
-    def __init__(self, width: float, height: float, parent: QtWidgets.QWidget = None):
+    def __init__(
+        self, width: float, height: float, publisher: rospy.Publisher, parent: QtWidgets.QWidget = None
+    ):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
+        self.publisher = publisher
         self.basestation_started: bool = False
-        self.basestation = multiprocessing.Process(
-            target=lambda: os.system("roslaunch mcu_control joy_comms_manual.launch")
-        )
+        self.basestation = None
         self.temps = (0, 0, 0)
         self.voltage = 0
 
-    def run_joy_comms(self):
-        if not self.basestation_started:
-            self.basestation.start()
+    def toggle_basestation_process(self):
+        if not self.basestation:
+            self.basestation = subprocess.Popen(["roslaunch", "mcu_control", "joy_comms_manual.launch"])
             self.basestation_started = True
         else:
             self.basestation.terminate()
+            self.basestation = None
             self.basestation_started = False
 
     def update_temps(self, data: ThermistorTemps):
@@ -205,6 +207,9 @@ class Header(QtWidgets.QWidget):
     # def update_voltage(self, data: Voltage):
     #    self.voltage = data.data
     #    self.voltage_label.setText(f"{self.voltage} V")
+
+    def toggle_led(self, state):
+        self.publisher.publish(f"blink_toggle {1 if state else 0}")
 
     def setup(self):
         sc_logo = QtWidgets.QLabel(self.parent)
@@ -296,9 +301,16 @@ class Header(QtWidgets.QWidget):
         self.run_joy_comms_button.setObjectName("run_joy_comms_button")
         self.run_joy_comms_button.setText("Start Basestation")
         self.run_joy_comms_button.setGeometry(
-            QtCore.QRect(self.width / 2.5, self.height / 50, self.width / 10, self.height / 28)
+            QtCore.QRect(self.width / 3, self.height / 50, self.width / 10, self.height / 28)
         )
-        self.run_joy_comms_button.clicked.connect(self.run_joy_comms)
+        self.run_joy_comms_button.clicked.connect(self.toggle_basestation_process)
+
+        self.toggle_led_button = QtWidgets.QCheckBox(self.parent)
+        self.toggle_led_button.setGeometry(
+            QtCore.QRect(self.width / 2.2, self.height / 50, self.width / 10, self.height / 28)
+        )
+        self.toggle_led_button.setText("Toggle LED")
+        self.toggle_led_button.toggled.connect(self.toggle_led)
 
         temp_logo.setPixmap(
             QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../../resource/therm_icon.png"))
