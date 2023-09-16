@@ -8,7 +8,7 @@ import datetime
 
 from PIL import Image as PILImage
 from sensor_msgs.msg import CompressedImage
-from mcu_control.msg._ThermistorTemps import ThermistorTemps
+# from mcu_control.msg._ThermistorTemps import ThermistorTemps
 
 # from mcu_control.msg._Voltage import Voltage
 from PyQt5 import QtCore, QtGui, QtWidgets

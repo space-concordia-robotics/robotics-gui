@@ -1,5 +1,5 @@
 import rospy
-from mcu_control.msg._Currents import Currents
+# from mcu_control.msg._Currents import Currents
 from std_msgs.msg import String
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
