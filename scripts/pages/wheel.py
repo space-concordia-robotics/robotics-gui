@@ -126,9 +126,9 @@ class Wheel(Wheel_Ui):
                 self.throttle = (self.throttle * 10 - 0.50) / 10
             self.throttle_value.setText(f"{self.throttle}")
 
-    def display_currents(self, data: Currents):
-        self.currents = tuple(data.effort)
-        self.wheel_table.display_currents(self.currents)
+    # def display_currents(self, data: Currents):
+    #     self.currents = tuple(data.effort)
+    #     self.wheel_table.display_currents(self.currents)
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for

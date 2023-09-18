@@ -79,13 +79,13 @@ class Pds(Pds_Ui):
         for command in self.commands:
             self.log_browser.append_to_browser(f"'{command}': {self.commands[command]}")
 
-    def display_wheel_currents(self, data: Currents):
-        self.wheel_currents = tuple(data.effort)
-        self.wheel_table.display_currents(self.wheel_currents)
+    # def display_wheel_currents(self, data: Currents):
+    #     self.wheel_currents = tuple(data.effort)
+    #     self.wheel_table.display_currents(self.wheel_currents)
 
-    def display_arm_currents(self, data: Currents):
-        self.arm_currents = tuple(data.effort)
-        self.arm_table.display_currents(self.arm_currents)
+    # def display_arm_currents(self, data: Currents):
+    #     self.arm_currents = tuple(data.effort)
+    #     self.arm_table.display_currents(self.arm_currents)
 
     def reset_general_flags(self):
         self.publisher.publish("reset_general_error_flags")
