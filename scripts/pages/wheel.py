@@ -1,4 +1,5 @@
-import rospy
+import rclpy
+
 # from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -11,11 +12,17 @@ class Wheel(Wheel_Ui):
         self,
         width: float,
         height: float,
-        publisher: rospy.Publisher,
-        pds_publisher: rospy.Publisher,
+        publisher: rclpy.publisher.Publisher,
+        pds_publisher: rclpy.publisher.Publisher,
         MainWindow=None,
     ):
-        super().__init__(width=width, height=height, publisher=publisher, parent=self, MainWindow=MainWindow)
+        super().__init__(
+            width=width,
+            height=height,
+            publisher=publisher,
+            parent=self,
+            MainWindow=MainWindow,
+        )
         self.publisher = publisher
         self.pds_publisher = pds_publisher
         self.throttle: float = 0.50
@@ -36,7 +43,9 @@ class Wheel(Wheel_Ui):
         self.start_handling_clicks()
 
     def update_cam_topic(self):
-        self.stream_screen.update_topic(self.stream_screen.topic_dropdown.currentText(), not self.isVisible())
+        self.stream_screen.update_topic(
+            self.stream_screen.topic_dropdown.currentText(), not self.isVisible()
+        )
 
     def display_stream(self, data):
         self.stream_screen.display(data)
@@ -69,7 +78,10 @@ class Wheel(Wheel_Ui):
         self.log_browser.log_message("Pinging Rover in MCU")
 
     def polarize_coords(self, coordinates: "list[float]") -> "tuple[float]":
-        temp = [coordinates[i] - coordinates[i + 2] for i in range(int(len(coordinates) / 2))]
+        temp = [
+            coordinates[i] - coordinates[i + 2]
+            for i in range(int(len(coordinates) / 2))
+        ]
         magnitude = 0.0
         angle = 0.0
 
@@ -88,7 +100,8 @@ class Wheel(Wheel_Ui):
 
     def send_velocity(self):
         self.publisher.publish(
-            "move_rover " + " ".join([str(num) for num in self.polarize_coords(self.velocity)])
+            "move_rover "
+            + " ".join([str(num) for num in self.polarize_coords(self.velocity)])
         )
 
     def set_motors(self, value: bool):

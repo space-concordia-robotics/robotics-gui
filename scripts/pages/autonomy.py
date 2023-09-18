@@ -1,11 +1,13 @@
-import rospy
+import rclpy
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from ui.autonomy_ui import Autonomy_Ui
 
 
 class Autonomy(Autonomy_Ui):
-    def __init__(self, width: float, height: float, publisher: rospy.Publisher):
+    def __init__(
+        self, width: float, height: float, publisher: rclpy.publisher.Publisher
+    ):
         super().__init__(width=width, height=height, publisher=publisher, parent=self)
         self.publisher = publisher
 
@@ -32,7 +34,9 @@ class Autonomy(Autonomy_Ui):
         self.log_browser.log_message("Following Planned Path...")
 
     def update_cam_topic(self):
-        self.stream_screen.update_topic(self.stream_screen.topic_dropdown.currentText(), not self.isVisible())
+        self.stream_screen.update_topic(
+            self.stream_screen.topic_dropdown.currentText(), not self.isVisible()
+        )
 
     def start_handling_clicks(self):
         """This method is for grouping all button click methods for

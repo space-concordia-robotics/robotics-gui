@@ -1,4 +1,5 @@
-import rospy
+import rclpy
+
 # from mcu_control.msg._Currents import Currents
 from std_msgs.msg import String
 from PyQt5.QtCore import Qt
@@ -8,12 +9,30 @@ from ui.pds_ui import Pds_Ui
 
 
 class Pds(Pds_Ui):
-    def __init__(self, width: float, height: float, publisher: rospy.Publisher, MainWindow=None):
-        super().__init__(width=width, height=height, publisher=publisher, parent=self, MainWindow=MainWindow)
+    # Initialize node that will be used to create a publisher
+    rclpy.init()
+    node = rclpy.create_node("publisher_factory")
+
+    def __init__(
+        self,
+        width: float,
+        height: float,
+        publisher: rclpy.publisher.Publisher,
+        MainWindow=None,
+    ):
+        super().__init__(
+            width=width,
+            height=height,
+            publisher=publisher,
+            parent=self,
+            MainWindow=MainWindow,
+        )
         self.publisher = publisher
         self.fan1_speed: float = 100.0
         self.fan2_speed: float = 100.0
-        self.data_topic = rospy.Publisher("power_report_command", String, queue_size=10)
+        self.data_topic = node.create_publisher(
+            "power_report_command", String, queue_size=10
+        )
         self.commands = {
             "Ctrl-P": "'ping rover mcu'",
             "Alt-P": "'ping odroid'",
@@ -29,13 +48,17 @@ class Pds(Pds_Ui):
 
     def estop(self):
         if self.or_motors():
-            self.toggle_motors(list(range(1, 7)), state=False, toggle_button=True, publish=False)
+            self.toggle_motors(
+                list(range(1, 7)), state=False, toggle_button=True, publish=False
+            )
             self.publisher.publish("estop 1 1")
             self.log_browser.log_message("Stopping all motors")
 
     def enable_motors(self):
         if not self.and_motors():
-            self.toggle_motors(list(range(1, 7)), state=True, toggle_button=True, publish=False)
+            self.toggle_motors(
+                list(range(1, 7)), state=True, toggle_button=True, publish=False
+            )
             self.publisher.publish("enable_motors 1 1")
             self.log_browser.log_message("Enabling all motors")
 
@@ -45,7 +68,9 @@ class Pds(Pds_Ui):
 
     def enable_data_connection(self, state):
         self.data_topic.publish("start" if state else "stop")
-        self.log_browser.log_message("Enabling data connection" if state else "Pausing data connection")
+        self.log_browser.log_message(
+            "Enabling data connection" if state else "Pausing data connection"
+        )
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
@@ -82,7 +107,9 @@ class Pds(Pds_Ui):
             self.fan2_speed = self.fan2_speed_input.value()
             self.fan2_speed_input.clearFocus()
             self.publisher.publish(f"fan 2 {self.fan2_speed}")
-        self.log_browser.log_message(f"setting fan speeds to {self.fan1_speed} and {self.fan2_speed}")
+        self.log_browser.log_message(
+            f"setting fan speeds to {self.fan1_speed} and {self.fan2_speed}"
+        )
 
     def toggle_motors(
         self,
@@ -139,12 +166,24 @@ class Pds(Pds_Ui):
         self.reset_general_flags_button.clicked.connect(self.reset_general_flags)
         self.enable_data_checkbox.stateChanged.connect(self.enable_data_connection)
 
-        self.motor1.pressed.connect(lambda: self.toggle_motors(1, not self.motor1.isChecked()))
-        self.motor2.pressed.connect(lambda: self.toggle_motors(2, not self.motor2.isChecked()))
-        self.motor3.pressed.connect(lambda: self.toggle_motors(3, not self.motor3.isChecked()))
-        self.motor4.pressed.connect(lambda: self.toggle_motors(4, not self.motor4.isChecked()))
-        self.motor5.pressed.connect(lambda: self.toggle_motors(5, not self.motor5.isChecked()))
-        self.motor6.pressed.connect(lambda: self.toggle_motors(6, not self.motor6.isChecked()))
+        self.motor1.pressed.connect(
+            lambda: self.toggle_motors(1, not self.motor1.isChecked())
+        )
+        self.motor2.pressed.connect(
+            lambda: self.toggle_motors(2, not self.motor2.isChecked())
+        )
+        self.motor3.pressed.connect(
+            lambda: self.toggle_motors(3, not self.motor3.isChecked())
+        )
+        self.motor4.pressed.connect(
+            lambda: self.toggle_motors(4, not self.motor4.isChecked())
+        )
+        self.motor5.pressed.connect(
+            lambda: self.toggle_motors(5, not self.motor5.isChecked())
+        )
+        self.motor6.pressed.connect(
+            lambda: self.toggle_motors(6, not self.motor6.isChecked())
+        )
 
         self.fan1_speed_input.editingFinished.connect(lambda: self.set_fan_speed(1))
         self.fan2_speed_input.editingFinished.connect(lambda: self.set_fan_speed(2))

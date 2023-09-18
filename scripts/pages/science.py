@@ -1,4 +1,4 @@
-import rospy
+import rclpy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
@@ -6,8 +6,20 @@ from ui.science_ui import Science_Ui
 
 
 class Science(Science_Ui):
-    def __init__(self, width: float, height: float, publisher: rospy.Publisher, MainWindow=None):
-        super().__init__(width=width, height=height, publisher=publisher, parent=self, MainWindow=MainWindow)
+    def __init__(
+        self,
+        width: float,
+        height: float,
+        publisher: rclpy.publisher.Publisher,
+        MainWindow=None,
+    ):
+        super().__init__(
+            width=width,
+            height=height,
+            publisher=publisher,
+            parent=self,
+            MainWindow=MainWindow,
+        )
         self.publisher = publisher
         self.used_vials: int = 0
         self.current_vial: int = 1

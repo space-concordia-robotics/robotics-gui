@@ -1,4 +1,5 @@
-import rospy
+import rclpy
+
 # from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -11,11 +12,17 @@ class Arm(Arm_Ui):
         self,
         width: float,
         height: float,
-        publisher: rospy.Publisher,
-        pds_publisher: rospy.Publisher,
+        publisher: rclpy.publisher.Publisher,
+        pds_publisher: rclpy.publisher.Publisher,
         MainWindow=None,
     ):
-        super().__init__(width=width, height=height, publisher=publisher, parent=self, MainWindow=MainWindow)
+        super().__init__(
+            width=width,
+            height=height,
+            publisher=publisher,
+            parent=self,
+            MainWindow=MainWindow,
+        )
         self.publisher = publisher
         self.pds_publisher = pds_publisher
         self.speed_multiplier: float = 1
@@ -36,7 +43,9 @@ class Arm(Arm_Ui):
         self.start_handling_clicks()
 
     def update_cam_topic(self):
-        self.stream_screen.update_topic(self.stream_screen.topic_dropdown.currentText(), not self.isVisible())
+        self.stream_screen.update_topic(
+            self.stream_screen.topic_dropdown.currentText(), not self.isVisible()
+        )
 
     def reset_speeds(self):
         self.speeds = [0] * 12
@@ -72,8 +81,13 @@ class Arm(Arm_Ui):
         self.log_browser.log_message("Pinging Arm in MCU")
 
     def send_speeds(self):
-        temp = [self.speeds[i] - self.speeds[i + 6] for i in range(int(len(self.speeds) / 2))]
-        self.publisher.publish("set_motor_speeds " + " ".join([str(num) for num in temp]))
+        temp = [
+            self.speeds[i] - self.speeds[i + 6]
+            for i in range(int(len(self.speeds) / 2))
+        ]
+        self.publisher.publish(
+            "set_motor_speeds " + " ".join([str(num) for num in temp])
+        )
 
     def list_commands(self):
         """This method appends this program's keyboard shortcuts
@@ -82,9 +96,9 @@ class Arm(Arm_Ui):
         for command in self.commands:
             self.log_browser.append_to_browser(f"'{command}': {self.commands[command]}")
 
-    def display_currents(self, data: Currents):
-        self.currents = tuple(data.effort)
-        self.arm_table.display_currents(self.currents)
+    # def display_currents(self, data: Currents):
+    #     self.currents = tuple(data.effort)
+    #     self.arm_table.display_currents(self.currents)
 
     def reset_angles(self):
         self.publisher.publish("reset_angles")
