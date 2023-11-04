@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package format="2">
+<package format="3">
   <name>controller</name>
   <version>1.0.0</version>
   <description>Space Concordia Robotics Rover GUI</description>
@@ -7,19 +7,18 @@
   <maintainer email="mohamadali.taha@spaceconcordia.ca">Mohamad Ali Taha</maintainer>
 
   <license>TODO</license>
+  
+  <depend>rclpy</depend>
+  <depend>rqt_gui</depend>
+  <depend>rqt_gui_py</depend>  
+  <depend>std_msgs</depend>  
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
 
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>rqt_gui</build_depend>
-  <build_depend>rqt_gui_py</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_export_depend>rospy</build_export_depend>
-  <build_export_depend>rqt_gui</build_export_depend>
-  <build_export_depend>rqt_gui_py</build_export_depend>
-  <build_export_depend>std_msgs</build_export_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>rqt_gui</exec_depend>
-  <exec_depend>rqt_gui_py</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
 
 </package>
