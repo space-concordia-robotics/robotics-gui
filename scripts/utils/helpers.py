@@ -1,6 +1,7 @@
 import subprocess
 import os
 import rclpy
+from rclpy.node import Node
 import ros2_numpy as rnp
 from cv_bridge import CvBridge
 import threading
@@ -44,8 +45,8 @@ class Worker(threading.Thread):
 
 
 class Queue(object):
-    def __init__(self, queue_size: int):
-        self.queue_size: int = queue_size
+    def __init__(self, qos_profile: int):
+        self.qos_profile: int = qos_profile
         self.queue: list = []
 
     def get_list(self) -> list:
@@ -55,7 +56,7 @@ class Queue(object):
         self.queue.clear()
 
     def append(self, data):
-        if len(self.queue) < self.queue_size:
+        if len(self.queue) < self.qos_profile:
             self.queue.append(data)
         else:
             self.queue.pop(0)
@@ -68,7 +69,7 @@ class Stream(QtWidgets.QWidget):
         id: int,
         width: float,
         height: float,
-        node: rclpy.node.Node,
+        node: Node,
         parent: QtWidgets.QWidget = None,
         x=0,
         y=0,
@@ -110,7 +111,7 @@ class Stream(QtWidgets.QWidget):
                     tuple(self.topics.keys())[self.id]
                 ],  # defaults to the topic corresponding to the ID
                 self.display,
-                queue_size=None,
+                qos_profile=None,
             )
         )
 
@@ -145,7 +146,7 @@ class Stream(QtWidgets.QWidget):
         self.subscriber.unregister()
         if not pause and not self.paused_checkbox.isChecked():
             self.subscriber = self.node.create_subscription(
-                CompressedImage, self.topics[topic], self.display, queue_size=None
+                CompressedImage, self.topics[topic], self.display, qos_profile=None
             )
 
     def setup(self):

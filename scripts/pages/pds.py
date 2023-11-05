@@ -10,8 +10,6 @@ from ui.pds_ui import Pds_Ui
 
 class Pds(Pds_Ui):
     # Initialize node that will be used to create a publisher
-    rclpy.init()
-    node = rclpy.create_node("publisher_factory")
 
     def __init__(
         self,
@@ -27,11 +25,12 @@ class Pds(Pds_Ui):
             parent=self,
             MainWindow=MainWindow,
         )
+        node = rclpy.create_node("publisher_factory")
         self.publisher = publisher
         self.fan1_speed: float = 100.0
         self.fan2_speed: float = 100.0
         self.data_topic = node.create_publisher(
-            "power_report_command", String, queue_size=10
+            "power_report_command", String, qos_profile=10
         )
         self.commands = {
             "Ctrl-P": "'ping rover mcu'",
