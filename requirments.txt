@@ -1,5 +1,5 @@
 pyqt5
-rospy
+rclpy
 pyyaml
 rospkg
 pillow
