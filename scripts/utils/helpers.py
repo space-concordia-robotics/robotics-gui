@@ -1,13 +1,14 @@
 import subprocess
 import os
-import rospy
-import ros_numpy
+import rclpy
+import ros2_numpy as rnp
 from cv_bridge import CvBridge
 import threading
 import datetime
 
 from PIL import Image as PILImage
 from sensor_msgs.msg import CompressedImage
+
 # from mcu_control.msg._ThermistorTemps import ThermistorTemps
 
 # from mcu_control.msg._Voltage import Voltage
@@ -30,14 +31,14 @@ class Worker(threading.Thread):
 
     def run(self):
         queue = self.command_queue.get_list()
-        while not rospy.is_shutdown():
+        while not rclpy.ok():
             try:
                 if queue:
                     command = queue[0][0]
                     args = queue[0][1]
                     command(*args) if args else command()
                     queue.pop(0)
-                    rospy.sleep(0.01)
+                    rclpy.sleep(0.01)
             except:
                 pass
 
@@ -63,13 +64,22 @@ class Queue(object):
 
 class Stream(QtWidgets.QWidget):
     def __init__(
-        self, id: int, width: float, height: float, parent: QtWidgets.QWidget = None, x=0, y=0, topic=None
+        self,
+        id: int,
+        width: float,
+        height: float,
+        node: rclpy.node.Node,
+        parent: QtWidgets.QWidget = None,
+        x=0,
+        y=0,
+        topic=None,
     ):
         super().__init__(parent=parent)
         self.id = id
         self.width = width
         self.height = height
         self.parent = parent
+        self.node = node
         self.x = x or 0.63 * self.width
         self.y = y or self.height / 15
         self.frame = None
@@ -93,11 +103,15 @@ class Stream(QtWidgets.QWidget):
             else {topic[0]: topic[1]}
         )
 
-        self.subscriber: rospy.Subscriber = rospy.Subscriber(
-            self.topics[tuple(self.topics.keys())[self.id]],  # defaults to the topic corresponding to the ID
-            CompressedImage,
-            self.display,
-            queue_size=None,
+        self.subscriber: rclpy.subscription.Subscription = (
+            self.node.create_subscription(
+                CompressedImage,
+                self.topics[
+                    tuple(self.topics.keys())[self.id]
+                ],  # defaults to the topic corresponding to the ID
+                self.display,
+                queue_size=None,
+            )
         )
 
     def display(self, data: CompressedImage):
@@ -106,10 +120,12 @@ class Stream(QtWidgets.QWidget):
         raw_msg = bridge.cv2_to_imgmsg(raw_image)
 
         if data:
-            height, width, channel = ros_numpy.numpify(raw_msg).shape
+            height, width, channel = rnp.numpify(raw_msg).shape
             bytesPerLine = 3 * width
             self.frame = QtGui.QPixmap(
-                QtGui.QImage(raw_image, width, height, bytesPerLine, QtGui.QImage.Format_RGB888)
+                QtGui.QImage(
+                    raw_image, width, height, bytesPerLine, QtGui.QImage.Format_RGB888
+                )
             )
             self.display_screen.setPixmap(self.frame)
 
@@ -128,8 +144,8 @@ class Stream(QtWidgets.QWidget):
     def update_topic(self, topic: str, pause: bool = False):
         self.subscriber.unregister()
         if not pause and not self.paused_checkbox.isChecked():
-            self.subscriber = rospy.Subscriber(
-                self.topics[topic], CompressedImage, self.display, queue_size=None
+            self.subscriber = self.node.create_subscription(
+                CompressedImage, self.topics[topic], self.display, queue_size=None
             )
 
     def setup(self):
@@ -142,11 +158,15 @@ class Stream(QtWidgets.QWidget):
                 0.44 * self.height,
             )
         )
-        self.display_screen.setStyleSheet("background-color: rgb(255, 255, 255);\n" "color: rgb(0, 0, 0);")
+        self.display_screen.setStyleSheet(
+            "background-color: rgb(255, 255, 255);\n" "color: rgb(0, 0, 0);"
+        )
         self.display_screen.setAlignment(QtCore.Qt.AlignCenter)
         self.display_screen.setObjectName("stream_screen")
-        self.display_screen.mouseDoubleClickEvent = lambda _: self.paused_checkbox.setChecked(
-            not self.paused_checkbox.isChecked()
+        self.display_screen.mouseDoubleClickEvent = (
+            lambda _: self.paused_checkbox.setChecked(
+                not self.paused_checkbox.isChecked()
+            )
         )
         self.display_screen.setText("Image unavailable")
         self.display_screen.setFont(QtGui.QFont("Sans serif", 16))
@@ -176,12 +196,18 @@ class Stream(QtWidgets.QWidget):
 
 class Header(QtWidgets.QWidget):
     def __init__(
-        self, width: float, height: float, publisher: rospy.Publisher, parent: QtWidgets.QWidget = None
+        self,
+        width: float,
+        height: float,
+        node: rclpy.node.Node,
+        publisher: rclpy.publisher.Publisher,
+        parent: QtWidgets.QWidget = None,
     ):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
+        self.node = node
         self.publisher = publisher
         self.basestation_started: bool = False
         self.basestation = None
@@ -190,19 +216,21 @@ class Header(QtWidgets.QWidget):
 
     def toggle_basestation_process(self):
         if not self.basestation:
-            self.basestation = subprocess.Popen(["roslaunch", "mcu_control", "joy_comms_manual.launch"])
+            self.basestation = subprocess.Popen(
+                ["roslaunch", "mcu_control", "joy_comms_manual.launch"]
+            )
             self.basestation_started = True
         else:
             self.basestation.terminate()
             self.basestation = None
             self.basestation_started = False
 
-    def update_temps(self, data: ThermistorTemps):
-        degree = "\N{DEGREE SIGN}"
-        self.temps = data.therms
-        self.temp1_label.setText(f"{self.temps[0]} {degree}C")
-        self.temp2_label.setText(f"{self.temps[1]} {degree}C")
-        self.temp3_label.setText(f"{self.temps[2]} {degree}C")
+    # def update_temps(self, data: ThermistorTemps):
+    #     degree = "\N{DEGREE SIGN}"
+    #     self.temps = data.therms
+    #     self.temp1_label.setText(f"{self.temps[0]} {degree}C")
+    #     self.temp2_label.setText(f"{self.temps[1]} {degree}C")
+    #     self.temp3_label.setText(f"{self.temps[2]} {degree}C")
 
     # def update_voltage(self, data: Voltage):
     #    self.voltage = data.data
@@ -301,20 +329,30 @@ class Header(QtWidgets.QWidget):
         self.run_joy_comms_button.setObjectName("run_joy_comms_button")
         self.run_joy_comms_button.setText("Start Basestation")
         self.run_joy_comms_button.setGeometry(
-            QtCore.QRect(self.width / 3, self.height / 50, self.width / 10, self.height / 28)
+            QtCore.QRect(
+                self.width / 3, self.height / 50, self.width / 10, self.height / 28
+            )
         )
         self.run_joy_comms_button.clicked.connect(self.toggle_basestation_process)
 
         self.toggle_led_button = QtWidgets.QCheckBox(self.parent)
         self.toggle_led_button.setGeometry(
-            QtCore.QRect(self.width / 2.2, self.height / 50, self.width / 10, self.height / 28)
+            QtCore.QRect(
+                self.width / 2.2, self.height / 50, self.width / 10, self.height / 28
+            )
         )
         self.toggle_led_button.setText("Toggle LED")
         self.toggle_led_button.toggled.connect(self.toggle_led)
 
         temp_logo.setPixmap(
-            QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../../resource/therm_icon.png"))
+            QtGui.QPixmap(
+                os.path.join(os.path.dirname(__file__), "../../resource/therm_icon.png")
+            )
         )
         battery_logo.setPixmap(
-            QtGui.QPixmap(os.path.join(os.path.dirname(__file__), "../../resource/battery_icon.png"))
+            QtGui.QPixmap(
+                os.path.join(
+                    os.path.dirname(__file__), "../../resource/battery_icon.png"
+                )
+            )
         )

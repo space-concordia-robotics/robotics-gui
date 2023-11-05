@@ -1,23 +1,29 @@
-import rospy
+import rclpy
 from PyQt5 import QtCore, QtGui, QtWidgets
 from std_msgs.msg import String
 
 
 class Log_browser(QtWidgets.QWidget):
     def __init__(
-        self, width: float, height: float, publisher: rospy.Publisher, parent: QtWidgets.QWidget = None
+        self,
+        width: float,
+        height: float,
+        publisher: rclpy.publisher.Publisher,
+        node: rclpy.node.Node,
+        parent: QtWidgets.QWidget = None,
     ):
         super().__init__(parent=parent)
         self.width = width
         self.height = height
         self.parent = parent
         self.publisher = publisher
+        self.node = node
 
     def log_message(self, message):
         """Logs the given message to rosout, the current log browser, and the console"""
 
         self.append_to_browser(message + "\n")
-        rospy.loginfo(message)
+        self.node.get_logger().info(message)
         print(message)
 
     def execute_command(self, command: str) -> String:
@@ -25,7 +31,7 @@ class Log_browser(QtWidgets.QWidget):
         message = command.lower()
 
         self.publisher.publish(message)
-        rospy.loginfo(message)
+        self.node.get_logger().info(message)
         return message
 
     def run_command(self):
@@ -86,7 +92,9 @@ class Log_browser(QtWidgets.QWidget):
         self.text_browser = QtWidgets.QTextEdit(self.layoutWidget)
         self.text_browser.setFocusPolicy(QtCore.Qt.WheelFocus)
         self.text_browser.setReadOnly(True)
-        self.text_browser.setStyleSheet("background-color: rgb(238, 238, 236);\n" "color: rgb(0, 0, 0);")
+        self.text_browser.setStyleSheet(
+            "background-color: rgb(238, 238, 236);\n" "color: rgb(0, 0, 0);"
+        )
         self.text_browser.setObjectName("text_browser")
         self.verticalLayout.addWidget(self.text_browser)
         self.log_input = QtWidgets.QHBoxLayout()
@@ -94,7 +102,9 @@ class Log_browser(QtWidgets.QWidget):
         self.log_input.setObjectName("log_input")
         self.line_edit = QtWidgets.QLineEdit(self.layoutWidget)
         self.line_edit.setFocusPolicy(QtCore.Qt.WheelFocus)
-        self.line_edit.setStyleSheet("background-color: rgb(238, 238, 236);\n" "color: rgb(0, 0, 0);")
+        self.line_edit.setStyleSheet(
+            "background-color: rgb(238, 238, 236);\n" "color: rgb(0, 0, 0);"
+        )
         self.line_edit.setText("")
         self.line_edit.setClearButtonEnabled(False)
         self.line_edit.setObjectName("line_edit")
