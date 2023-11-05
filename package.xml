@@ -4,14 +4,14 @@
   <version>1.0.0</version>
   <description>Space Concordia Robotics Rover GUI</description>
 
-  <maintainer email="mohamadali.taha@spaceconcordia.ca">Mohamad Ali Taha</maintainer>
+  <maintainer email="mohamadali.taha@spaceconcordia.ca, omar.ziad@spaceconcordia.com">Mohamad Ali Taha, Omar Ziad</maintainer>
 
   <license>TODO</license>
-  
+
   <depend>rclpy</depend>
   <depend>rqt_gui</depend>
-  <depend>rqt_gui_py</depend>  
-  <depend>std_msgs</depend>  
+  <depend>rqt_gui_py</depend>
+  <depend>std_msgs</depend>
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
