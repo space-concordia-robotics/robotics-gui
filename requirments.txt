@@ -4,3 +4,4 @@ pyyaml
 rospkg
 pillow
 ffmpeg-python
+ros2_numpy
