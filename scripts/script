@@ -2,7 +2,7 @@
 
 import subprocess
 import threading
-import rospy
+import rclpy
 
 # from mcu_control.msg._Currents import Currents
 # from mcu_control.msg._ThermistorTemps import ThermistorTemps
@@ -26,7 +26,7 @@ class Ros_thread(threading.Thread):
         self.threadID: int = threadID
         self.name: str = name
         self.daemon: bool = True
-        self.subbed_topics: list[rospy.Subscriber] = []
+        self.subbed_topics: list[rclpy.publisher.Publisher] = []
 
         # each item in this tuple is a collection of all topics needed for the according page
         # each item (topic) in said collection is a tuple that contains the arguments needed for the Subscriber method
@@ -74,21 +74,21 @@ class Ros_thread(threading.Thread):
             self.subbed_topics.pop()
         worker.clear_queue()
         # for topic in self.topics[page_index]:
-        #     self.subbed_topics.append(rospy.Subscriber(*topic, queue_size=1))  # subs to new page topics
+        #     self.subbed_topics.append(rospy.Subscriber(*topic, qos_profile=1))  # subs to new page topics
 
-    def run(self):
-        # these 2 topics are needed for all tabs since they are used outside the tab widget
-        self.battery_temps = rospy.Subscriber(
-            "battery_temps",
-            ThermistorTemps,
-            lambda data: worker.add_to_queue((header.update_temps, [data])),
-            queue_size=1,
-        )
+        # def run(self):
+        #     # these 2 topics are needed for all tabs since they are used outside the tab widget
+        #     self.battery_temps = node.create_subscription(
+        #         ThermistorTemps,
+        #         "battery_temps",
+        #         lambda data: worker.add_to_queue((header.update_temps, [data])),
+        #         qos_profile=1,
+        #     )
         # self.battery_voltage = rospy.Subscriber(
         #     "battery_voltage",
         #     Voltage,
         #     lambda data: worker.add_to_queue((header.update_voltage, [data])),
-        #     queue_size=1,
+        #     qos_profile=1,
         # )
 
         self.handle_tab_change(
@@ -102,9 +102,13 @@ class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
         self.pressed_keys: list[str] = []
         self.tab_name: str = ""
 
-        self.ping_odroid_sequence = QtWidgets.QShortcut(QtGui.QKeySequence("alt+p"), self)
+        self.ping_odroid_sequence = QtWidgets.QShortcut(
+            QtGui.QKeySequence("alt+p"), self
+        )
         self.ping_odroid_sequence.activated.connect(
-            lambda: threading.Thread(name="ping_odroid", target=self.ping_odroid).start()
+            lambda: threading.Thread(
+                name="ping_odroid", target=self.ping_odroid
+            ).start()
         )
         self.setFocus()
 
@@ -112,7 +116,8 @@ class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
         tab: QtWidgets.QWidget = tab_widget.currentWidget().objectName()
         output: str = (
             subprocess.Popen(
-                ["rosrun", "ping_acknowledgment", "ping_response_client.py"], stdout=subprocess.PIPE
+                ["rosrun", "ping_acknowledgment", "ping_response_client.py"],
+                stdout=subprocess.PIPE,
             )
             .stdout.read()
             .decode("utf-8")
@@ -126,7 +131,6 @@ class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
         return super().focusOutEvent(event)
 
     def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
-
         self.tab_name: str = tab_widget.currentWidget().objectName()
         key: str = event.text()
 
@@ -149,7 +153,9 @@ class MainWindowClass(QtWidgets.QMainWindow, QtWidgets.QWidget):
                 arm.set_page_buttons(False)
                 for i in range(int(len(keys))):
                     if key == keys[i]:
-                        arm.speeds[i] = arm.speed_multiplier * 50  # mapped to between -250 and 250
+                        arm.speeds[i] = (
+                            arm.speed_multiplier * 50
+                        )  # mapped to between -250 and 250
                 arm.send_speeds()
 
         return super().keyPressEvent(event)
@@ -197,7 +203,8 @@ if __name__ == "__main__":
 
     import sys
 
-    rospy.init_node("gui_controller")
+    rclpy.init()
+    node = rclpy.create_node("gui_controller")
 
     worker = Worker(1, "worker")
 
@@ -208,7 +215,9 @@ if __name__ == "__main__":
     # used for adaptive window size, gets the screen size of the current display
     width, height = QtWidgets.QDesktopWidget().screenGeometry(-1).getRect()[2:]
     MainWindow.resize(width, height)
-    MainWindow.setStyleSheet("background-color: rgb(43, 52, 59);\n" "color: rgb(238, 238, 236);")
+    MainWindow.setStyleSheet(
+        "background-color: rgb(43, 52, 59);\n" "color: rgb(238, 238, 236);"
+    )
 
     scroll_area = QtWidgets.QScrollArea(MainWindow)
     scroll_area.setGeometry(QtCore.QRect(0, 0, width, int(0.87 * height)))
@@ -219,8 +228,8 @@ if __name__ == "__main__":
 
     MainWindow.setCentralWidget(scroll_area)
 
-    wheels_publisher = rospy.Publisher("/rover_command", String, queue_size=10)
-    pds_publisher = rospy.Publisher("/pds_command", String, queue_size=10)
+    wheels_publisher = node.create_publisher(String, "/rover_command", qos_profile=10)
+    pds_publisher = node.create_publisher(String, "/pds_command", qos_profile=10)
 
     wheel = Wheel(
         width,
@@ -232,7 +241,7 @@ if __name__ == "__main__":
     arm = Arm(
         width,
         height,
-        rospy.Publisher("/arm_command", String, queue_size=10),
+        node.create_publisher(String, "/arm_command", qos_profile=10),
         pds_publisher,
         MainWindow,
     )
@@ -245,23 +254,27 @@ if __name__ == "__main__":
     science = Science(
         width,
         height,
-        rospy.Publisher("/science_command", String, queue_size=10),
+        node.create_publisher(String, "/science_command", qos_profile=10),
         MainWindow,
     )
     cams = Cams(
         width,
         height,
     )
-    autonomy = Autonomy(width, height, rospy.Publisher("/autonomy_handler", String, queue_size=10))
+    autonomy = Autonomy(
+        width, height, node.create_publisher(String, "/autonomy_handler", qos_profile=10)
+    )
 
     layout = QtWidgets.QWidget()
     scroll_area.setWidget(layout)
 
-    header = Header(width, height, wheels_publisher, layout)
+    header = Header(width, height, node, wheels_publisher, layout)
     header.setup()
 
     tab_widget = QtWidgets.QTabWidget(layout)
-    tab_widget.setGeometry(QtCore.QRect(0, int(height / 15.43), width, int(0.9 * height)))
+    tab_widget.setGeometry(
+        QtCore.QRect(0, int(height / 15.43), width, int(0.9 * height))
+    )
     tab_widget.addTab(wheel, "Wheels")
     tab_widget.addTab(arm, "Arms")
     tab_widget.addTab(pds, "PDS")
