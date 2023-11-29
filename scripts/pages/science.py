@@ -1,4 +1,8 @@
 import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+from typing import Optional
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
@@ -10,17 +14,32 @@ class Science(Science_Ui):
         self,
         width: float,
         height: float,
-        publisher: rclpy.publisher.Publisher,
+        node: Optional[Node] = None,
+        science_topic: str = "/science_topic",
         MainWindow=None,
     ):
+        # Create node to initialize publishers if node is not passed in
+        if node is None:
+            rclpy.init()
+            self.node = rclpy.create_node("science_node")
+        elif isinstance(node, Node):
+            self.node = node
+        else:
+            raise TypeError(
+                "The 'node' parameter must be an instance of rclpy.node.Node."
+            )
+
+        self.publisher = node.create_publisher(String, science_topic, qos_profile=10)
         super().__init__(
             width=width,
             height=height,
-            publisher=publisher,
+            publisher=self.publisher,
             parent=self,
             MainWindow=MainWindow,
         )
-        self.publisher = publisher
+        self.publisher = (
+            node.create_publisher(String, "/science_command", qos_profile=10),
+        )
         self.used_vials: int = 0
         self.current_vial: int = 1
         self.vials = [

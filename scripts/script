@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import subprocess
 import threading
 import rclpy
@@ -229,41 +228,38 @@ if __name__ == "__main__":
     MainWindow.setCentralWidget(scroll_area)
 
     wheels_publisher = node.create_publisher(String, "/rover_command", qos_profile=10)
-    pds_publisher = node.create_publisher(String, "/pds_command", qos_profile=10)
 
     wheel = Wheel(
         width,
         height,
-        wheels_publisher,
-        pds_publisher,
-        MainWindow,
+        node,
+        wheel_topic="/rover_command",
+        pds_topic="/pds_command",
+        MainWindow=MainWindow,
     )
     arm = Arm(
         width,
         height,
-        node.create_publisher(String, "/arm_command", qos_profile=10),
-        pds_publisher,
-        MainWindow,
+        node,
+        arm_topic="/arm_topic",
+        pds_topic="/pds_command",
+        MainWindow=MainWindow,
     )
     pds = Pds(
         width,
         height,
-        pds_publisher,
-        MainWindow,
+        node,
+        pds_topic="/pds_command",
+        MainWindow=MainWindow,
     )
     science = Science(
-        width,
-        height,
-        node.create_publisher(String, "/science_command", qos_profile=10),
-        MainWindow,
+        width, height, node, science_topic="/science_topic", MainWindow=MainWindow
     )
     cams = Cams(
         width,
         height,
     )
-    autonomy = Autonomy(
-        width, height, node.create_publisher(String, "/autonomy_handler", qos_profile=10)
-    )
+    autonomy = Autonomy(width, height, node, autonomy_topic="/autonomy_handler")
 
     layout = QtWidgets.QWidget()
     scroll_area.setWidget(layout)

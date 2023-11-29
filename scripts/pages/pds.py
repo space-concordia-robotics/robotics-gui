@@ -1,4 +1,8 @@
 import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+from typing import Optional
+
 
 # from mcu_control.msg._Currents import Currents
 from std_msgs.msg import String
@@ -8,6 +12,7 @@ from PyQt5.QtWidgets import QShortcut
 from ui.pds_ui import Pds_Ui
 
 
+# pds_publisher = node.create_publisher(String, "/pds_command", qos_profile=10)
 class Pds(Pds_Ui):
     # Initialize node that will be used to create a publisher
 
@@ -15,18 +20,29 @@ class Pds(Pds_Ui):
         self,
         width: float,
         height: float,
-        publisher: rclpy.publisher.Publisher,
+        node: Optional[Node] = None,
+        pds_topic: str = "/pds_command",
         MainWindow=None,
     ):
+        # Create node to initialize publishers if node is not passed in
+        if node is None:
+            rclpy.init()
+            self.node = rclpy.create_node("pds_node")
+        elif isinstance(node, Node):
+            self.node = node
+        else:
+            raise TypeError(
+                "The 'node' parameter must be an instance of rclpy.node.Node."
+            )
+
+        self.pds_publisher = node.create_publisher(String, pds_topic, qos_profile=10)
         super().__init__(
             width=width,
             height=height,
-            publisher=publisher,
+            publisher=self.pds_publisher,
             parent=self,
             MainWindow=MainWindow,
         )
-        node = rclpy.create_node("publisher_factory")
-        self.publisher = publisher
         self.fan1_speed: float = 100.0
         self.fan2_speed: float = 100.0
         self.data_topic = node.create_publisher(
@@ -43,14 +59,14 @@ class Pds(Pds_Ui):
         self.start_handling_clicks()
 
     def toggle_auto_mode(self, state: bool):
-        self.publisher.publish(f"toggle_auto_mode {1 if state else 0}")
+        self.pds_publisher.publish(f"toggle_auto_mode {1 if state else 0}")
 
     def estop(self):
         if self.or_motors():
             self.toggle_motors(
                 list(range(1, 7)), state=False, toggle_button=True, publish=False
             )
-            self.publisher.publish("estop 1 1")
+            self.pds_publisher.publish("estop 1 1")
             self.log_browser.log_message("Stopping all motors")
 
     def enable_motors(self):
@@ -58,11 +74,11 @@ class Pds(Pds_Ui):
             self.toggle_motors(
                 list(range(1, 7)), state=True, toggle_button=True, publish=False
             )
-            self.publisher.publish("enable_motors 1 1")
+            self.pds_publisher.publish("enable_motors 1 1")
             self.log_browser.log_message("Enabling all motors")
 
     def ping(self):
-        self.publisher.publish("ping")
+        self.pds_publisher.publish("ping")
         self.log_browser.log_message("Pinging Rover in MCU")
 
     def enable_data_connection(self, state):
@@ -87,11 +103,11 @@ class Pds(Pds_Ui):
     #     self.arm_table.display_currents(self.arm_currents)
 
     def reset_general_flags(self):
-        self.publisher.publish("reset_general_error_flags")
+        self.pds_publisher.publish("reset_general_error_flags")
         self.log_browser.log_message("resetting general flags")
 
     def reset_current_flags(self):
-        self.publisher.publish("reset_current_reading_error_flags")
+        self.pds_publisher.publish("reset_current_reading_error_flags")
         self.log_browser.log_message("resetting current flags")
 
     def set_fan_speed(self, fan_number: int):
@@ -101,11 +117,11 @@ class Pds(Pds_Ui):
         if fan_number == 1:
             self.fan1_speed = self.fan1_speed_input.value()
             self.fan1_speed_input.clearFocus()
-            self.publisher.publish(f"fan 1 {self.fan1_speed}")
+            self.pds_publisher.publish(f"fan 1 {self.fan1_speed}")
         elif fan_number == 2:
             self.fan2_speed = self.fan2_speed_input.value()
             self.fan2_speed_input.clearFocus()
-            self.publisher.publish(f"fan 2 {self.fan2_speed}")
+            self.pds_publisher.publish(f"fan 2 {self.fan2_speed}")
         self.log_browser.log_message(
             f"setting fan speeds to {self.fan1_speed} and {self.fan2_speed}"
         )
@@ -122,13 +138,13 @@ class Pds(Pds_Ui):
             if toggle_button:
                 exec(f"self.motor{index}.setChecked(state)")
             if publish:
-                self.publisher.publish(f"motor {index} {1 if state else 0}")
+                self.pds_publisher.publish(f"motor {index} {1 if state else 0}")
         elif type(indexes) is list:
             for index in indexes:
                 if toggle_button:
                     exec(f"self.motor{index}.setChecked(state)")
                 if publish:
-                    self.publisher.publish(f"motor {index} {1 if state else 0}")
+                    self.pds_publisher.publish(f"motor {index} {1 if state else 0}")
 
     def or_motors(self) -> bool:
         """Check if any of the motors is toggled on"""

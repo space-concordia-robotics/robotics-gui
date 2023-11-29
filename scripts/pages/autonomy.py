@@ -1,4 +1,8 @@
 import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+from typing import Optional
+
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QShortcut
 from ui.autonomy_ui import Autonomy_Ui
@@ -6,11 +10,30 @@ from ui.autonomy_ui import Autonomy_Ui
 
 class Autonomy(Autonomy_Ui):
     def __init__(
-        self, width: float, height: float, publisher: rclpy.publisher.Publisher
+        self,
+        width: float,
+        height: float,
+        node: Optional[Node] = None,
+        autonomy_topic: str = "/autonomy_handler",
     ):
-        super().__init__(width=width, height=height, publisher=publisher, parent=self)
-        self.publisher = publisher
+        # Create node to initialize publishers if node is not passed in
+        if node is None:
+            rclpy.init()
+            self.node = rclpy.create_node("autonomy_node")
+        elif isinstance(node, Node):
+            self.node = node
+        else:
+            raise TypeError(
+                "The 'node' parameter must be an instance of rclpy.node.Node."
+            )
 
+        self.publisher = (
+            node.create_publisher(String, autonomy_topic, qos_profile=10),
+        )
+
+        super().__init__(
+            width=width, height=height, publisher=self.publisher, parent=self
+        )
         self.start_handling_clicks()
 
     def estop(self):

@@ -1,4 +1,7 @@
 import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+from typing import Optional
 
 # from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
@@ -12,19 +15,33 @@ class Arm(Arm_Ui):
         self,
         width: float,
         height: float,
-        publisher: rclpy.publisher.Publisher,
-        pds_publisher: rclpy.publisher.Publisher,
+        node: Optional[Node] = None,
+        arm_topic: str = "/arm_topic",
+        pds_topic: str = "/pds_command",
         MainWindow=None,
     ):
         super().__init__(
             width=width,
             height=height,
-            publisher=publisher,
             parent=self,
             MainWindow=MainWindow,
         )
-        self.publisher = publisher
-        self.pds_publisher = pds_publisher
+
+        # Create node to initialize publishers if node is not passed in
+        if node is None:
+            rclpy.init()
+            self.node = rclpy.create_node("arm_node")
+        elif isinstance(node, Node):
+            self.node = node
+        else:
+            raise TypeError(
+                "The 'node' parameter must be an instance of rclpy.node.Node."
+            )
+
+        self.publisher = self.node.create_publisher(String, arm_topic, qos_profile=10)
+        self.pds_publisher = self.node.create_publisher(
+            String, pds_topic, qos_profile=10
+        )
         self.speed_multiplier: float = 1
         self.currents: tuple[float] = (0,) * 6
         self.speeds: list[float] = [0] * 12

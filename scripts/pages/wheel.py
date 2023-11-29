@@ -1,4 +1,7 @@
 import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+from typing import Optional
 
 # from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
@@ -12,19 +15,31 @@ class Wheel(Wheel_Ui):
         self,
         width: float,
         height: float,
-        publisher: rclpy.publisher.Publisher,
-        pds_publisher: rclpy.publisher.Publisher,
+        node: Optional[Node] = None,
+        wheel_topic: str = "/rover_command",
+        pds_topic: str = "/pds_command",
         MainWindow=None,
     ):
+        # Create node to initialize publishers if node is not passed in
+        if node is None:
+            rclpy.init()
+            self.node = rclpy.create_node("wheel_node")
+        elif isinstance(node, Node):
+            self.node = node
+        else:
+            raise TypeError(
+                "The 'node' parameter must be an instance of rclpy.node.Node."
+            )
+
+        self.publisher = node.create_publisher(String, wheel_topic, qos_profile=10)
         super().__init__(
             width=width,
             height=height,
-            publisher=publisher,
+            publisher=self.publisher,
             parent=self,
             MainWindow=MainWindow,
         )
-        self.publisher = publisher
-        self.pds_publisher = pds_publisher
+        self.pds_publisher = node.create_publisher(String, pds_topic, qos_profile=10)
         self.throttle: float = 0.50
         self.currents: tuple[float] = (0,) * 6
         # first element of the velocity is right (+) / left (-) and second is front (+) / back (-)
