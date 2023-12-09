@@ -39,20 +39,22 @@ class Arm_Ui(QtWidgets.QWidget):
         self.claw_controls_label = QtWidgets.QLabel(self.parent)
         self.claw_controls_label.setGeometry(
             QtCore.QRect(
-                self.width / 14.77,
-                self.height * 0.75,
-                self.width / 19.2,
-                self.height / 60,
+                int(self.width / 14.77),
+                int(self.height * 0.75),
+                int(self.width / 19.2),
+                int(self.height / 60),
             )
         )
         self.claw_controls_label.setObjectName("claw_controls_label")
         self.arm_controls_label = QtWidgets.QLabel(self.parent)
         self.arm_controls_label.setGeometry(
             QtCore.QRect(
-                self.width / 4.8,
-                0.75 * self.height,
-                self.width / 19.2,
-                self.height / 60,
+                int(
+                    self.width / 4.8,
+                ),
+                int(0.75 * self.height),
+                int(self.width / 19.2),
+                int(self.height / 60),
             )
         )
         self.arm_controls_label.setObjectName("arm_controls_label")
@@ -60,10 +62,10 @@ class Arm_Ui(QtWidgets.QWidget):
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.parent)
         self.horizontalLayoutWidget.setGeometry(
             QtCore.QRect(
-                self.width / 32,
-                self.height / 2.63,
-                self.width / 3.62,
-                self.height / 13.5
+                int(self.width / 32),
+                int(self.height / 2.63),
+                int(self.width / 3.62),
+                int(self.height / 13.5),
             )
         )
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
@@ -95,7 +97,12 @@ class Arm_Ui(QtWidgets.QWidget):
         self.arm_down_button.setObjectName("arm_down_button")
         self.arm_left_button = QtWidgets.QPushButton(self.arm_controls_widget)
         self.arm_left_button.setGeometry(
-            QtCore.QRect(0, self.height / 13.5, self.width / 24, self.height / 13.5)
+            QtCore.QRect(
+                0,
+                int(self.height / 13.5),
+                int(self.width / 24),
+                int(self.height / 13.5),
+            )
         )
         self.arm_left_button.setObjectName("arm_left_button")
         self.arm_right_button = QtWidgets.QPushButton(self.arm_controls_widget)
@@ -107,7 +114,9 @@ class Arm_Ui(QtWidgets.QWidget):
         self.arm_right_button.setObjectName("arm_right_button")
         self.arm_up_button = QtWidgets.QPushButton(self.arm_controls_widget)
         self.arm_up_button.setGeometry(
-            QtCore.QRect(self.width / 24, 0, self.width / 24, self.height / 13.5)
+            QtCore.QRect(
+                int(self.width / 24), 0, int(self.width / 24), int(self.height / 13.5)
+            )
         )
         self.arm_up_button.setObjectName("arm_up_button")
         self.arm_fwd_button = QtWidgets.QPushButton(self.arm_controls_widget)
@@ -119,7 +128,12 @@ class Arm_Ui(QtWidgets.QWidget):
         self.arm_fwd_button.setObjectName("arm_fwd_button")
         self.arm_back_button = QtWidgets.QPushButton(self.arm_controls_widget)
         self.arm_back_button.setGeometry(
-            QtCore.QRect(0, self.height / 6.75, self.width / 24, self.height / 13.5)
+            QtCore.QRect(
+                0,
+                int(self.height / 6.75),
+                int(self.width / 24),
+                int(self.height / 13.5),
+            )
         )
         self.arm_back_button.setObjectName("arm_back_button")
         self.claw_controls_widget = QtWidgets.QWidget(self.parent)
@@ -131,18 +145,31 @@ class Arm_Ui(QtWidgets.QWidget):
         self.claw_controls_widget.setObjectName("claw_controls_widget")
         self.claw_open_button = QtWidgets.QPushButton(self.claw_controls_widget)
         self.claw_open_button.setGeometry(
-            QtCore.QRect(0, self.height / 6.75, self.width / 24, self.height / 13.5)
+            QtCore.QRect(
+                0,
+                int(self.height / 6.75),
+                int(self.width / 24),
+                int(self.height / 13.5),
+            )
         )
         self.claw_open_button.setObjectName("claw_open_button")
         self.roll_left_button = QtWidgets.QPushButton(self.claw_controls_widget)
         self.roll_left_button.setGeometry(
-            QtCore.QRect(0, self.height / 13.5, self.width / 24, self.height / 13.5)
+            QtCore.QRect(
+                0,
+                int(self.height / 13.5),
+                int(self.width / 24),
+                int(self.height / 13.5),
+            )
         )
         self.roll_left_button.setObjectName("roll_left_button_2")
         self.roll_right_button = QtWidgets.QPushButton(self.claw_controls_widget)
         self.roll_right_button.setGeometry(
             QtCore.QRect(
-                self.width / 12, self.height / 13.5, self.width / 24, self.height / 13.5
+                int(self.width / 12),
+                int(self.height / 13.5),
+                int(self.width / 24),
+                int(self.height / 13.5),
             )
         )
         self.roll_right_button.setObjectName("roll_left_button")
@@ -162,13 +189,18 @@ class Arm_Ui(QtWidgets.QWidget):
         self.claw_close_button.setObjectName("claw_close_button")
         self.pitch_up_button = QtWidgets.QPushButton(self.claw_controls_widget)
         self.pitch_up_button.setGeometry(
-            QtCore.QRect(self.width / 24, 0, self.width / 24, self.height / 13.5)
+            QtCore.QRect(
+                int(self.width / 24), 0, int(self.width / 24), int(self.height / 13.5)
+            )
         )
         self.pitch_up_button.setObjectName("pitch_up_button")
         self.manual_claw_controls = QtWidgets.QWidget(self.parent)
         self.manual_claw_controls.setGeometry(
             QtCore.QRect(
-                self.width / 32, self.height / 1.93, self.width / 8, self.height / 5.4
+                int(self.width / 32),
+                int(self.height / 1.93),
+                int(self.width / 8),
+                int(self.height / 5.4),
             )
         )
         self.manual_claw_controls.setObjectName("manual_claw_controls")
@@ -181,7 +213,9 @@ class Arm_Ui(QtWidgets.QWidget):
         self.m3_elbow_down_button.setObjectName("m3_elbow_down_button")
         self.m2_shoulder_up_button = QtWidgets.QPushButton(self.manual_claw_controls)
         self.m2_shoulder_up_button.setGeometry(
-            QtCore.QRect(self.width / 24, 0, self.width / 24, self.height / 10.8)
+            QtCore.QRect(
+                int(self.width / 24), 0, int(self.width / 24), int(self.height / 10.8)
+            )
         )
         self.m2_shoulder_up_button.setObjectName("m2_shoulder_up_button")
         self.m2_shoulder_down_button = QtWidgets.QPushButton(self.manual_claw_controls)
@@ -193,17 +227,24 @@ class Arm_Ui(QtWidgets.QWidget):
         self.m2_shoulder_down_button.setObjectName("m2_shoulder_down_button")
         self.m1_shoulder_left_button = QtWidgets.QPushButton(self.manual_claw_controls)
         self.m1_shoulder_left_button.setGeometry(
-            QtCore.QRect(0, 0, self.width / 24, self.height / 10.8)
+            QtCore.QRect(0, 0, int(self.width / 24), int(self.height / 10.8))
         )
         self.m1_shoulder_left_button.setObjectName("m1_shoulder_left_button")
         self.m1_shoulder_right_button = QtWidgets.QPushButton(self.manual_claw_controls)
         self.m1_shoulder_right_button.setGeometry(
-            QtCore.QRect(0, self.height / 10.8, self.width / 24, self.height / 10.8)
+            QtCore.QRect(
+                0,
+                int(self.height / 10.8),
+                int(self.width / 24),
+                int(self.height / 10.8),
+            )
         )
         self.m1_shoulder_right_button.setObjectName("m1_shoulder_right_button")
         self.m3_elbow_up_button = QtWidgets.QPushButton(self.manual_claw_controls)
         self.m3_elbow_up_button.setGeometry(
-            QtCore.QRect(self.width / 12, 0, self.width / 24, self.height / 10.8)
+            QtCore.QRect(
+                int(self.width / 12), 0, int(self.width / 24), int(self.height / 10.8)
+            )
         )
         self.m3_elbow_up_button.setObjectName("m3_elbow_up_button")
         self.manual_arm_controls = QtWidgets.QWidget(self.parent)
@@ -215,24 +256,34 @@ class Arm_Ui(QtWidgets.QWidget):
         self.manual_arm_controls.setObjectName("manual_arm_controls")
         self.m6_claw_open_button = QtWidgets.QPushButton(self.manual_arm_controls)
         self.m6_claw_open_button.setGeometry(
-            QtCore.QRect(self.width / 12, 0, self.width / 24, self.height / 10.8)
+            QtCore.QRect(
+                int(self.width / 12), 0, int(self.width / 24), int(self.height / 10.8)
+            )
         )
         self.m6_claw_open_button.setObjectName("m6_claw_open_button")
         self.m4_wrist_down_button = QtWidgets.QPushButton(self.manual_arm_controls)
         self.m4_wrist_down_button.setGeometry(
-            QtCore.QRect(0, self.height / 10.8, self.width / 24, self.height / 10.8)
+            QtCore.QRect(
+                0,
+                int(self.height / 10.8),
+                int(self.width / 24),
+                int(self.height / 10.8),
+            )
         )
         self.m4_wrist_down_button.setObjectName("m4_wrist_down_button")
         self.m6_claw_close_button = QtWidgets.QPushButton(self.manual_arm_controls)
         self.m6_claw_close_button.setGeometry(
             QtCore.QRect(
-                self.width / 12, self.height / 10.8, self.width / 24, self.height / 10.8
+                int(self.width / 12),
+                int(self.height / 10.8),
+                int(self.width / 24),
+                int(self.height / 10.8),
             )
         )
         self.m6_claw_close_button.setObjectName("m6_claw_close_button")
         self.m4_wrist_up_button = QtWidgets.QPushButton(self.manual_arm_controls)
         self.m4_wrist_up_button.setGeometry(
-            QtCore.QRect(0, 0, self.width / 24, self.height / 10.8)
+            QtCore.QRect(0, 0, int(self.width / 24), int(self.height / 10.8))
         )
         self.m4_wrist_up_button.setObjectName("m4_wrist_up_button")
         self.m5_wrist_in_button = QtWidgets.QPushButton(self.manual_arm_controls)
@@ -244,56 +295,58 @@ class Arm_Ui(QtWidgets.QWidget):
         self.m5_wrist_in_button.setObjectName("m5_wrist_in_button")
         self.m5_wrist_out_button = QtWidgets.QPushButton(self.manual_arm_controls)
         self.m5_wrist_out_button.setGeometry(
-            QtCore.QRect(self.width / 24, 0, self.width / 24, self.height / 10.8)
+            QtCore.QRect(
+                int(self.width / 24), 0, int(self.width / 24), int(self.height / 10.8)
+            )
         )
         self.m5_wrist_out_button.setObjectName("m5_wrist_out_button")
         self.list_commands_button = QtWidgets.QPushButton(self.parent)
         self.list_commands_button.setGeometry(
             QtCore.QRect(
-                self.width / 1.43,
-                self.height / 1.86,
-                self.width / 12,
-                self.height / 15.43,
+                int(self.width / 1.43),
+                int(self.height / 1.86),
+                int(self.width / 12),
+                int(self.height / 15.43),
             )
         )
         self.list_commands_button.setObjectName("list_commands_button")
         self.send_speed_multiplier_button = QtWidgets.QPushButton(self.parent)
         self.send_speed_multiplier_button.setGeometry(
             QtCore.QRect(
-                4.75 * self.width / 6,
-                self.height / 1.64,
-                self.width / 12,
-                self.height / 15.43,
+                int(4.75 * self.width / 6),
+                int(self.height / 1.64),
+                int(self.width / 12),
+                int(self.height / 15.43),
             )
         )
         self.send_speed_multiplier_button.setObjectName("send_speed_multiplier_button")
         self.reset_angles_button = QtWidgets.QPushButton(self.parent)
         self.reset_angles_button.setGeometry(
             QtCore.QRect(
-                4.75 * self.width / 6,
-                self.height / 1.86,
-                self.width / 12,
-                self.height / 15.43,
+                int(4.75 * self.width / 6),
+                int(self.height / 1.86),
+                int(self.width / 12),
+                int(self.height / 15.43),
             )
         )
         self.reset_angles_button.setObjectName("reset_angles_button")
         self.stop_button = QtWidgets.QPushButton(self.parent)
         self.stop_button.setGeometry(
             QtCore.QRect(
-                self.width / 1.43,
-                self.height / 1.46,
-                self.width / 12,
-                self.height / 15.43,
+                int(self.width / 1.43),
+                int(self.height / 1.46),
+                int(self.width / 12),
+                int(self.height / 15.43),
             )
         )
         self.stop_button.setObjectName("stop_button")
         self.enable_motors_button = QtWidgets.QPushButton(self.parent)
         self.enable_motors_button.setGeometry(
             QtCore.QRect(
-                self.width / 1.43,
-                self.height / 1.64,
-                self.width / 12,
-                self.height / 15.43,
+                int(self.width / 1.43),
+                int(self.height / 1.64),
+                int(self.width / 12),
+                int(self.height / 15.43),
             )
         )
         self.stop_button.setStyleSheet("background-color: red")
@@ -301,10 +354,10 @@ class Arm_Ui(QtWidgets.QWidget):
         self.speed_multiplier_input = QtWidgets.QDoubleSpinBox(self.parent)
         self.speed_multiplier_input.setGeometry(
             QtCore.QRect(
-                5.3 * self.width / 6,
-                self.height / 1.6,
-                self.width / 32,
-                self.height / 27,
+                int(5.3 * self.width / 6),
+                int(self.height / 1.6),
+                int(self.width / 32),
+                int(self.height / 27),
             )
         )
         node = rclpy.create_node("arm_ui")
