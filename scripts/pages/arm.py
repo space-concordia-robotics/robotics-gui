@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
 from typing import Optional
+from std_msgs.msg import String
 
 # from mcu_control.msg._Currents import Currents
 from PyQt5.QtCore import Qt
@@ -20,13 +20,6 @@ class Arm(Arm_Ui):
         pds_topic: str = "/pds_command",
         MainWindow=None,
     ):
-        super().__init__(
-            width=width,
-            height=height,
-            parent=self,
-            MainWindow=MainWindow,
-        )
-
         # Create node to initialize publishers if node is not passed in
         if node is None:
             rclpy.init()
@@ -41,6 +34,13 @@ class Arm(Arm_Ui):
         self.publisher = self.node.create_publisher(String, arm_topic, qos_profile=10)
         self.pds_publisher = self.node.create_publisher(
             String, pds_topic, qos_profile=10
+        )
+        super().__init__(
+            width=width,
+            height=height,
+            parent=self,
+            publisher=self.publisher,
+            MainWindow=MainWindow,
         )
         self.speed_multiplier: float = 1
         self.currents: tuple[float] = (0,) * 6
