@@ -55,10 +55,10 @@ class Log_browser(QtWidgets.QWidget):
         self.console_frame = QtWidgets.QFrame(self.parent)
         self.console_frame.setGeometry(
             QtCore.QRect(
-                self.width / 48,
-                0.02 * self.height,
-                0.25 * self.width,
-                0.33 * self.height,
+                int(self.width / 48),
+                int(0.02 * self.height),
+                int(0.25 * self.width),
+                int(0.33 * self.height),
             )
         )
         self.console_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -67,10 +67,10 @@ class Log_browser(QtWidgets.QWidget):
         self.layoutWidget = QtWidgets.QWidget(self.console_frame)
         self.layoutWidget.setGeometry(
             QtCore.QRect(
-                0.01 * self.width,
-                self.height / 108,
-                0.22 * self.width,
-                0.31 * self.height,
+                int(0.01 * self.width),
+                int(self.height / 108),
+                int(0.22 * self.width),
+                int(0.31 * self.height),
             )
         )
         self.layoutWidget.setObjectName("layoutWidget_2")

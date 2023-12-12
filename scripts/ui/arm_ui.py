@@ -23,7 +23,6 @@ class Arm_Ui(QtWidgets.QWidget):
         self.height = height
         self.parent = parent
         self.publisher = publisher
-
         self.setObjectName("arm")
         self.setupUi(MainWindow)
 
@@ -84,14 +83,20 @@ class Arm_Ui(QtWidgets.QWidget):
         self.arm_controls_widget = QtWidgets.QWidget(self.parent)
         self.arm_controls_widget.setGeometry(
             QtCore.QRect(
-                self.width / 5.65, self.height / 2, self.width / 8, self.height / 4.5
+                int(self.width / 5.65),
+                int(self.height / 2),
+                int(self.width / 8),
+                int(self.height / 4.5),
             )
         )
         self.arm_controls_widget.setObjectName("arm_controls_widget")
         self.arm_down_button = QtWidgets.QPushButton(self.arm_controls_widget)
         self.arm_down_button.setGeometry(
             QtCore.QRect(
-                self.width / 24, self.height / 13.5, self.width / 24, self.height / 13.5
+                int(self.width / 24),
+                int(self.height / 13.5),
+                int(self.width / 24),
+                int(self.height / 13.5),
             )
         )
         self.arm_down_button.setObjectName("arm_down_button")
@@ -108,7 +113,10 @@ class Arm_Ui(QtWidgets.QWidget):
         self.arm_right_button = QtWidgets.QPushButton(self.arm_controls_widget)
         self.arm_right_button.setGeometry(
             QtCore.QRect(
-                self.width / 12, self.height / 13.5, self.width / 24, self.height / 13.5
+                int(self.width / 12),
+                int(self.height / 13.5),
+                int(self.width / 24),
+                int(self.height / 13.5),
             )
         )
         self.arm_right_button.setObjectName("arm_right_button")
@@ -122,7 +130,10 @@ class Arm_Ui(QtWidgets.QWidget):
         self.arm_fwd_button = QtWidgets.QPushButton(self.arm_controls_widget)
         self.arm_fwd_button.setGeometry(
             QtCore.QRect(
-                self.width / 12, self.height / 6.75, self.width / 24, self.height / 13.5
+                int(self.width / 12),
+                int(self.height / 6.75),
+                int(self.width / 24),
+                int(self.height / 13.5),
             )
         )
         self.arm_fwd_button.setObjectName("arm_fwd_button")
@@ -139,7 +150,10 @@ class Arm_Ui(QtWidgets.QWidget):
         self.claw_controls_widget = QtWidgets.QWidget(self.parent)
         self.claw_controls_widget.setGeometry(
             QtCore.QRect(
-                self.width / 32, self.height / 2, self.width / 8, self.height / 4.5
+                int(self.width / 32),
+                int(self.height / 2),
+                int(self.width / 8),
+                int(self.height / 4.5),
             )
         )
         self.claw_controls_widget.setObjectName("claw_controls_widget")
@@ -176,14 +190,20 @@ class Arm_Ui(QtWidgets.QWidget):
         self.pitch_down_button = QtWidgets.QPushButton(self.claw_controls_widget)
         self.pitch_down_button.setGeometry(
             QtCore.QRect(
-                self.width / 24, self.height / 13.5, self.width / 24, self.height / 13.5
+                int(self.width / 24),
+                int(self.height / 13.5),
+                int(self.width / 24),
+                int(self.height / 13.5),
             )
         )
         self.pitch_down_button.setObjectName("pitch_down_button")
         self.claw_close_button = QtWidgets.QPushButton(self.claw_controls_widget)
         self.claw_close_button.setGeometry(
             QtCore.QRect(
-                self.width / 12, self.height / 6.75, self.width / 24, self.height / 13.5
+                int(self.width / 12),
+                int(self.height / 6.75),
+                int(self.width / 24),
+                int(self.height / 13.5),
             )
         )
         self.claw_close_button.setObjectName("claw_close_button")
@@ -207,7 +227,10 @@ class Arm_Ui(QtWidgets.QWidget):
         self.m3_elbow_down_button = QtWidgets.QPushButton(self.manual_claw_controls)
         self.m3_elbow_down_button.setGeometry(
             QtCore.QRect(
-                self.width / 12, self.height / 10.8, self.width / 24, self.height / 10.8
+                int(self.width / 12),
+                int(self.height / 10.8),
+                int(self.width / 24),
+                int(self.height / 10.8),
             )
         )
         self.m3_elbow_down_button.setObjectName("m3_elbow_down_button")
@@ -221,7 +244,10 @@ class Arm_Ui(QtWidgets.QWidget):
         self.m2_shoulder_down_button = QtWidgets.QPushButton(self.manual_claw_controls)
         self.m2_shoulder_down_button.setGeometry(
             QtCore.QRect(
-                self.width / 24, self.height / 10.8, self.width / 24, self.height / 10.8
+                int(self.width / 24),
+                int(self.height / 10.8),
+                int(self.width / 24),
+                int(self.height / 10.8),
             )
         )
         self.m2_shoulder_down_button.setObjectName("m2_shoulder_down_button")
@@ -250,7 +276,10 @@ class Arm_Ui(QtWidgets.QWidget):
         self.manual_arm_controls = QtWidgets.QWidget(self.parent)
         self.manual_arm_controls.setGeometry(
             QtCore.QRect(
-                self.width / 5.65, self.height / 1.93, self.width / 8, self.height / 5.4
+                int(self.width / 5.65),
+                int(self.height / 1.93),
+                int(self.width / 8),
+                int(self.height / 5.4),
             )
         )
         self.manual_arm_controls.setObjectName("manual_arm_controls")
@@ -289,7 +318,10 @@ class Arm_Ui(QtWidgets.QWidget):
         self.m5_wrist_in_button = QtWidgets.QPushButton(self.manual_arm_controls)
         self.m5_wrist_in_button.setGeometry(
             QtCore.QRect(
-                self.width / 24, self.height / 10.8, self.width / 24, self.height / 10.8
+                int(self.width / 24),
+                int(self.height / 10.8),
+                int(self.width / 24),
+                int(self.height / 10.8),
             )
         )
         self.m5_wrist_in_button.setObjectName("m5_wrist_in_button")
