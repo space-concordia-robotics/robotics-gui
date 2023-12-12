@@ -33,6 +33,7 @@ class Science(Science_Ui):
         super().__init__(
             width=width,
             height=height,
+            node=self.node,
             publisher=self.publisher,
             parent=self,
             MainWindow=MainWindow,
