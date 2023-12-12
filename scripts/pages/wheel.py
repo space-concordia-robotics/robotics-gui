@@ -22,7 +22,8 @@ class Wheel(Wheel_Ui):
     ):
         # Create node to initialize publishers if node is not passed in
         if node is None:
-            rclpy.init()
+            if not rclpy.ok():
+                rclpy.init()
             self.node = rclpy.create_node("wheel_node")
         elif isinstance(node, Node):
             self.node = node
