@@ -5,7 +5,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Wheel_table(QtWidgets.QWidget):
     def __init__(
-        self, width: float, height: float, parent=None, x: Optional[float] = 0, y: Optional[float] = 0
+        self,
+        width: float,
+        height: float,
+        parent=None,
+        x: Optional[float] = 0,
+        y: Optional[float] = 0,
     ):
         super().__init__(parent=parent)
         self.width = width
@@ -24,23 +29,40 @@ class Wheel_table(QtWidgets.QWidget):
 
     def setup(self):
         self.table_frame = QtWidgets.QFrame(self.parent)
-        self.table_frame.setGeometry(QtCore.QRect(self.x, self.y, 7 * self.width / 24, self.height / 2.16))
+        self.table_frame.setGeometry(
+            QtCore.QRect(
+                int(self.x),
+                int(self.y),
+                7 * int(self.width / 24),
+                int(self.height / 2.16),
+            )
+        )
         self.table_frame.setStyleSheet("")
         self.table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.table_frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.table_frame.setObjectName("table_frame")
         self.wheel_motor_table_label = QtWidgets.QLabel(self.table_frame)
         self.wheel_motor_table_label.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 108, self.width / 3.56, self.height / 45)
+            QtCore.QRect(
+                int(self.width / 192),
+                int(self.height / 108),
+                int(self.width / 3.56),
+                int(self.height / 45),
+            )
         )
         font = QtGui.QFont()
-        font.setPointSize(self.width / 128)
+        font.setPointSize(int(self.width / 128))
         self.wheel_motor_table_label.setFont(font)
         self.wheel_motor_table_label.setAlignment(QtCore.Qt.AlignCenter)
         self.wheel_motor_table_label.setObjectName("wheel_motor_table_label")
         self.layoutWidget = QtWidgets.QWidget(self.table_frame)
         self.layoutWidget.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56, self.height / 2.4)
+            QtCore.QRect(
+                int(self.width / 192),
+                int(self.height / 27),
+                int(self.width / 3.56),
+                int(self.height / 2.4),
+            )
         )
         self.layoutWidget.setObjectName("layoutWidget")
         self.wheel_motor_table = QtWidgets.QVBoxLayout(self.layoutWidget)
@@ -351,7 +373,9 @@ class Wheel_table(QtWidgets.QWidget):
         self.wheel_motor_table.addLayout(self.l_back_row)
 
         _translate = QtCore.QCoreApplication.translate
-        self.wheel_motor_table_label.setText(_translate("MainWindow", "Wheel Motor Table"))
+        self.wheel_motor_table_label.setText(
+            _translate("MainWindow", "Wheel Motor Table")
+        )
         self.motor_title.setText(
             _translate(
                 "MainWindow",
@@ -404,7 +428,12 @@ class Wheel_table(QtWidgets.QWidget):
 
 class Arm_table(QtWidgets.QWidget):
     def __init__(
-        self, width: float, height: float, parent=None, x: Optional[float] = 0, y: Optional[float] = 0
+        self,
+        width: float,
+        height: float,
+        parent=None,
+        x: Optional[float] = 0,
+        y: Optional[float] = 0,
     ):
         super().__init__(parent=parent)
         self.width = width
@@ -423,23 +452,37 @@ class Arm_table(QtWidgets.QWidget):
 
     def setup(self):
         self.table_frame_3 = QtWidgets.QFrame(self.parent)
-        self.table_frame_3.setGeometry(QtCore.QRect(self.x, self.y, self.width / 3.4, self.height / 2.16))
+        self.table_frame_3.setGeometry(
+            QtCore.QRect(
+                int(self.x), int(self.y), int(self.width / 3.4), int(self.height / 2.16)
+            )
+        )
         self.table_frame_3.setStyleSheet("")
         self.table_frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.table_frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.table_frame_3.setObjectName("table_frame_3")
         self.arm_motor_table_title = QtWidgets.QLabel(self.table_frame_3)
         self.arm_motor_table_title.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 108, 0.28 * self.width, self.height / 54)
+            QtCore.QRect(
+                int(self.width / 192),
+                int(self.height / 108),
+                int(0.28 * self.width),
+                int(self.height / 54),
+            )
         )
         font = QtGui.QFont()
-        font.setPointSize(self.width / 128)
+        font.setPointSize(int(self.width / 128))
         self.arm_motor_table_title.setFont(font)
         self.arm_motor_table_title.setAlignment(QtCore.Qt.AlignCenter)
         self.arm_motor_table_title.setObjectName("arm_motor_table_title")
         self.layoutWidget_4 = QtWidgets.QWidget(self.table_frame_3)
         self.layoutWidget_4.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56, self.height / 2.4)
+            QtCore.QRect(
+                int(self.width / 192),
+                int(self.height / 27),
+                int(self.width / 3.56),
+                int(self.height / 2.4),
+            )
         )
         self.layoutWidget_4.setObjectName("layoutWidget_4")
         self.arm_motor_table = QtWidgets.QVBoxLayout(self.layoutWidget_4)
@@ -803,7 +846,12 @@ class Arm_table(QtWidgets.QWidget):
 
 class Pds_table(QtWidgets.QWidget):
     def __init__(
-        self, width: float, height: float, parent=None, x: Optional[float] = 0, y: Optional[float] = 0
+        self,
+        width: float,
+        height: float,
+        parent=None,
+        x: Optional[float] = 0,
+        y: Optional[float] = 0,
     ):
         super().__init__(parent=parent)
         self.width = width
@@ -814,7 +862,14 @@ class Pds_table(QtWidgets.QWidget):
 
     def setup(self):
         self.pds_table_frame = QtWidgets.QFrame(self.parent)
-        self.pds_table_frame.setGeometry(QtCore.QRect(self.x, self.y, self.width / 3.43, self.height / 2.16))
+        self.pds_table_frame.setGeometry(
+            QtCore.QRect(
+                int(self.x),
+                int(self.y),
+                int(self.width / 3.43),
+                int(self.height / 2.16),
+            )
+        )
         self.pds_table_frame.setStyleSheet("")
         self.pds_table_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.pds_table_frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -822,20 +877,25 @@ class Pds_table(QtWidgets.QWidget):
         self.pds_table_title = QtWidgets.QLabel(self.pds_table_frame)
         self.pds_table_title.setGeometry(
             QtCore.QRect(
-                self.width / 192,
-                self.height / 108,
-                self.width / 3.56,
-                self.height / 46.96,
+                int(self.width / 192),
+                int(self.height / 108),
+                int(self.width / 3.56),
+                int(self.height / 46.96),
             )
         )
         font = QtGui.QFont()
-        font.setPointSize(self.width / 128)
+        font.setPointSize(int(self.width / 128))
         self.pds_table_title.setFont(font)
         self.pds_table_title.setAlignment(QtCore.Qt.AlignCenter)
         self.pds_table_title.setObjectName("pds_table_title")
         self.layoutWidget_19 = QtWidgets.QWidget(self.pds_table_frame)
         self.layoutWidget_19.setGeometry(
-            QtCore.QRect(self.width / 192, self.height / 27, self.width / 3.56, self.height / 2.4)
+            QtCore.QRect(
+                int(self.width / 192),
+                int(self.height / 27),
+                int(self.width / 3.56),
+                int(self.height / 2.4),
+            )
         )
         self.layoutWidget_19.setObjectName("layoutWidget_19")
         self.pds_table = QtWidgets.QVBoxLayout(self.layoutWidget_19)
