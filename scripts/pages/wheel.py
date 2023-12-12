@@ -35,7 +35,8 @@ class Wheel(Wheel_Ui):
         super().__init__(
             width=width,
             height=height,
-            publisher=self.publisher,
+            node=self.node,
+            wheel_topic="/rover_command",
             parent=self,
             MainWindow=MainWindow,
         )
