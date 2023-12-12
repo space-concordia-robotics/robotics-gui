@@ -9,6 +9,7 @@ import datetime
 
 from PIL import Image as PILImage
 from sensor_msgs.msg import CompressedImage
+from typing import Optional
 
 # from mcu_control.msg._ThermistorTemps import ThermistorTemps
 
@@ -69,12 +70,23 @@ class Stream(QtWidgets.QWidget):
         id: int,
         width: float,
         height: float,
-        node: Node,
+        node: Optional[Node] = None,
         parent: QtWidgets.QWidget = None,
         x=0,
         y=0,
         topic=None,
     ):
+        # Create node to initialize publishers if node is not passed in
+        if node is None:
+            if not rclpy.ok():
+                rclpy.init()
+            self.node = rclpy.create_node("stream_node")
+        elif isinstance(node, Node):
+            self.node = node
+        else:
+            raise TypeError(
+                "The 'node' parameter must be an instance of rclpy.node.Node."
+            )
         super().__init__(parent=parent)
         self.id = id
         self.width = width
@@ -104,15 +116,13 @@ class Stream(QtWidgets.QWidget):
             else {topic[0]: topic[1]}
         )
 
-        self.subscriber: rclpy.subscription.Subscription = (
-            self.node.create_subscription(
-                CompressedImage,
-                self.topics[
-                    tuple(self.topics.keys())[self.id]
-                ],  # defaults to the topic corresponding to the ID
-                self.display,
-                qos_profile=None,
-            )
+        self.subscriber = self.node.create_subscription(
+            CompressedImage,
+            self.topics[
+                tuple(self.topics.keys())[self.id]
+            ],  # defaults to the topic corresponding to the ID
+            self.display,
+            qos_profile=10,
         )
 
     def display(self, data: CompressedImage):
@@ -139,7 +149,9 @@ class Stream(QtWidgets.QWidget):
             )
 
     def change_geometry(self, width, height):
-        self.display_screen.setGeometry(QtCore.QRect(self.x, self.y, width, height))
+        self.display_screen.setGeometry(
+            QtCore.QRect(int(self.x), int(self.y), int(width), int(height))
+        )
         self.screen_capture_button.setGeometry(width - 20, 0, 20, 20)
 
     def update_topic(self, topic: str, pause: bool = False):
@@ -153,10 +165,10 @@ class Stream(QtWidgets.QWidget):
         self.display_screen = QtWidgets.QLabel(self.parent)
         self.display_screen.setGeometry(
             QtCore.QRect(
-                self.x,
-                self.y,
-                7 * self.width / 24,
-                0.44 * self.height,
+                int(self.x),
+                int(self.y),
+                int(7 * self.width / 24),
+                int(0.44 * self.height),
             )
         )
         self.display_screen.setStyleSheet(
@@ -182,12 +194,14 @@ class Stream(QtWidgets.QWidget):
 
         self.screen_capture_button = QtWidgets.QPushButton(self.display_screen)
         self.screen_capture_button.setText("Capture")
-        self.screen_capture_button.setGeometry(7 * self.width / 24 - 60 - 2, 0, 60, 20)
+        self.screen_capture_button.setGeometry(
+            int(7 * self.width / 24 - 60 - 2), 0, 60, 20
+        )
         self.screen_capture_button.setObjectName("screen_capture_button")
         self.screen_capture_button.pressed.connect(self.capture_frame)
 
         self.topic_dropdown = QtWidgets.QComboBox(self.display_screen)
-        self.topic_dropdown.setGeometry(QtCore.QRect(self.width / 7, 0, 100, 20))
+        self.topic_dropdown.setGeometry(QtCore.QRect(int(self.width / 7), 0, 100, 20))
         self.topic_dropdown.setObjectName("topic_dropdown")
         for key in tuple(self.topics.keys()):
             self.topic_dropdown.addItem(key)
@@ -245,10 +259,10 @@ class Header(QtWidgets.QWidget):
 
         sc_logo.setGeometry(
             QtCore.QRect(
-                self.width / 48,
-                self.height / 90,
-                self.width / 21.33,
-                self.height / 21.6,
+                int(self.width / 48),
+                int(self.height / 90),
+                int(self.width / 21.33),
+                int(self.height / 21.6),
             )
         )
         sc_logo.setText(
@@ -260,10 +274,10 @@ class Header(QtWidgets.QWidget):
         widget = QtWidgets.QWidget(self.parent)
         widget.setGeometry(
             QtCore.QRect(
-                self.width / 1.63,
-                self.height / 108,
-                self.width / 10.66,
-                self.height / 18,
+                int(self.width / 1.63),
+                int(self.height / 108),
+                int(self.width / 10.66),
+                int(self.height / 18),
             )
         )
         widget.setObjectName("widget")
@@ -273,10 +287,10 @@ class Header(QtWidgets.QWidget):
         battery_logo = QtWidgets.QLabel(widget)
         battery_logo.setGeometry(
             QtCore.QRect(
-                self.width / 48,
-                self.height / 54,
-                3 * self.width / 64,
-                self.height / 21.6,
+                int(self.width / 48),
+                int(self.height / 54),
+                int(3 * self.width / 64),
+                int(self.height / 21.6),
             )
         )
         battery_logo.setText("")
@@ -290,10 +304,10 @@ class Header(QtWidgets.QWidget):
         layoutWidget_2 = QtWidgets.QWidget(self.parent)
         layoutWidget_2.setGeometry(
             QtCore.QRect(
-                self.width / 1.37,
-                self.height / 108,
-                self.width / 5.19,
-                self.height / 18,
+                int(self.width / 1.37),
+                int(self.height / 108),
+                int(self.width / 5.19),
+                int(self.height / 18),
             )
         )
         layoutWidget_2.setObjectName("layoutWidget_2")
@@ -303,10 +317,10 @@ class Header(QtWidgets.QWidget):
         temp_logo = QtWidgets.QLabel(layoutWidget_2)
         temp_logo.setGeometry(
             QtCore.QRect(
-                self.width / 48,
-                self.height / 54,
-                3 * self.width / 64,
-                self.height / 21.6,
+                int(self.width / 48),
+                int(self.height / 54),
+                int(3 * self.width / 64),
+                int(self.height / 21.6),
             )
         )
         temp_logo.setText("")
@@ -331,7 +345,10 @@ class Header(QtWidgets.QWidget):
         self.run_joy_comms_button.setText("Start Basestation")
         self.run_joy_comms_button.setGeometry(
             QtCore.QRect(
-                self.width / 3, self.height / 50, self.width / 10, self.height / 28
+                int(self.width / 3),
+                int(self.height / 50),
+                int(self.width / 10),
+                int(self.height / 28),
             )
         )
         self.run_joy_comms_button.clicked.connect(self.toggle_basestation_process)
@@ -339,7 +356,10 @@ class Header(QtWidgets.QWidget):
         self.toggle_led_button = QtWidgets.QCheckBox(self.parent)
         self.toggle_led_button.setGeometry(
             QtCore.QRect(
-                self.width / 2.2, self.height / 50, self.width / 10, self.height / 28
+                int(self.width / 2.2),
+                int(self.height / 50),
+                int(self.width / 10),
+                int(self.height / 28),
             )
         )
         self.toggle_led_button.setText("Toggle LED")
