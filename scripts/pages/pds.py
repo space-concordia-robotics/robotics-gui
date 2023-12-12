@@ -46,7 +46,7 @@ class Pds(Pds_Ui):
         self.fan1_speed: float = 100.0
         self.fan2_speed: float = 100.0
         self.data_topic = node.create_publisher(
-            "power_report_command", String, qos_profile=10
+            String, "power_report_command", qos_profile=10
         )
         self.commands = {
             "Ctrl-P": "'ping rover mcu'",
